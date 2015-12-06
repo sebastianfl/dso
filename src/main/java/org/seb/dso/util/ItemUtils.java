@@ -1,5 +1,7 @@
 package org.seb.dso.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -22,13 +24,23 @@ public class ItemUtils {
 
 	Collection<Item> itemList;
 
-	public static Collection<Item> getItems() throws IOException {
+	public static Collection<Item> getItems(File file) {
 		List<Item> items = new ArrayList<Item>();
 
-		Reader in = new FileReader("items.csv");
-		Iterable<CSVRecord> records = CSVFormat.EXCEL.withHeader().parse(in);
-		for (CSVRecord record : records) {
-			items.add(recordToItem(record));
+		Reader in;
+		try {
+			in = new FileReader(file);
+			Iterable<CSVRecord> records;
+			records = CSVFormat.EXCEL.withHeader().parse(in);
+			for (CSVRecord record : records) {
+				items.add(recordToItem(record));
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return items;
@@ -265,7 +277,6 @@ public class ItemUtils {
 		}
 	}
 
-	
 	private static void continueWithTwohand(Inventory inv, List<CharacterSnapshot> snapshots, CharacterSnapshot tmp) {
 		for (Iterator<Item> iterator = inv.getTwohands().iterator(); iterator.hasNext();) {
 			Item item = iterator.next();
@@ -279,7 +290,7 @@ public class ItemUtils {
 
 	private static void continueWithGems(Inventory inv, List<CharacterSnapshot> snapshots, CharacterSnapshot tmp) {
 		for (Iterator<Modifier[]> iterator = GemConfig.getGemConfig().getConfigs().iterator(); iterator.hasNext();) {
-			Modifier []mods= iterator.next();
+			Modifier[] mods = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setGems(mods);
 			cs.processModifiers(Arrays.asList(mods));

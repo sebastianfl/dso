@@ -1,5 +1,6 @@
 package org.seb.dso;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,7 +15,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 
 		SetConfig sc = new SetConfig();
-		Collection<Item> items = ItemUtils.getItems();
+		Collection<Item> items = ItemUtils.getItems(new File("items.csv"));
 
 		Inventory inv = ItemUtils.parseInventoryFromItems(items);
 
