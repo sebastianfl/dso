@@ -222,7 +222,7 @@ public class CharacterSnapshot {
 		this.cp = cp;
 	}
 
-	public void processItem(List<Modifier> mods) {
+	public void processModifiers(List<Modifier> mods) {
 
 		// List<Modifier> mods = item.getModifiersAsList();
 		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
@@ -288,34 +288,6 @@ public class CharacterSnapshot {
 				}
 				break;
 
-			}
-		}
-	}
-
-	public void processTwohand(Item item) {
-		List<Modifier> mods = item.getModifiersAsList();
-		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
-			Modifier modifier = (Modifier) iterator2.next();
-			switch (modifier.getType()) {
-			case Mod.DAMAGE: {
-				String ds = modifier.getValue();
-				cp.setWdmg(cp.getWdmg() + Double.valueOf(ds));
-				break;
-			}
-			case Mod.CRITICAL_HIT: {
-				String ds = modifier.getValue();
-				if (!ds.contains("%")) {
-					cp.setCrit(cp.getCrit() + Double.valueOf(ds));
-				} else {
-					cp.setPcrit(cp.getPcrit() + Double.valueOf(ds.substring(0, ds.length() - 1)));
-				}
-				break;
-			}
-			case Mod.WEAPON_DAMAGE: {
-				String ds = modifier.getValue();
-				cp.setPwdmg(cp.getPwdmg() + Double.valueOf(ds.substring(0, ds.length() - 1)));
-				break;
-			}
 			}
 		}
 	}

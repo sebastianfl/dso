@@ -148,7 +148,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = new CharacterSnapshot();
 			cs.setAmulet(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithBelt(inv, snapshots, cs);
 		}
 
@@ -159,7 +159,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setBelt(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithRing1(inv, snapshots, cs);
 		}
 	}
@@ -169,7 +169,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setRing1(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithRing2(inv, snapshots, cs);
 		}
 	}
@@ -186,7 +186,7 @@ public class ItemUtils {
 			if (tmp.getRing1() != item) {
 				CharacterSnapshot cs = tmp.copy();
 				cs.setRing2(item);
-				cs.processItem(item.getModifiersAsList());
+				cs.processModifiers(item.getModifiersAsList());
 				continueWithCrystal(inv, snapshots, cs);
 			}
 		}
@@ -198,7 +198,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setCrystal(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithHelmet(inv, snapshots, cs);
 		}
 
@@ -209,7 +209,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setHelmet(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithPauldrons(inv, snapshots, cs);
 		}
 
@@ -220,7 +220,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setPauldrons(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithTorso(inv, snapshots, cs);
 		}
 	}
@@ -230,7 +230,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setTorso(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithGloves(inv, snapshots, cs);
 		}
 	}
@@ -240,7 +240,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setGloves(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithBoots(inv, snapshots, cs);
 		}
 	}
@@ -250,7 +250,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setBoots(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithCloak(inv, snapshots, cs);
 		}
 	}
@@ -260,7 +260,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setCloak(item);
-			cs.processItem(item.getModifiersAsList());
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithTwohand(inv, snapshots, cs);
 		}
 	}
@@ -271,7 +271,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setTwohand(item);
-			cs.processTwohand(item);
+			cs.processModifiers(item.getModifiersAsList());
 			continueWithGems(inv, snapshots, cs);
 		}
 
@@ -282,7 +282,7 @@ public class ItemUtils {
 			Modifier []mods= iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setGems(mods);
-			cs.processItem(Arrays.asList(mods));
+			cs.processModifiers(Arrays.asList(mods));
 			cs.processSets();
 			snapshots.add(cs);
 		}
