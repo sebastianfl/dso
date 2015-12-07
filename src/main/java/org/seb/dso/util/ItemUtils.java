@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -154,13 +153,22 @@ public class ItemUtils {
 		return snapshots;
 	}
 
+	/**
+	 * The recursion entry method. All the amulets will be taken 1 by 1 and
+	 * passed into the following structure for the snapshot generation
+	 * 
+	 * @param inv
+	 *            - represents inventory, the list of items
+	 * @param snapshots
+	 *            - the resulting collection of snapshots
+	 */
 	private static void continueWithAmulet(Inventory inv, List<CharacterSnapshot> snapshots) {
 
 		for (Iterator<Item> iterator = inv.getAmulets().iterator(); iterator.hasNext();) {
 			Item item = iterator.next();
 			CharacterSnapshot cs = new CharacterSnapshot();
 			cs.setAmulet(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithBelt(inv, snapshots, cs);
 		}
 
@@ -171,7 +179,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setBelt(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithRing1(inv, snapshots, cs);
 		}
 	}
@@ -181,7 +189,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setRing1(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithRing2(inv, snapshots, cs);
 		}
 	}
@@ -198,7 +206,7 @@ public class ItemUtils {
 			if (tmp.getRing1() != item) {
 				CharacterSnapshot cs = tmp.copy();
 				cs.setRing2(item);
-				cs.processModifiers(item.getModifiersAsList());
+				// cs.processModifiers(item.getModifiersAsList());
 				continueWithCrystal(inv, snapshots, cs);
 			}
 		}
@@ -210,7 +218,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setCrystal(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithHelmet(inv, snapshots, cs);
 		}
 
@@ -221,7 +229,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setHelmet(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithPauldrons(inv, snapshots, cs);
 		}
 
@@ -232,7 +240,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setPauldrons(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithTorso(inv, snapshots, cs);
 		}
 	}
@@ -242,7 +250,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setTorso(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithGloves(inv, snapshots, cs);
 		}
 	}
@@ -252,7 +260,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setGloves(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithBoots(inv, snapshots, cs);
 		}
 	}
@@ -262,7 +270,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setBoots(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithCloak(inv, snapshots, cs);
 		}
 	}
@@ -272,7 +280,7 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setCloak(item);
-			cs.processModifiers(item.getModifiersAsList());
+			// cs.processModifiers(item.getModifiersAsList());
 			continueWithTwohand(inv, snapshots, cs);
 		}
 	}
@@ -282,8 +290,9 @@ public class ItemUtils {
 			Item item = iterator.next();
 			CharacterSnapshot cs = tmp.copy();
 			cs.setTwohand(item);
-			cs.processModifiers(item.getModifiersAsList());
-			continueWithGems(inv, snapshots, cs);
+			// cs.processModifiers(item.getModifiersAsList());
+			// continueWithGems(inv, snapshots, cs);
+			snapshots.add(cs);
 		}
 
 	}
@@ -293,23 +302,30 @@ public class ItemUtils {
 				.hasNext();) {
 			Modifier[] mods = iterator.next();
 			Modifier[] dmods = GemConfig.getGemConfig().getDefensiveGemConfigs().get(0);
-//			Modifier[] allGemMods = concat(mods, dmods);
 			CharacterSnapshot cs = tmp.copy();
 			cs.setGems(mods);
-			cs.processModifiers(Arrays.asList(mods));
-			cs.processModifiers(Arrays.asList(dmods));
-			cs.processSets();
+			// cs.processModifiers(Arrays.asList(mods));
+			// cs.processModifiers(Arrays.asList(dmods));
+			// cs.processSets();
 			snapshots.add(cs);
 		}
 
 	}
 
-	// private static Modifier[] concat(Modifier[] a, Modifier[] b) {
-	// int aLen = a.length;
-	// int bLen = b.length;
-	// Modifier[] c = new Modifier[aLen + bLen];
-	// System.arraycopy(a, 0, c, 0, aLen);
-	// System.arraycopy(b, 0, c, aLen, bLen);
-	// return c;
-	// }
+	public static Modifier[] parseModifiersFromString(String str) {
+		if (str.equals("") || null == str)
+			return null;
+		String[] modArr = str.split(",");
+		Modifier[] mods = new Modifier[modArr.length];
+		for (int j = 0; j < modArr.length; j++) {
+			String jstr = modArr[j];
+			String[] modstr = jstr.split(":");
+			mods[j] = new Modifier();
+			mods[j].setType(modstr[0]);
+			mods[j].setValue(modstr[1]);
+		}
+		return mods;
+
+	}
+
 }

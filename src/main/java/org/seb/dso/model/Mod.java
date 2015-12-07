@@ -20,5 +20,6 @@ public interface Mod {
 	public static String MAXIMUM_DAMAGE="dmax";
 	public static String WEAPON_DAMAGE="wd";
 	public static String EXTRA_WEAPON_DMG = "wde";
+	public static String MANA = "m";
 	
 }

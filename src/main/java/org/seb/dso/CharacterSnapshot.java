@@ -1,5 +1,6 @@
 package org.seb.dso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,7 +14,11 @@ import org.seb.dso.model.Mod;
 import org.seb.dso.model.Modifier;
 import org.seb.dso.model.SetConfig;
 
-public class CharacterSnapshot {
+public class CharacterSnapshot implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Item amulet;
 	private Item belt;
 	private Item cloak;
@@ -30,6 +35,10 @@ public class CharacterSnapshot {
 	private Item boots;
 	private Map<String, Integer> sets = new HashMap<String, Integer>();
 	private Modifier[] gems;
+
+	public synchronized Modifier[] getGems() {
+		return gems;
+	}
 
 	public Item getAmulet() {
 		return amulet;
@@ -156,7 +165,7 @@ public class CharacterSnapshot {
 		return "CharacterSnapshot [\namulet=" + amulet + "\nbelt=" + belt + "\ncloak=" + cloak + "\nring1=" + ring1
 				+ "\nring2=" + ring2 + "\ncrystal=" + crystal + "\nmainhand=" + mainhand + "\ntwohand=" + twohand
 				+ "\noffhand=" + offhand + "\nhelmet=" + helmet + "\npauldrons=" + pauldrons + "\ntorso=" + torso
-				+ "\ngloves=" + gloves + "\nboots=" + boots + "\n]gems=" + gems[0];
+				+ "\ngloves=" + gloves + "\nboots=" + boots + "\n]";
 	}
 
 	public CharacterSnapshot copy() {
@@ -175,10 +184,14 @@ public class CharacterSnapshot {
 		cs.setTorso(this.getTorso());
 		cs.setGloves(this.getGloves());
 		cs.setBoots(this.getBoots());
-		cs.setCp(this.getCharacterPowerCopy());
+		// cs.setCp(this.getCharacterPowerCopy());
 		return cs;
 	}
 
+	/**
+	 * @return
+	 */
+	@Deprecated
 	private CharacterPower getCharacterPowerCopy() {
 		return new CharacterPower(this.getCp().getDmg(), this.getCp().getCrit(), this.getCp().getHp(),
 				this.getCp().getArmor(), this.getCp().getResist(), this.getCp().getCd(), this.getCp().getMindmg(),
@@ -188,7 +201,31 @@ public class CharacterSnapshot {
 				this.getCp().getBc(), this.getCp().getBr(), this.getCp().getPwde());
 	}
 
-	public List<Item> getAsList() {
+	public List<Modifier> getModifiersAsList() {
+		List<Modifier> list = new ArrayList<Modifier>();
+		list.addAll(this.getAmulet().getModifiersAsList());
+		list.addAll(this.getBelt().getModifiersAsList());
+		list.addAll(this.getCloak().getModifiersAsList());
+		list.addAll(this.getRing1().getModifiersAsList());
+		list.addAll(this.getRing2().getModifiersAsList());
+		list.addAll(this.getCrystal().getModifiersAsList());
+		list.addAll(this.getHelmet().getModifiersAsList());
+		list.addAll(this.getPauldrons().getModifiersAsList());
+		list.addAll(this.getTorso().getModifiersAsList());
+		list.addAll(this.getGloves().getModifiersAsList());
+		list.addAll(this.getBoots().getModifiersAsList());
+
+		if (null != this.getMainhand())
+			list.addAll(this.getMainhand().getModifiersAsList());
+		if (null != this.getTwohand())
+			list.addAll(this.getTwohand().getModifiersAsList());
+		if (null != this.getOffhand())
+			list.addAll(this.getOffhand().getModifiersAsList());
+
+		return list;
+	}
+
+	public List<Item> getItemsAsList() {
 		List<Item> list = new ArrayList<Item>();
 		list.add(this.getAmulet());
 		list.add(this.getBelt());
@@ -222,14 +259,22 @@ public class CharacterSnapshot {
 		this.cp = cp;
 	}
 
+	public void processModifiers() {
+		processModifiers(this.getModifiersAsList());
+	}
+
+	public void clean() {
+		this.cp = new CharacterPower();
+		this.sets.clear();
+	}
+
 	/**
-	 * Processes the list of modifiers and updates the corresponding values of the Snapshot Object.
+	 * Processes the list of modifiers and updates the corresponding values of
+	 * the Snapshot Object.
 	 * 
 	 * @param mods
 	 */
 	public void processModifiers(List<Modifier> mods) {
-
-		// List<Modifier> mods = item.getModifiersAsList();
 		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
 			Modifier modifier = (Modifier) iterator2.next();
 			String ds = modifier.getValue();
@@ -292,13 +337,16 @@ public class CharacterSnapshot {
 					cp.setPwdmg(cp.getPwdmg() + Double.valueOf(ds.substring(0, ds.length() - 1)));
 				}
 				break;
+			case Mod.EXTRA_WEAPON_DMG:
+				cp.setPwde(cp.getPwde() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+				break;
 
 			}
 		}
 	}
 
 	public void processSets() {
-		List<Item> list = this.getAsList();
+		List<Item> list = this.getItemsAsList();
 		List<Modifier> mods = new ArrayList<Modifier>();
 		SetConfig cs = SetConfig.getSetConfig();
 		for (Iterator<Item> iterator = list.iterator(); iterator.hasNext();) {

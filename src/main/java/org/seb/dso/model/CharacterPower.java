@@ -1,8 +1,10 @@
 package org.seb.dso.model;
 
+import java.io.Serializable;
+
 import org.seb.dso.util.PropertyManager;
 
-public class CharacterPower {
+public class CharacterPower implements Serializable {
 	private double dmg = 0;
 	private double crit = 0;
 	private double hp = 0;
@@ -307,5 +309,16 @@ public class CharacterPower {
 
 		return (1 - crit) * mediandmg + crit * cd * mediandmg;
 	}
+
+	@Override
+	public String toString() {
+		return "CharacterPower [dmg=" + dmg + ", crit=" + crit + ", hp=" + hp + ", armor=" + armor + ", resist="
+				+ resist + ", cd=" + cd + ", mindmg=" + mindmg + ", maxdmg=" + maxdmg + ", pdmg=" + pdmg + ", pcrit="
+				+ pcrit + ", php=" + php + ", parmor=" + parmor + ", presist=" + presist + ", pmaxdmg=" + pmaxdmg
+				+ ", tspeed=" + tspeed + ", aspeed=" + aspeed + ", wdmg=" + wdmg + ", pwdmg=" + pwdmg + ", bc=" + bc
+				+ ", br=" + br + ", pwde=" + pwde + "]";
+	}
+	
+	
 
 }

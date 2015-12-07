@@ -1,6 +1,12 @@
 package org.seb.dso.model;
 
-public class Modifier {
+import java.io.Serializable;
+
+public class Modifier implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String getType() {
 		return type;
 	}
