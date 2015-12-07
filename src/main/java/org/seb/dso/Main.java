@@ -7,14 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.seb.dso.model.Item;
-import org.seb.dso.model.SetConfig;
 import org.seb.dso.util.ItemUtils;
 
 public class Main {
 
 	public static void main(String[] args) throws IOException {
 
-		SetConfig sc = new SetConfig();
+		// SetConfig sc = new SetConfig();
 		Collection<Item> items = ItemUtils.getItems(new File("items.csv"));
 
 		Inventory inv = ItemUtils.parseInventoryFromItems(items);

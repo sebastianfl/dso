@@ -289,14 +289,27 @@ public class ItemUtils {
 	}
 
 	private static void continueWithGems(Inventory inv, List<CharacterSnapshot> snapshots, CharacterSnapshot tmp) {
-		for (Iterator<Modifier[]> iterator = GemConfig.getGemConfig().getConfigs().iterator(); iterator.hasNext();) {
+		for (Iterator<Modifier[]> iterator = GemConfig.getGemConfig().getOffensiveGemConfigs().iterator(); iterator
+				.hasNext();) {
 			Modifier[] mods = iterator.next();
+			Modifier[] dmods = GemConfig.getGemConfig().getDefensiveGemConfigs().get(0);
+//			Modifier[] allGemMods = concat(mods, dmods);
 			CharacterSnapshot cs = tmp.copy();
 			cs.setGems(mods);
 			cs.processModifiers(Arrays.asList(mods));
+			cs.processModifiers(Arrays.asList(dmods));
 			cs.processSets();
 			snapshots.add(cs);
 		}
 
+	}
+
+	private static Modifier[] concat(Modifier[] a, Modifier[] b) {
+		int aLen = a.length;
+		int bLen = b.length;
+		Modifier[] c = new Modifier[aLen + bLen];
+		System.arraycopy(a, 0, c, 0, aLen);
+		System.arraycopy(b, 0, c, aLen, bLen);
+		return c;
 	}
 }

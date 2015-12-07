@@ -7,14 +7,23 @@ import org.seb.dso.util.PropertyManager;
 
 public class GemConfig {
 	private static GemConfig gc = new GemConfig();
-	private List<Modifier[]> configs = new ArrayList<Modifier[]>();
+	private List<Modifier[]> offensiveGems = new ArrayList<Modifier[]>();
+	private List<Modifier[]> defensiveGems = new ArrayList<Modifier[]>();
 
-	public synchronized List<Modifier[]> getConfigs() {
-		return configs;
+	public List<Modifier[]> getDefensiveGemConfigs() {
+		return defensiveGems;
 	}
 
-	public synchronized void setConfigs(List<Modifier[]> configs) {
-		this.configs = configs;
+	public void setDefensiveGemConfigs(List<Modifier[]> defensiveGems) {
+		this.defensiveGems = defensiveGems;
+	}
+
+	public synchronized List<Modifier[]> getOffensiveGemConfigs() {
+		return offensiveGems;
+	}
+
+	public synchronized void setOffensiveGemConfigs(List<Modifier[]> configs) {
+		this.offensiveGems = configs;
 	}
 
 	public GemConfig() {
@@ -23,8 +32,9 @@ public class GemConfig {
 	}
 
 	private void init() {
-		String gemConfigList = PropertyManager.getPropertyManager().getProperty("offensive.gem.config.list");
-		String[] configs = gemConfigList.split(";");
+		String offGemConfigList = PropertyManager.getPropertyManager().getProperty("offensive.gem.config.list");
+		String defGemConfigList = PropertyManager.getPropertyManager().getProperty("defensive.gem.config.list");
+		String[] configs = offGemConfigList.split(";");
 		// "offensive.gem.config.list=d:75;d:64,c:185"
 		for (int i = 0; i < configs.length; i++) {
 			String str = configs[i];
@@ -37,8 +47,24 @@ public class GemConfig {
 				mods[j].setType(modstr[0]);
 				mods[j].setValue(modstr[1]);
 			}
-			this.configs.add(mods);
+			this.offensiveGems.add(mods);
 		}
+
+		configs = defGemConfigList.split(";");
+		for (int i = 0; i < configs.length; i++) {
+			String str = configs[i];
+			String[] modArr = str.split(",");
+			Modifier[] mods = new Modifier[modArr.length];
+			for (int j = 0; j < modArr.length; j++) {
+				String jstr = modArr[j];
+				String[] modstr = jstr.split(":");
+				mods[j] = new Modifier();
+				mods[j].setType(modstr[0]);
+				mods[j].setValue(modstr[1]);
+			}
+			this.defensiveGems.add(mods);
+		}
+
 	}
 
 	public static GemConfig getGemConfig() {

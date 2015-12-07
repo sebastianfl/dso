@@ -222,6 +222,11 @@ public class CharacterSnapshot {
 		this.cp = cp;
 	}
 
+	/**
+	 * Processes the list of modifiers and updates the corresponding values of the Snapshot Object.
+	 * 
+	 * @param mods
+	 */
 	public void processModifiers(List<Modifier> mods) {
 
 		// List<Modifier> mods = item.getModifiersAsList();

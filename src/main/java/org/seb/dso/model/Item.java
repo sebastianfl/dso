@@ -66,7 +66,7 @@ public class Item {
 
 	@Override
 	public String toString() {
-		return itemType + ": " + mod1 + ", " + mod2 + ", " + mod3 + ", " + mod4 + ", " + itemSet;
+		return mod1 + ", " + mod2 + ", " + mod3 + ", " + mod4 + ", " + itemSet;
 	}
 
 	public List<Modifier> getModifiersAsList() {
