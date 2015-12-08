@@ -59,9 +59,7 @@ import org.seb.dso.util.PropertyManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * TODO Fix all 1000+ checkstyle warnings
- * TODO Constants
- * TODO L10N/I18N
+ * TODO Fix all 1000+ checkstyle warnings TODO Constants TODO L10N/I18N
  * 
  * @author Sebastian
  *
@@ -138,8 +136,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JTextField textFieldDefGems;
 	private JLabel lblOffensiveGems;
 	private JTextField textFieldOffGems;
-	private JLabel lblFunction;
-	private JTextField textFieldFunction;
+	private JLabel labelPetAndBuff;
+	private JTextField textFieldPetAndBuffs;
 	private JLabel lblFunctions;
 	private Component rigidArea;
 	private Component rigidArea_1;
@@ -217,7 +215,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private void initWest() {
 		panelWest = new JPanel();
 		frame.getContentPane().add(panelWest, BorderLayout.WEST);
-		panelWest.setLayout(new MigLayout("", "[120px,grow]", "[23px][23px][23px][23px][23px][23px]"));
+		panelWest.setLayout(new MigLayout("", "[140px,grow]", "[23px][23px][23px][23px][23px][23px]"));
 
 		lblDefensiveGems = new JLabel("Defensive Gems");
 		panelWest.add(lblDefensiveGems, "cell 0 0");
@@ -233,12 +231,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		panelWest.add(textFieldOffGems, "cell 0 3,growx");
 		textFieldOffGems.setColumns(10);
 
-		lblFunction = new JLabel("Function");
-		panelWest.add(lblFunction, "cell 0 4");
+		labelPetAndBuff = new JLabel("Pet and Buffs");
+		panelWest.add(labelPetAndBuff, "cell 0 4");
 
-		textFieldFunction = new JTextField();
-		panelWest.add(textFieldFunction, "cell 0 5,growx");
-		textFieldFunction.setColumns(10);
+		textFieldPetAndBuffs = new JTextField();
+		panelWest.add(textFieldPetAndBuffs, "cell 0 5,growx");
+		textFieldPetAndBuffs.setColumns(10);
 	}
 
 	private void initCenter() {
@@ -623,15 +621,19 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		PropertyManager.getPropertyManager().setCurrentClass((String) dropdownCharacterClass.getSelectedItem());
 		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
-		// TODO wtf did I plan here?
-		String setupKey = "";
 
 		String str = textFieldOffGems.getText();
-		setupKey += str;
 		Modifier[] offGemMods = ItemUtils.parseModifiersFromString(str);
+		fLogger.log(Level.INFO, "OffGems: " + str);
+
 		str = textFieldDefGems.getText();
-		setupKey += str;
 		Modifier[] defGemMods = ItemUtils.parseModifiersFromString(str);
+		fLogger.log(Level.INFO, "DefGems: " + str);
+
+		str = textFieldPetAndBuffs.getText();
+		Modifier[] petAndBuffs = ItemUtils.parseModifiersFromString(str);
+		fLogger.log(Level.INFO, "PetAndBuffs: " + str);
+
 		Modifier attack = new Modifier();
 		attack.setType(Mod.DAMAGE);
 		attack.setValue(String.valueOf(sliderAttack.getValue() * 2.0) + "%");
@@ -642,6 +644,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		Modifier[] weaponDmg = null;
 		if (checkboxWeaponDamage.isSelected()) {
+			fLogger.log(Level.INFO, "CheckBox WeaponDmg selected.");
 			weaponDmg = new Modifier[2];
 			weaponDmg[0] = new Modifier();
 			weaponDmg[1] = new Modifier();
@@ -652,6 +655,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		}
 		Modifier[] rage = null;
 		if (checkboxRage.isSelected()) {
+			fLogger.log(Level.INFO, "CheckBox Rage selected.");
 			rage = new Modifier[2];
 			rage[0] = new Modifier();
 			rage[1] = new Modifier();
@@ -663,7 +667,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		String v = "0";
 		if (radioGreen.isSelected())
-			v = "40";
+			v = "50";
 		else if (radioBlue.isSelected())
 			v = "100%";
 		else if (radioPurple.isSelected())
@@ -674,6 +678,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		essence.setType(Mod.DAMAGE);
 		essence.setValue(v);
 
+		fLogger.log(Level.INFO, "Essence in use:" + v);
+		
 		Modifier[] additionalMods = { attack, agility, essence };
 
 		double max = 0;
@@ -695,6 +701,9 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				cs.processModifiers(Arrays.asList(weaponDmg));
 			if (null != rage)
 				cs.processModifiers(Arrays.asList(rage));
+			if (null != petAndBuffs)
+				cs.processModifiers(Arrays.asList(petAndBuffs));
+
 			cs.processModifiers(Arrays.asList(additionalMods));
 			double cmd = cs.getCp().calculateEffectiveDamage();
 			if (cmd > max) {
@@ -837,10 +846,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				labelResistance.setText(String.valueOf(Math.round(cs.getCp().calculateResist())));
 				labelCriticalDamage
 						.setText(String.valueOf(Math.round((cs.getCp().getCd() + 200) * 100.0) / 100.0) + "%");
-				double attackSpeed = 0.95 + cs.getCp().getAspeed() / 100.0 * 0.95;
+				double attackSpeed = 0.83333333 + cs.getCp().getAspeed() / 100.0 * 0.83333333;
 				System.out.println(attackSpeed);
 				labelAttackSpeed.setText(
-						String.valueOf(Math.round((0.95 + cs.getCp().getAspeed() / 100.0 * 0.95) * 100.0) / 100.0)
+						String.valueOf(Math.round((0.83333333 + cs.getCp().getAspeed() / 100.0 * 0.83333333) * 100.0) / 100.0)
 								+ " ps");
 				labelTravelSpeed.setText(String.valueOf(Math.round(cs.getCp().getTspeed() * 100.0) / 100.0) + "%");
 
