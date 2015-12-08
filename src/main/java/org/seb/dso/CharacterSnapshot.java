@@ -83,11 +83,19 @@ public class CharacterSnapshot implements Serializable {
 		return crystal;
 	}
 
-	public void setCrystal(Item crystal) {
-		this.crystal = crystal;
+	/**
+	 * Sets the weapon adornment. Test javadoc for checkstyle 
+	 * 
+	 * @param c Item to set
+	 */
+	public final void setCrystal(final Item c) {
+		this.crystal = c;
 	}
 
-	public Item getMainhand() {
+	/**
+	 * @return Item mainhand weapon if any
+	 */
+	public final Item getMainhand() {
 		return mainhand;
 	}
 
