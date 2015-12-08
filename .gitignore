@@ -41,3 +41,4 @@ build/*
 /.project
 /.gradle
 /.settings/
+/gradle.properties

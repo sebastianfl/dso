@@ -28,12 +28,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -54,21 +54,23 @@ import org.seb.dso.model.Item;
 import org.seb.dso.model.Mod;
 import org.seb.dso.model.Modifier;
 import org.seb.dso.util.ItemUtils;
+import org.seb.dso.util.PropertyManager;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
+ * TODO Fix all 1000+ checkstyle warnings
+ * TODO Constants
+ * TODO L10N/I18N
+ * 
  * @author Sebastian
  *
  */
 public class OptimizerApp extends JPanel implements ActionListener {
 
-	private static final Logger fLogger = Logger.getLogger(OptimizerApp.class.getPackage().getName());
-	/**
-	* 
-	*/
 	private static final long serialVersionUID = 1238659605741906256L;
-	private List<CharacterSnapshot> snapshots;
+	private static final Logger fLogger = Logger.getLogger(OptimizerApp.class.getPackage().getName());
+
 	private JFrame frame;
 	private JFileChooser fileChooser;
 	private JButton openButton;
@@ -76,14 +78,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JPanel panelSouth;
 	private JPanel panelWest;
 	private JLabel progressLabel;
-	private JProgressBar progressBar;
 	private JPanel panelEast;
 	private JPanel panelCenter;
-
-	/**
-	 * the csv file with the item list to be selected by the user
-	 */
-	private File itemsFile;
 	private JLabel labelAmulet;
 	private JLabel labelBelt;
 	private JLabel labelCloak;
@@ -108,6 +104,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JLabel labelPauldronsValue;
 	private JLabel labelGlovesValue;
 	private JLabel labelTorsoValue;
+	private JProgressBar progressBar;
 
 	private JLabel labelOffenseIndex;
 	private JLabel labelMinDamage;
@@ -122,7 +119,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JLabel labelTravelSpeed;
 	private JButton btnLoadSnapshots;
 	private JButton buttonGenerateSnapshots;
-	private JLabel lblAttack;
+	private JLabel labelAttack;
+	private JComboBox<String> dropdownCharacterClass;
 	private JCheckBox checkboxWeaponDamage;
 	private JRadioButton radioGreen;
 	private JRadioButton radioBlue;
@@ -130,9 +128,9 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JRadioButton radioRed;
 	private JRadioButton radioNo;
 	private JSlider sliderAttack;
-	private JPanel panel;
-	private JPanel panel_1;
-	private JPanel panel_2;
+	private JPanel panelTopLevelMenu;
+	private JPanel panelSecondLevelMenu;
+	private JPanel panelThirdLevelMenu;
 	private JCheckBox checkboxRage;
 	private JLabel lblAgility;
 	private JSlider sliderAgility;
@@ -150,6 +148,9 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JLabel lblSnapshotsLoaded;
 	private Component rigidArea_4;
 	private JButton processButton;
+
+	private List<CharacterSnapshot> snapshots;
+	private File itemsFile;
 
 	/**
 	 * Launch the application.el
@@ -177,29 +178,70 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	/**
-	 * 
-	 */
-
-	/**
-	 * 
-	 */
-	/**
-	 * 
-	 */
 	private void initialize() {
 
 		try {
 			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1000, 440);
+		frame.setBounds(100, 100, 1000, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		initNorth();
+		initCenter();
+		initWest();
+		initSouth();
+
+		// TODO PanelEast will contain last 10 compiled snapshots
+		panelEast = new JPanel();
+		frame.getContentPane().add(panelEast, BorderLayout.EAST);
+	}
+
+	private void initSouth() {
+		panelSouth = new JPanel();
+		frame.getContentPane().add(panelSouth, BorderLayout.SOUTH);
+
+		progressLabel = new JLabel("Creating Snapshot Database...");
+		panelSouth.add(progressLabel);
+		progressLabel.setVisible(false);
+
+		progressBar = new JProgressBar();
+		panelSouth.add(progressBar);
+		progressBar.setVisible(false);
+
+	}
+
+	private void initWest() {
+		panelWest = new JPanel();
+		frame.getContentPane().add(panelWest, BorderLayout.WEST);
+		panelWest.setLayout(new MigLayout("", "[120px,grow]", "[23px][23px][23px][23px][23px][23px]"));
+
+		lblDefensiveGems = new JLabel("Defensive Gems");
+		panelWest.add(lblDefensiveGems, "cell 0 0");
+
+		textFieldDefGems = new JTextField();
+		panelWest.add(textFieldDefGems, "cell 0 1,growx");
+		textFieldDefGems.setColumns(10);
+
+		lblOffensiveGems = new JLabel("Offensive Gems");
+		panelWest.add(lblOffensiveGems, "cell 0 2");
+
+		textFieldOffGems = new JTextField();
+		panelWest.add(textFieldOffGems, "cell 0 3,growx");
+		textFieldOffGems.setColumns(10);
+
+		lblFunction = new JLabel("Function");
+		panelWest.add(lblFunction, "cell 0 4");
+
+		textFieldFunction = new JTextField();
+		panelWest.add(textFieldFunction, "cell 0 5,growx");
+		textFieldFunction.setColumns(10);
+	}
+
+	private void initCenter() {
 		panelCenter = new JPanel();
 		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
 		panelCenter.setLayout(new MigLayout("",
@@ -333,72 +375,87 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		labelTravelSpeed = new JLabel();
 		panelCenter.add(labelTravelSpeed, "cell 3 10");
 
-		fileChooser = new JFileChooser(".");
+	}
 
+	/**
+	 * 
+	 */
+	private void initNorth() {
 		panelNorth = new JPanel();
 		frame.getContentPane().add(panelNorth, BorderLayout.NORTH);
 		panelNorth.setLayout(new BorderLayout(0, 0));
 
-		panel = new JPanel();
-		panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) SystemColor.windowBorder));
-		FlowLayout flowLayout_1 = (FlowLayout) panel.getLayout();
+		panelTopLevelMenu = new JPanel();
+		panelTopLevelMenu.setBorder(new MatteBorder(1, 1, 1, 1, (Color) SystemColor.windowBorder));
+		FlowLayout flowLayout_1 = (FlowLayout) panelTopLevelMenu.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
-		panelNorth.add(panel, BorderLayout.NORTH);
+
+		panelNorth.add(panelTopLevelMenu, BorderLayout.NORTH);
 		openButton = new JButton("Load Items");
-		panel.add(openButton);
+		panelTopLevelMenu.add(openButton);
+		openButton.addActionListener(this);
+		fileChooser = new JFileChooser(".");
 
 		rigidArea_3 = Box.createRigidArea(new Dimension(20, 20));
-		panel.add(rigidArea_3);
+		panelTopLevelMenu.add(rigidArea_3);
 
 		buttonGenerateSnapshots = new JButton("Generate Snapshots");
-		panel.add(buttonGenerateSnapshots);
+		panelTopLevelMenu.add(buttonGenerateSnapshots);
 		buttonGenerateSnapshots.addActionListener(this);
 
 		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
-		panel.add(rigidArea_2);
+		panelTopLevelMenu.add(rigidArea_2);
 
 		btnLoadSnapshots = new JButton("Load Snapshots");
 		btnLoadSnapshots.addActionListener(this);
-		panel.add(btnLoadSnapshots);
+		panelTopLevelMenu.add(btnLoadSnapshots);
 
 		rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
-		panel.add(rigidArea_1);
+		panelTopLevelMenu.add(rigidArea_1);
 
 		JLabel lblSelectClass = new JLabel("Select Class");
-		panel.add(lblSelectClass);
+		panelTopLevelMenu.add(lblSelectClass);
 
-		JComboBox<String> comboBox = new JComboBox<String>();
-		panel.add(comboBox);
+		dropdownCharacterClass = new JComboBox<String>();
+		panelTopLevelMenu.add(dropdownCharacterClass);
+		dropdownCharacterClass.addItem("Mage");
+		dropdownCharacterClass.addItem("Dragonknight");
 
 		rigidArea = Box.createRigidArea(new Dimension(40, 20));
-		panel.add(rigidArea);
+		panelTopLevelMenu.add(rigidArea);
 
 		lblFunctions = new JLabel("Functions");
-		panel.add(lblFunctions);
+		panelTopLevelMenu.add(lblFunctions);
 
 		processButton = new JButton("Process");
-		panel.add(processButton);
+		processButton.setEnabled(false);
+		panelTopLevelMenu.add(processButton);
 		processButton.setVerticalAlignment(SwingConstants.TOP);
 		processButton.addActionListener(this);
+		processButton.setOpaque(true);
 
-		JButton btnNewButton_1 = new JButton("Most Defense");
-		panel.add(btnNewButton_1);
-		btnNewButton_1.setVerticalAlignment(SwingConstants.TOP);
+		// TODO Implement other functions
+		JButton defenseButton = new JButton("Most Defense");
+		panelTopLevelMenu.add(defenseButton);
+		defenseButton.setVerticalAlignment(SwingConstants.TOP);
+		defenseButton.setEnabled(false);
+		defenseButton.setVisible(true);
+		defenseButton.setToolTipText("Not implemented yet");
 
-		panel_1 = new JPanel();
-		panel_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) SystemColor.windowBorder));
-		FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
+		panelSecondLevelMenu = new JPanel();
+		panelSecondLevelMenu.setBorder(new MatteBorder(1, 1, 1, 1, (Color) SystemColor.windowBorder));
+		FlowLayout flowLayout = (FlowLayout) panelSecondLevelMenu.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
-		panelNorth.add(panel_1, BorderLayout.CENTER);
+		panelNorth.add(panelSecondLevelMenu, BorderLayout.CENTER);
 
 		lblSnapshotsLoaded = new JLabel("Snapshots loaded: 0");
-		panel_1.add(lblSnapshotsLoaded);
+		panelSecondLevelMenu.add(lblSnapshotsLoaded);
 
 		rigidArea_4 = Box.createRigidArea(new Dimension(20, 20));
-		panel_1.add(rigidArea_4);
+		panelSecondLevelMenu.add(rigidArea_4);
 
-		lblAttack = new JLabel("Attack");
-		panel_1.add(lblAttack);
+		labelAttack = new JLabel("Attack");
+		panelSecondLevelMenu.add(labelAttack);
 
 		sliderAttack = new JSlider();
 		sliderAttack.setValue(25);
@@ -407,10 +464,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		sliderAttack.setMajorTickSpacing(5);
 		sliderAttack.setPaintTicks(true);
 		sliderAttack.setPaintLabels(true);
-		panel_1.add(sliderAttack);
+		panelSecondLevelMenu.add(sliderAttack);
 
 		lblAgility = new JLabel("Agility");
-		panel_1.add(lblAgility);
+		panelSecondLevelMenu.add(lblAgility);
 
 		sliderAgility = new JSlider();
 		sliderAgility.setValue(0);
@@ -419,94 +476,49 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		sliderAgility.setMajorTickSpacing(5);
 		sliderAgility.setPaintTicks(true);
 		sliderAgility.setPaintLabels(true);
-		panel_1.add(sliderAgility);
+		panelSecondLevelMenu.add(sliderAgility);
 
 		checkboxWeaponDamage = new JCheckBox("50% Weapon Damage");
-		panel_1.add(checkboxWeaponDamage);
+		panelSecondLevelMenu.add(checkboxWeaponDamage);
 
 		checkboxRage = new JCheckBox("25% Rage/Mana");
-		panel_1.add(checkboxRage);
+		panelSecondLevelMenu.add(checkboxRage);
 
-		panel_2 = new JPanel();
-		panel_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) SystemColor.windowBorder));
-		FlowLayout flowLayout_2 = (FlowLayout) panel_2.getLayout();
+		panelThirdLevelMenu = new JPanel();
+		panelThirdLevelMenu.setBorder(new MatteBorder(1, 1, 1, 1, (Color) SystemColor.windowBorder));
+		FlowLayout flowLayout_2 = (FlowLayout) panelThirdLevelMenu.getLayout();
 		flowLayout_2.setAlignment(FlowLayout.LEFT);
-		panelNorth.add(panel_2, BorderLayout.SOUTH);
+		panelNorth.add(panelThirdLevelMenu, BorderLayout.SOUTH);
 
 		radioNo = new JRadioButton("No Essence");
-		panel_2.add(radioNo);
+		panelThirdLevelMenu.add(radioNo);
 		radioNo.setSelected(true);
 
 		radioGreen = new JRadioButton("Green");
-		panel_2.add(radioGreen);
+		panelThirdLevelMenu.add(radioGreen);
 
 		radioBlue = new JRadioButton("Blue");
-		panel_2.add(radioBlue);
+		panelThirdLevelMenu.add(radioBlue);
 
 		radioPurple = new JRadioButton("Purple");
-		panel_2.add(radioPurple);
+		panelThirdLevelMenu.add(radioPurple);
 
 		radioRed = new JRadioButton("Red");
-		panel_2.add(radioRed);
+		panelThirdLevelMenu.add(radioRed);
+
 		ButtonGroup bp = new ButtonGroup();
 		bp.add(radioBlue);
 		bp.add(radioGreen);
 		bp.add(radioNo);
 		bp.add(radioPurple);
 		bp.add(radioRed);
+
 		radioBlue.addActionListener(this);
-		radioBlue.setActionCommand("100%");
 		radioGreen.addActionListener(this);
-		radioBlue.setActionCommand("50");
 		radioNo.addActionListener(this);
-		radioNo.setActionCommand("0");
 		radioRed.addActionListener(this);
-		radioRed.setActionCommand("300%");
 		radioPurple.addActionListener(this);
-		radioPurple.setActionCommand("200%");
 
-		comboBox.addItem("Mage");
-		comboBox.addItem("DK");
-		openButton.addActionListener(this);
-
-		panelSouth = new JPanel();
-		frame.getContentPane().add(panelSouth, BorderLayout.SOUTH);
-
-		progressLabel = new JLabel("Creating Snapshot Database...");
-		panelSouth.add(progressLabel);
-		progressLabel.setVisible(false);
-
-		progressBar = new JProgressBar();
-		panelSouth.add(progressBar);
-		progressBar.setVisible(false);
-
-		panelWest = new JPanel();
-		frame.getContentPane().add(panelWest, BorderLayout.WEST);
-		panelWest.setLayout(new MigLayout("", "[120px,grow]", "[23px][23px][23px][23px][23px][23px]"));
-
-		lblDefensiveGems = new JLabel("Defensive Gems");
-		panelWest.add(lblDefensiveGems, "cell 0 0");
-
-		textFieldDefGems = new JTextField();
-		panelWest.add(textFieldDefGems, "cell 0 1,growx");
-		textFieldDefGems.setColumns(10);
-
-		lblOffensiveGems = new JLabel("Offensive Gems");
-		panelWest.add(lblOffensiveGems, "cell 0 2");
-
-		textFieldOffGems = new JTextField();
-		panelWest.add(textFieldOffGems, "cell 0 3,growx");
-		textFieldOffGems.setColumns(10);
-
-		lblFunction = new JLabel("Function");
-		panelWest.add(lblFunction, "cell 0 4");
-
-		textFieldFunction = new JTextField();
-		panelWest.add(textFieldFunction, "cell 0 5,growx");
-		textFieldFunction.setColumns(10);
-
-		panelEast = new JPanel();
-		frame.getContentPane().add(panelEast, BorderLayout.EAST);
 	}
 
 	@Override
@@ -522,6 +534,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			Thread qthread = new Thread() {
 				public void run() {
 					generateSnapshots();
+					setComponentEnable(processButton, true);
 				}
 			};
 			qthread.start();
@@ -529,7 +542,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			int ret = fileChooser.showOpenDialog(OptimizerApp.this);
 			if (ret == JFileChooser.APPROVE_OPTION) {
 				itemsFile = fileChooser.getSelectedFile();
-				readSnapshots();
+				loadSnapshotsFromFile();
+				setComponentEnable(processButton, true);
 
 			}
 
@@ -545,15 +559,21 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * TODO implement real Save/Load function
+	 * 
+	 * TODO implement zip
+	 * 
+	 * Reads the snapshots from the cache file.
+	 */
 	@SuppressWarnings("unchecked")
-	private void readSnapshots() {
+	private void loadSnapshotsFromFile() {
 		try {
 			progressLabel.setText("Loading Snapshots from hard drive...");
 			InputStream file = new FileInputStream("snapshots.sn");
 			InputStream buffer = new BufferedInputStream(file);
 			ObjectInput input = new ObjectInputStream(buffer);
 			snapshots = (List<CharacterSnapshot>) input.readObject();
-			System.out.println("Recovered snapshots: " + snapshots.size());
 			input.close();
 			progressLabel.setText("Successfully loaded " + snapshots.size() + " snapshots.");
 			lblSnapshotsLoaded.setText("Snapshots loaded: " + snapshots.size());
@@ -566,9 +586,15 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * Generates all possible snapshots given item list
+	 */
 	private void generateSnapshots() {
 		Collection<Item> items = ItemUtils.getItems(itemsFile);
 		Inventory inv = ItemUtils.parseInventoryFromItems(items);
+
+		// Number of snapshots to be generated
+		// TODO optimize the array
 		int size = inv.getAmulets().size() * inv.getBelts().size() * inv.getCloaks().size() * inv.getCrystals().size()
 				* inv.getTwohands().size() * inv.getHelmets().size() * inv.getPauldrons().size()
 				* inv.getTorsos().size() * inv.getGloves().size() * inv.getBoots().size() * (inv.getRings().size())
@@ -594,7 +620,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		// off gem mods, def gem mods, attack mods, agility mods, essence mods,
 		// wp mod, rage mod
+
+		PropertyManager.getPropertyManager().setCurrentClass((String) dropdownCharacterClass.getSelectedItem());
+		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
+		// TODO wtf did I plan here?
 		String setupKey = "";
+
 		String str = textFieldOffGems.getText();
 		setupKey += str;
 		Modifier[] offGemMods = ItemUtils.parseModifiersFromString(str);
@@ -644,9 +675,6 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		essence.setValue(v);
 
 		Modifier[] additionalMods = { attack, agility, essence };
-		// Modifier essence = new Modifier();
-		// essence.setType(Mod.ATTACK_SPEED);
-		// essence.setValue(String.valueOf(sliderAgility.getValue()*1.6) + "%");
 
 		double max = 0;
 		CharacterSnapshot bestSnapshot = null;
@@ -677,7 +705,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			updateProgress(i, bestSnapshot);
 		}
 		updateGUI(bestSnapshot);
-		System.out.println(bestSnapshot);
+		fLogger.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
 	}
 
 	private void startProgress(int size) {
@@ -687,108 +715,117 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				progressBar.setVisible(true);
 				progressLabel.setVisible(true);
 			}
-
 		});
 
+	}
+
+	private void setComponentEnable(JComponent c, boolean b) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				c.setEnabled(b);
+			};
+		});
 	}
 
 	private void updateProgress(int i, CharacterSnapshot cs) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				progressBar.setValue(i);
-				/*
-				 * labelAmuletValue.setText(cs.getAmulet().toString());
-				 * labelBeltValue.setText(cs.getBelt().toString());
-				 * labelCloakValue.setText(cs.getCloak().toString());
-				 * labelRing1Value.setText(cs.getRing1().toString());
-				 * labelRing2Value.setText(cs.getRing2().toString());
-				 * labelAdornmentValue.setText(cs.getCrystal().toString());
-				 * labelWeaponValue.setText(cs.getTwohand().toString());
-				 * labelHelmetValue.setText(cs.getHelmet().toString());
-				 * labelPauldronsValue.setText(cs.getPauldrons().toString());
-				 * labelTorsoValue.setText(cs.getTorso().toString());
-				 * labelGlovesValue.setText(cs.getGloves().toString());
-				 * labelBootsValue.setText(cs.getBoots().toString());
-				 * 
-				 * double minDmg = Math.round(cs.getCp().calculateMinDamage() *
-				 * 100.0) / 100.0; double maxDmg =
-				 * Math.round(cs.getCp().calculateMaxDamage() * 100.0) / 100.0;
-				 * labelMinDamage.setText(String.valueOf(minDmg));
-				 * labelMaxDamage.setText(String.valueOf(maxDmg));
-				 * labelMedianDamage.setText(String.valueOf((maxDmg + minDmg) /
-				 * 2.00)); labelHP.setText(String.valueOf(Math.round(cs.getCp().
-				 * calculateHP())));
-				 * labelArmor.setText(String.valueOf(Math.round(cs.getCp().
-				 * calculateArmor())));
-				 * labelCriticalHit.setText(String.valueOf(Math.round(cs.getCp()
-				 * .calculateCrit() * 100.0) / 100.0) + "%"); labelOffenseIndex
-				 * .setText(String.valueOf(Math.round(cs.getCp().
-				 * calculateEffectiveDamage() * 100.0) / 100.0));
-				 * labelResistance.setText(String.valueOf(Math.round(cs.getCp().
-				 * calculateResist()))); labelCriticalDamage
-				 * .setText(String.valueOf(Math.round((cs.getCp().getCd() + 200)
-				 * * 100.0) / 100.0) + "%"); labelAttackSpeed.setText(
-				 * String.valueOf(Math.round((0.95 + cs.getCp().getAspeed() /
-				 * 100.0 * 0.95) * 100.0) / 100.0) + " ps");
-				 * labelTravelSpeed.setText(String.valueOf(Math.round(cs.getCp()
-				 * .getTspeed() * 100.0) / 100.0) + "%");
-				 */
 			}
-
 		});
-
 	}
 
 	private void updateGUI(final CharacterSnapshot cs) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				if (labelAmuletValue.getText().equals(cs.getAmulet().toString()))
+				if (labelAmuletValue.getText().equals(cs.getAmulet().toString())) {
 					labelAmuletValue.setForeground(Color.DARK_GRAY);
-				else
+				} else {
 					labelAmuletValue.setForeground(Color.red);
+				}
 				labelAmuletValue.setText(cs.getAmulet().toString());
 
-				if (labelBeltValue.getText().equals(cs.getBelt().toString()))
+				if (labelBeltValue.getText().equals(cs.getBelt().toString())) {
 					labelBeltValue.setForeground(Color.DARK_GRAY);
-				else
+				} else {
 					labelBeltValue.setForeground(Color.red);
+				}
 				labelBeltValue.setText(cs.getBelt().toString());
 
-				if (labelCloakValue.getText().equals(cs.getCloak().toString()))
+				if (labelCloakValue.getText().equals(cs.getCloak().toString())) {
 					labelCloakValue.setForeground(Color.DARK_GRAY);
-				else
+				} else {
 					labelCloakValue.setForeground(Color.red);
+				}
 				labelCloakValue.setText(cs.getCloak().toString());
 
-				if (labelRing1Value.getText().equals(cs.getRing1().toString()))
+				if (labelRing1Value.getText().equals(cs.getRing1().toString())) {
 					labelRing1Value.setForeground(Color.DARK_GRAY);
-				else
+				} else {
 					labelRing1Value.setForeground(Color.red);
+				}
 				labelRing1Value.setText(cs.getRing1().toString());
 
-				if (labelRing2Value.getText().equals(cs.getRing2().toString()))
+				if (labelRing2Value.getText().equals(cs.getRing2().toString())) {
 					labelRing2Value.setForeground(Color.DARK_GRAY);
-				else
+				} else {
 					labelRing2Value.setForeground(Color.red);
+				}
 				labelRing2Value.setText(cs.getRing2().toString());
 
-				if (labelAdornmentValue.getText().equals(cs.getCrystal().toString()))
+				if (labelAdornmentValue.getText().equals(cs.getCrystal().toString())) {
 					labelAdornmentValue.setForeground(Color.DARK_GRAY);
-				else
+				} else {
 					labelAdornmentValue.setForeground(Color.red);
+				}
 				labelAdornmentValue.setText(cs.getCrystal().toString());
 
-				// TODO add others
+				if (labelWeaponValue.getText().equals(cs.getTwohand().toString())) {
+					labelWeaponValue.setForeground(Color.DARK_GRAY);
+				} else {
+					labelWeaponValue.setForeground(Color.red);
+				}
 				labelWeaponValue.setText(cs.getTwohand().toString());
+
+				if (labelHelmetValue.getText().equals(cs.getHelmet().toString())) {
+					labelHelmetValue.setForeground(Color.DARK_GRAY);
+				} else {
+					labelHelmetValue.setForeground(Color.red);
+				}
 				labelHelmetValue.setText(cs.getHelmet().toString());
+
+				if (labelPauldronsValue.getText().equals(cs.getPauldrons().toString())) {
+					labelPauldronsValue.setForeground(Color.DARK_GRAY);
+				} else {
+					labelPauldronsValue.setForeground(Color.red);
+				}
 				labelPauldronsValue.setText(cs.getPauldrons().toString());
+
+				if (labelTorsoValue.getText().equals(cs.getTorso().toString())) {
+					labelTorsoValue.setForeground(Color.DARK_GRAY);
+				} else {
+					labelTorsoValue.setForeground(Color.red);
+				}
 				labelTorsoValue.setText(cs.getTorso().toString());
+
+				if (labelGlovesValue.getText().equals(cs.getGloves().toString())) {
+					labelGlovesValue.setForeground(Color.DARK_GRAY);
+				} else {
+					labelGlovesValue.setForeground(Color.red);
+				}
 				labelGlovesValue.setText(cs.getGloves().toString());
+
+				if (labelBootsValue.getText().equals(cs.getBoots().toString())) {
+					labelBootsValue.setForeground(Color.DARK_GRAY);
+				} else {
+					labelBootsValue.setForeground(Color.red);
+				}
 				labelBootsValue.setText(cs.getBoots().toString());
 
 				double minDmg = Math.round(cs.getCp().calculateMinDamage() * 100.0) / 100.0;
 				double maxDmg = Math.round(cs.getCp().calculateMaxDamage() * 100.0) / 100.0;
+
 				labelMinDamage.setText(String.valueOf(minDmg));
 				labelMaxDamage.setText(String.valueOf(maxDmg));
 				labelMedianDamage.setText(String.valueOf((maxDmg + minDmg) / 2.00));
@@ -814,15 +851,5 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		});
 
-	}
-
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-
-		public void actionPerformed(ActionEvent e) {
-		}
 	}
 }

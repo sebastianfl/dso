@@ -14,7 +14,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.seb.dso.CharacterSnapshot;
 import org.seb.dso.Inventory;
-import org.seb.dso.model.GemConfig;
 import org.seb.dso.model.Item;
 import org.seb.dso.model.ItemType;
 import org.seb.dso.model.Modifier;
@@ -292,21 +291,6 @@ public class ItemUtils {
 			cs.setTwohand(item);
 			// cs.processModifiers(item.getModifiersAsList());
 			// continueWithGems(inv, snapshots, cs);
-			snapshots.add(cs);
-		}
-
-	}
-
-	private static void continueWithGems(Inventory inv, List<CharacterSnapshot> snapshots, CharacterSnapshot tmp) {
-		for (Iterator<Modifier[]> iterator = GemConfig.getGemConfig().getOffensiveGemConfigs().iterator(); iterator
-				.hasNext();) {
-			Modifier[] mods = iterator.next();
-			Modifier[] dmods = GemConfig.getGemConfig().getDefensiveGemConfigs().get(0);
-			CharacterSnapshot cs = tmp.copy();
-			cs.setGems(mods);
-			// cs.processModifiers(Arrays.asList(mods));
-			// cs.processModifiers(Arrays.asList(dmods));
-			// cs.processSets();
 			snapshots.add(cs);
 		}
 

@@ -2,9 +2,11 @@ package org.seb.dso.model;
 
 import java.io.Serializable;
 
+import org.seb.dso.util.Constants;
 import org.seb.dso.util.PropertyManager;
 
 public class CharacterPower implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private double dmg = 0;
 	private double crit = 0;
 	private double hp = 0;
@@ -227,11 +229,11 @@ public class CharacterPower implements Serializable {
 	}
 
 	public double calculateMinDamage() {
-		double wmin = PropertyManager.TWOHAND_MIN_DMG;
+		double wmin = Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MIN_DAMAGE));
 		wmin += this.getWdmg();
 		wmin += wmin * this.getPwdmg() / 100;
 		wmin += wmin * this.getPwde() / 100;
-		wmin += PropertyManager.BASE_DMG;
+		wmin += Integer.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_DAMAGE));
 		wmin += this.getDmg();
 		wmin += wmin * this.getPdmg() / 100;
 
@@ -239,15 +241,15 @@ public class CharacterPower implements Serializable {
 	}
 
 	public double calculateMaxDamage() {
-		//first calculate weapon dmg
-		double wmax = PropertyManager.TWOHAND_MAX_DMG;
+		// first calculate weapon dmg
+		double wmax = Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MAX_DAMAGE));
 		wmax += this.getWdmg();
 		// get % from the weapon
 		wmax += wmax * this.getPwdmg() / 100;
 		// get % from shit like dragan set
 		wmax += wmax * this.getPwde() / 100;
 		// add the char dmg
-		wmax += PropertyManager.BASE_DMG;
+		wmax += Integer.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_DAMAGE));
 		// add the items dmg
 		wmax += this.getDmg();
 		// add max dmg from items
@@ -265,14 +267,14 @@ public class CharacterPower implements Serializable {
 		wmax += this.getCrit();
 		wmax += wmax * this.getPcrit() / 100;
 
-		wmax = (wmax * 100 / PropertyManager.BASE_CRITICAL44);
+		wmax = (wmax * 100 / Integer.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_CRITICAL)));
 		if (wmax > 80)
 			return 80;
 		return wmax;
 	}
 
 	public double calculateHP() {
-		double wmax = PropertyManager.BASE_HP;
+		double wmax = Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_HP));
 		wmax += this.getHp();
 		wmax += wmax * this.getPhp() / 100;
 		return wmax;
@@ -281,13 +283,13 @@ public class CharacterPower implements Serializable {
 	public double calculateArmor() {
 		double wmax = 0;
 		wmax += this.getArmor();
-		wmax += PropertyManager.BASE_ARMOR_BELT;
-		wmax += PropertyManager.BASE_ARMOR_CLOAK;
-		wmax += PropertyManager.BASE_ARMOR_HELMET;
-		wmax += PropertyManager.BASE_ARMOR_PAULDRONS;
-		wmax += PropertyManager.BASE_ARMOR_TORSO;
-		wmax += PropertyManager.BASE_ARMOR_GLOVES;
-		wmax += PropertyManager.BASE_ARMOR_BOOTS;
+		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_BELT));
+		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_CLOAK));
+		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_HELMET));
+		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_PAULDRONS));
+		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_TORSO));
+		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_GLOVES));
+		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_BOOTS));
 
 		wmax += wmax * this.getParmor() / 100;
 
@@ -318,7 +320,5 @@ public class CharacterPower implements Serializable {
 				+ ", tspeed=" + tspeed + ", aspeed=" + aspeed + ", wdmg=" + wdmg + ", pwdmg=" + pwdmg + ", bc=" + bc
 				+ ", br=" + br + ", pwde=" + pwde + "]";
 	}
-	
-	
 
 }

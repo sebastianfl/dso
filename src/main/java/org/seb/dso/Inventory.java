@@ -5,7 +5,14 @@ import java.util.Collection;
 
 import org.seb.dso.model.Item;
 
+/**
+ * @author Sebastian
+ *
+ */
 public class Inventory {
+	/**
+	 * All amulets provided by user
+	 */
 	private Collection<Item> amulets;
 	private Collection<Item> belts;
 	private Collection<Item> cloaks;
@@ -151,5 +158,4 @@ public class Inventory {
 				+ gloves + ", boots=" + boots + "]";
 	}
 
-	
 }

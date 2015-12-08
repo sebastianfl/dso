@@ -14,6 +14,10 @@ import org.seb.dso.model.Mod;
 import org.seb.dso.model.Modifier;
 import org.seb.dso.model.SetConfig;
 
+/**
+ * @author Sebastian
+ *
+ */
 public class CharacterSnapshot implements Serializable {
 	/**
 	 * 
@@ -34,17 +38,12 @@ public class CharacterSnapshot implements Serializable {
 	private Item gloves;
 	private Item boots;
 	private Map<String, Integer> sets = new HashMap<String, Integer>();
-	private Modifier[] gems;
-
-	public synchronized Modifier[] getGems() {
-		return gems;
-	}
 
 	public Item getAmulet() {
 		return amulet;
 	}
 
-	public void setAmulet(Item amulet) {
+	public void setAmulet(final Item amulet) {
 		this.amulet = amulet;
 	}
 
@@ -52,7 +51,7 @@ public class CharacterSnapshot implements Serializable {
 		return belt;
 	}
 
-	public void setBelt(Item belt) {
+	public void setBelt(final Item belt) {
 		this.belt = belt;
 	}
 
@@ -425,9 +424,5 @@ public class CharacterSnapshot implements Serializable {
 			}
 
 		}
-	}
-
-	public void setGems(Modifier[] mods) {
-		this.gems = mods;
 	}
 }

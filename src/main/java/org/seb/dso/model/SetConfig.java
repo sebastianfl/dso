@@ -3,11 +3,12 @@ package org.seb.dso.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.seb.dso.util.Constants;
 import org.seb.dso.util.PropertyManager;
 
 public class SetConfig {
 
-	private static SetConfig sc  = new SetConfig();
+	private static SetConfig sc = new SetConfig();
 	private Map<String, Map<Integer, Modifier[]>> setMap;
 
 	public synchronized Map<String, Map<Integer, Modifier[]>> getSetMap() {
@@ -23,11 +24,12 @@ public class SetConfig {
 		init();
 	}
 
-	public static SetConfig getSetConfig (){
+	public static SetConfig getSetConfig() {
 		return sc;
 	}
+
 	private void init() {
-		String setList = PropertyManager.getPropertyManager().getProperty("set.list");
+		String setList = PropertyManager.getPropertyManager().getProperty(Constants.SET_LIST);
 		String[] sets = setList.split(",");
 		setMap = new HashMap<String, Map<Integer, Modifier[]>>();
 		for (int i = 0; i < sets.length; i++) {
@@ -37,7 +39,8 @@ public class SetConfig {
 			for (int j = 2; j < 5; j++) {
 				String tmp = "set.bonus." + string + "." + j;
 				String modstr = PropertyManager.getPropertyManager().getProperty(tmp);
-				if (null == modstr) continue;
+				if (null == modstr)
+					continue;
 				String[] mods = modstr.split(",");
 				Modifier[] modifiers = new Modifier[mods.length];
 				for (int k = 0; k < mods.length; k++) {

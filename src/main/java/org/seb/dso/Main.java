@@ -9,6 +9,10 @@ import java.util.List;
 import org.seb.dso.model.Item;
 import org.seb.dso.util.ItemUtils;
 
+/**
+ * @author Sebastian
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) throws IOException {
