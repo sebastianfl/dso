@@ -47,10 +47,14 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-csv', version: '1.2'
     compile group: 'com.miglayout', name: 'miglayout-swing', version: '5.0'
     compile group: 'net.sf.squirrel-sql.thirdparty-non-maven', name: 'napkinlaf', version: '1.2'
+    compile group: 'com.google.caliper', name: 'caliper', version: '0.5-rc1'
 
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
+    testCompile group: 'com.google.caliper', name: 'caliper', version: '0.5-rc1'
+    
+    
 }
