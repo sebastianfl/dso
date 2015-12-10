@@ -17,7 +17,7 @@ public enum ModifierCode {
 		return this.code;
 	}
 
-	public static ModifierCode getByCodeString(String s) {
+	public static ModifierCode getByCodeStr(String s) {
 		for (ModifierCode c : ModifierCode.values()) {
 			if (s.equals(c.code)) {
 				return c;
@@ -25,5 +25,6 @@ public enum ModifierCode {
 		}
 		return null;
 	}
-
+	
+	
 }

@@ -7,11 +7,7 @@ public class Modifier implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum Type {
-		DAMAGE, CRITICAL_HIT, HP, ARMOR, RESIST, RESISTANCE_COLD, RESISTANCE_FIRE, RESISTANCE_POISON,
-		RESISTANCE_ANDERMAGIC, RESISTANCE_LIGHT, BLOCK_REDUCTION, MAXIMUM_DAMAGE, WEAPON_DAMAGE, MANA, PDAMAGE,
-		PCRITICAL_HIT, PCRITICAL_DAMAGE, PHP, PARMOR, PRESIST, PTRAVEL_SPEED, PATTACK_SPEED, PBLOCK_STRENGTH,
-		PRESISTANCE_COLD, PRESISTANCE_FIRE, PRESISTANCE_POISON, PRESISTANCE_ANDERMAGIC, PRESISTANCE_LIGHT,
-		PMAXIMUM_DAMAGE, PWEAPON_DAMAGE, PEXTRA_WEAPON_DMG, PMANA, MINIMUM_DAMAGE, PMINIMUM_DAMAGE
+		DAMAGE, CRITICAL_HIT, HP, ARMOR, RESIST, RESISTANCE_COLD, RESISTANCE_FIRE, RESISTANCE_POISON, RESISTANCE_ANDERMAGIC, RESISTANCE_LIGHT, BLOCK_REDUCTION, MAXIMUM_DAMAGE, WEAPON_DAMAGE, MANA, PDAMAGE, PCRITICAL_HIT, PCRITICAL_DAMAGE, PHP, PARMOR, PRESIST, PTRAVEL_SPEED, PATTACK_SPEED, PBLOCK_STRENGTH, PRESISTANCE_COLD, PRESISTANCE_FIRE, PRESISTANCE_POISON, PRESISTANCE_ANDERMAGIC, PRESISTANCE_LIGHT, PMAXIMUM_DAMAGE, PWEAPON_DAMAGE, PEXTRA_WEAPON_DMG, PMANA, MINIMUM_DAMAGE, PMINIMUM_DAMAGE
 
 	}
 
@@ -46,15 +42,16 @@ public class Modifier implements Serializable {
 
 	@Override
 	public String toString() {
-		return type + "=" + value + (isAbsolute ? "" : "%");
+		return this.getFormattedString();
+		// return type + "=" + value + (isAbsolute ? "" : "%");
 	}
 
 	public void setType(Type t) {
-		this.type = type;
+		this.type = t;
 	}
 
 	public void setTypeByCode(String codeStr, boolean isAbsolute) {
-		ModifierCode code = ModifierCode.getByCodeString(codeStr);
+		ModifierCode code = ModifierCode.getByCodeStr(codeStr);
 		switch (code) {
 		case ARMOR: {
 			if (isAbsolute) {
@@ -193,5 +190,135 @@ public class Modifier implements Serializable {
 			break;
 		}
 		}
+	}
+
+	private String getFormattedString() {
+		String s = "", a = "";
+		switch (type) {
+		case ARMOR:
+			s = ModifierCode.ARMOR.getCode();
+			break;
+		case BLOCK_REDUCTION:
+			s = ModifierCode.BLOCK_REDUCTION.getCode();
+			break;
+		case CRITICAL_HIT:
+			s = ModifierCode.CRITICAL_HIT.getCode();
+			break;
+		case DAMAGE:
+			s = ModifierCode.DAMAGE.getCode();
+			break;
+		case HP:
+			s = ModifierCode.HP.getCode();
+			break;
+		case MANA:
+			s = ModifierCode.MANA.getCode();
+			break;
+		case MAXIMUM_DAMAGE:
+			s = ModifierCode.MAXIMUM_DAMAGE.getCode();
+			break;
+		case MINIMUM_DAMAGE:
+			s = ModifierCode.MINIMUM_DAMAGE.getCode();
+			break;
+		case RESIST:
+			s = ModifierCode.RESIST.getCode();
+			break;
+		case RESISTANCE_ANDERMAGIC:
+			s = ModifierCode.RESISTANCE_ANDERMAGIC.getCode();
+			break;
+		case RESISTANCE_COLD:
+			s = ModifierCode.RESISTANCE_COLD.getCode();
+			break;
+		case RESISTANCE_FIRE:
+			s = ModifierCode.RESISTANCE_FIRE.getCode();
+			break;
+		case RESISTANCE_LIGHT:
+			s = ModifierCode.RESISTANCE_LIGHT.getCode();
+			break;
+		case RESISTANCE_POISON:
+			s = ModifierCode.RESISTANCE_POISON.getCode();
+			break;
+		case WEAPON_DAMAGE:
+			s = ModifierCode.WEAPON_DAMAGE.getCode();
+			break;
+		case PARMOR:
+			s = ModifierCode.ARMOR.getCode();
+			a = "%";
+			break;
+		case PATTACK_SPEED:
+			s = ModifierCode.ATTACK_SPEED.getCode();
+			a = "%";
+			break;
+		case PBLOCK_STRENGTH:
+			s = ModifierCode.BLOCK_STRENGTH.getCode();
+			a = "%";
+			break;
+		case PCRITICAL_DAMAGE:
+			s = ModifierCode.CRITICAL_DAMAGE.getCode();
+			a = "%";
+			break;
+		case PCRITICAL_HIT:
+			s = ModifierCode.CRITICAL_HIT.getCode();
+			a = "%";
+			break;
+		case PDAMAGE:
+			s = ModifierCode.DAMAGE.getCode();
+			a = "%";
+			break;
+		case PEXTRA_WEAPON_DMG:
+			s = ModifierCode.EXTRA_WEAPON_DMG.getCode();
+			a = "%";
+			break;
+		case PHP:
+			s = ModifierCode.HP.getCode();
+			a = "%";
+			break;
+		case PMANA:
+			s = ModifierCode.MANA.getCode();
+			a = "%";
+			break;
+		case PMAXIMUM_DAMAGE:
+			s = ModifierCode.MAXIMUM_DAMAGE.getCode();
+			a = "%";
+			break;
+		case PMINIMUM_DAMAGE:
+			s = ModifierCode.MINIMUM_DAMAGE.getCode();
+			a = "%";
+			break;
+		case PRESIST:
+			s = ModifierCode.RESIST.getCode();
+			a = "%";
+			break;
+		case PRESISTANCE_ANDERMAGIC:
+			s = ModifierCode.RESISTANCE_ANDERMAGIC.getCode();
+			a = "%";
+			break;
+		case PRESISTANCE_COLD:
+			s = ModifierCode.RESISTANCE_COLD.getCode();
+			a = "%";
+			break;
+		case PRESISTANCE_FIRE:
+			s = ModifierCode.RESISTANCE_FIRE.getCode();
+			a = "%";
+			break;
+		case PRESISTANCE_LIGHT:
+			s = ModifierCode.RESISTANCE_LIGHT.getCode();
+			a = "%";
+			break;
+		case PRESISTANCE_POISON:
+			s = ModifierCode.RESISTANCE_POISON.getCode();
+			a = "%";
+			break;
+		case PTRAVEL_SPEED:
+			s = ModifierCode.TRAVEL_SPEED.getCode();
+			a = "%";
+			break;
+		case PWEAPON_DAMAGE:
+			s = ModifierCode.WEAPON_DAMAGE.getCode();
+			a = "%";
+			break;
+		default:
+			break;
+		}
+		return s + ":" + value + a;
 	}
 }
