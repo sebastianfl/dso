@@ -50,8 +50,10 @@ import javax.swing.border.MatteBorder;
 
 import org.seb.dso.CharacterSnapshot;
 import org.seb.dso.Inventory;
+import org.seb.dso.model.CharacterPower;
 import org.seb.dso.model.Item;
 import org.seb.dso.model.Modifier;
+import org.seb.dso.model.SetConfig;
 import org.seb.dso.util.ItemUtils;
 import org.seb.dso.util.PropertyManager;
 
@@ -530,7 +532,15 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		} else if (e.getSource() == buttonGenerateSnapshots) {
 			Thread qthread = new Thread() {
 				public void run() {
-					generateSnapshots();
+					try {
+						generateSnapshots();
+					} catch (Exception e) {
+						progressLabel.setText(e.getMessage());
+						progressLabel.setForeground(Color.RED);
+						progressBar.setVisible(false);
+						setComponentEnable(processButton, false);
+						e.printStackTrace();
+					}
 					setComponentEnable(processButton, true);
 				}
 			};
@@ -548,7 +558,14 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			Thread qthread = new Thread() {
 
 				public void run() {
-					processItems();
+					try {
+						processItems();
+					} catch (Exception e) {
+						progressLabel.setText(e.getMessage());
+						progressLabel.setForeground(Color.RED);
+						progressBar.setVisible(false);
+						e.printStackTrace();
+					}
 				}
 
 			};
@@ -585,8 +602,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 	/**
 	 * Generates all possible snapshots given item list
+	 * 
+	 * @throws Exception
 	 */
-	private void generateSnapshots() {
+	private void generateSnapshots() throws Exception {
 		Collection<Item> items;
 		try {
 			items = ItemUtils.getItems(itemsFile);
@@ -615,18 +634,35 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		} catch (IOException ex) {
 			fLogger.log(Level.SEVERE, "Cannot perform output.", ex);
 		}
-		progressLabel.setText("Snapshots saved");
 		lblSnapshotsLoaded.setText("Snapshots loaded: " + size);
 
+		String currentCharClass = (String) dropdownCharacterClass.getSelectedItem();
+		PropertyManager.getPropertyManager().setCurrentClass(currentCharClass);
+
+		progressLabel.setText("Snapshots sacurrentCharClassved. Pre-processing for a class: " + currentCharClass);
+
+		SetConfig.getSetConfig().reinitialize();
+		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
+
+		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
+			CharacterSnapshot cs = iterator.next();
+			cs.clean();
+			// Process all the items
+			cs.processModifiers();
+			// process sets if any
+			cs.processSets();
+		}
+		progressLabel.setText("Snapshots are ready for calculations");
 	}
 
-	private void processItems() {
+	private void processItems() throws Exception {
 		startProgress(snapshots.size());
 
 		// off gem mods, def gem mods, attack mods, agility mods, essence mods,
 		// wp mod, rage mod
 
 		PropertyManager.getPropertyManager().setCurrentClass((String) dropdownCharacterClass.getSelectedItem());
+		SetConfig.getSetConfig().reinitialize();
 		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
 
 		String str = textFieldOffGems.getText();
@@ -702,14 +738,16 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		double max = 0;
 		CharacterSnapshot bestSnapshot = null;
+		CharacterPower bestPower = null;
 		int i = 0;
 		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
 			CharacterSnapshot cs = iterator.next();
-			cs.clean();
-			// Process all the items
-			cs.processModifiers();
-			// process sets if any
-			cs.processSets();
+			CharacterPower power = cs.getCharacterPowerCopy();
+			// cs.clean();
+			// // Process all the items
+			// cs.processModifiers();
+			// // process sets if any
+			// cs.processSets();
 			// process gems if any
 			if (null != offGemMods)
 				cs.processModifiers(Arrays.asList(offGemMods));
@@ -727,11 +765,13 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			if (cmd > max) {
 				max = cmd;
 				bestSnapshot = cs;
+				bestPower = cs.getCp();
 			}
 			++i;
+			cs.setCp(power);
 			updateProgress(i, bestSnapshot);
 		}
-		updateGUI(bestSnapshot);
+		updateGUI(bestSnapshot, bestPower);
 		fLogger.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
 	}
 
@@ -762,7 +802,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		});
 	}
 
-	private void updateGUI(final CharacterSnapshot cs) {
+	private void updateGUI(final CharacterSnapshot cs, final CharacterPower cp) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
@@ -850,26 +890,26 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				}
 				labelBootsValue.setText(cs.getBoots().toString());
 
-				double minDmg = Math.round(cs.getCp().calculateMinDamage() * 100.0) / 100.0;
-				double maxDmg = Math.round(cs.getCp().calculateMaxDamage() * 100.0) / 100.0;
+				double minDmg = Math.round(cp.calculateMinDamage() * 100.0) / 100.0;
+				double maxDmg = Math.round(cp.calculateMaxDamage() * 100.0) / 100.0;
 
 				labelMinDamage.setText(String.valueOf(minDmg));
 				labelMaxDamage.setText(String.valueOf(maxDmg));
 				labelMedianDamage.setText(String.valueOf((maxDmg + minDmg) / 2.00));
-				labelHP.setText(String.valueOf(Math.round(cs.getCp().calculateHP())));
-				labelArmor.setText(String.valueOf(Math.round(cs.getCp().calculateArmor())));
-				labelCriticalHit.setText(String.valueOf(Math.round(cs.getCp().calculateCrit() * 100.0) / 100.0) + "%");
+				labelHP.setText(String.valueOf(Math.round(cp.calculateHP())));
+				labelArmor.setText(String.valueOf(Math.round(cp.calculateArmor())));
+				labelCriticalHit.setText(String.valueOf(Math.round(cp.calculateCrit() * 100.0) / 100.0) + "%");
 				labelOffenseIndex
-						.setText(String.valueOf(Math.round(cs.getCp().calculateEffectiveDamage() * 100.0) / 100.0));
-				labelResistance.setText(String.valueOf(Math.round(cs.getCp().calculateResist())));
+						.setText(String.valueOf(Math.round(cp.calculateEffectiveDamage() * 100.0) / 100.0));
+				labelResistance.setText(String.valueOf(Math.round(cp.calculateResist())));
 				labelCriticalDamage
-						.setText(String.valueOf(Math.round((cs.getCp().getCd() + 200) * 100.0) / 100.0) + "%");
-				double attackSpeed = 0.83333333 + cs.getCp().getAspeed() / 100.0 * 0.83333333;
+						.setText(String.valueOf(Math.round((cp.getCd() + 200) * 100.0) / 100.0) + "%");
+				double attackSpeed = 0.83333333 + cp.getAspeed() / 100.0 * 0.83333333;
 				System.out.println(attackSpeed);
 				labelAttackSpeed.setText(String
-						.valueOf(Math.round((0.83333333 + cs.getCp().getAspeed() / 100.0 * 0.83333333) * 100.0) / 100.0)
+						.valueOf(Math.round((0.83333333 + cp.getAspeed() / 100.0 * 0.83333333) * 100.0) / 100.0)
 						+ " ps");
-				labelTravelSpeed.setText(String.valueOf(Math.round(cs.getCp().getTspeed() * 100.0) / 100.0) + "%");
+				labelTravelSpeed.setText(String.valueOf(Math.round(cp.getTspeed() * 100.0) / 100.0) + "%");
 
 				progressBar.setVisible(false);
 				progressLabel.setText("Calculation completed");

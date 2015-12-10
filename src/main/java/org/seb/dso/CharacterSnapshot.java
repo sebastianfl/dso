@@ -201,7 +201,7 @@ public class CharacterSnapshot implements Serializable {
 	 * @return
 	 */
 	@Deprecated
-	private CharacterPower getCharacterPowerCopy() {
+	public CharacterPower getCharacterPowerCopy() {
 		return new CharacterPower(this.getCp().getDmg(), this.getCp().getCrit(), this.getCp().getHp(),
 				this.getCp().getArmor(), this.getCp().getResist(), this.getCp().getCd(), this.getCp().getMindmg(),
 				this.getCp().getMaxdmg(), this.getCp().getPdmg(), this.getCp().getPcrit(), this.getCp().getPhp(),
@@ -364,7 +364,7 @@ public class CharacterSnapshot implements Serializable {
 
 	}
 
-	public void processSets() {
+	public void processSets() throws Exception {
 		List<Item> list = this.getItemsAsList();
 		List<Modifier> mods = new ArrayList<Modifier>();
 		SetConfig cs = SetConfig.getSetConfig();
@@ -377,7 +377,11 @@ public class CharacterSnapshot implements Serializable {
 				} else {
 					sets.put(setName, 1);
 				}
-				Modifier[] m = cs.getSetMap().get(setName).get(sets.get(setName));
+				Map<Integer, Modifier[]> map = cs.getSetMap().get(setName);
+				if (null == map ){
+					throw new Exception("Set: " + setName + " is not properly configured. Check the property file");
+				}
+				Modifier[] m = map.get(sets.get(setName));
 				if (null != m)
 					mods.addAll(Arrays.asList(m));
 			}

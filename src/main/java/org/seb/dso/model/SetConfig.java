@@ -34,6 +34,9 @@ public class SetConfig {
 		return sc;
 	}
 
+	public void reinitialize(){
+		init();
+	} 
 	private void init() {
 		String setList = PropertyManager.getPropertyManager().getProperty(Constants.SET_LIST);
 		String[] sets = setList.split(",");
@@ -42,7 +45,7 @@ public class SetConfig {
 			String string = sets[i];
 			Map<Integer, Modifier[]> map = new HashMap<Integer, Modifier[]>();
 			setMap.put(string, map);
-			for (int j = 2; j < 5; j++) {
+			for (int j = 2; j < 6; j++) {
 				String tmp = "set.bonus." + string + "." + j;
 				String modstr = PropertyManager.getPropertyManager().getProperty(tmp);
 				if (null == modstr)
