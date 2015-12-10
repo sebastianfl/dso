@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Item implements Serializable {
+	public enum Type {
+		AMULET, BELT, CLOAK, RING, CRYSTAL, MAINHAND, TWOHAND, OFFHAND, HELMET, PAULDRONS, TORSO, GLOVES, BOOTS;
+	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -26,12 +29,12 @@ public class Item implements Serializable {
 		this.itemSet = itemSet;
 	}
 
-	public String getItemType() {
+	public Type getItemType() {
 		return itemType;
 	}
 
-	public void setItemType(String itemType) {
-		this.itemType = itemType;
+	public void setItemType(Type t) {
+		this.itemType = t;
 	}
 
 	private List<Modifier> mods;
@@ -57,5 +60,5 @@ public class Item implements Serializable {
 	}
 
 	private String itemSet;
-	private String itemType;
+	private Type itemType;
 }

@@ -56,7 +56,6 @@ import org.seb.dso.util.ItemUtils;
 import org.seb.dso.util.PropertyManager;
 
 import net.miginfocom.swing.MigLayout;
-import sun.misc.GC;
 
 /**
  * TODO Fix all 1000+ checkstyle warnings TODO Constants TODO L10N/I18N
@@ -733,7 +732,6 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			updateProgress(i, bestSnapshot);
 		}
 		updateGUI(bestSnapshot);
-		System.gc();
 		fLogger.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
 	}
 

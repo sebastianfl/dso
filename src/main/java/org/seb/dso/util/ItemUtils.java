@@ -15,7 +15,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.seb.dso.CharacterSnapshot;
 import org.seb.dso.Inventory;
 import org.seb.dso.model.Item;
-import org.seb.dso.model.ItemType;
+import org.seb.dso.model.Item.Type;
 import org.seb.dso.model.Modifier;
 
 public class ItemUtils {
@@ -50,7 +50,52 @@ public class ItemUtils {
 
 		Iterator<String> iter = record.iterator();
 		String modText = iter.next();
-		item.setItemType(modText);
+		Item.Type t = null;
+		switch (modText.toLowerCase()) {
+		case "ring":
+			t = Type.RING;
+			break;
+		case "amulet":
+			t = Type.AMULET;
+			break;
+		case "belt":
+			t = Type.BELT;
+			break;
+		case "cloak":
+			t = Type.CLOAK;
+			break;
+		case "crystal":
+			t = Type.CRYSTAL;
+			break;
+		case "adornment":
+			t = Type.CRYSTAL;
+			break;
+		case "twohand":
+			t = Type.TWOHAND;
+			break;
+		case "mainhand":
+			t = Type.MAINHAND;
+			break;
+		case "offhand":
+			t = Type.OFFHAND;
+			break;
+		case "helmet":
+			t = Type.HELMET;
+			break;
+		case "pauldrons":
+			t = Type.PAULDRONS;
+			break;
+		case "torso":
+			t = Type.TORSO;
+			break;
+		case "gloves":
+			t = Type.GLOVES;
+			break;
+		case "boots":
+			t = Type.BOOTS;
+			break;
+		}
+		item.setItemType(t);
 
 		modText = iter.next();
 		item.setItemSet(modText);
@@ -85,44 +130,44 @@ public class ItemUtils {
 		Inventory inv = new Inventory();
 		for (Iterator<Item> iterator = items.iterator(); iterator.hasNext();) {
 			Item item = iterator.next();
-			switch (item.getItemType().toLowerCase()) {
-			case ItemType.AMULET:
+			switch (item.getItemType()) {
+			case AMULET:
 				inv.getAmulets().add(item);
 				break;
-			case ItemType.BELT:
+			case BELT:
 				inv.getBelts().add(item);
 				break;
-			case ItemType.CLOAK:
+			case CLOAK:
 				inv.getCloaks().add(item);
 				break;
-			case ItemType.RING:
+			case RING:
 				inv.getRings().add(item);
 				break;
-			case ItemType.CRYSTAL:
+			case CRYSTAL:
 				inv.getCrystals().add(item);
 				break;
-			case ItemType.MAINHAND:
+			case MAINHAND:
 				inv.getMainhands().add(item);
 				break;
-			case ItemType.TWOHAND:
+			case TWOHAND:
 				inv.getTwohands().add(item);
 				break;
-			case ItemType.OFFHAND:
+			case OFFHAND:
 				inv.getOffhands().add(item);
 				break;
-			case ItemType.HELMET:
+			case HELMET:
 				inv.getHelmets().add(item);
 				break;
-			case ItemType.PAULDRONS:
+			case PAULDRONS:
 				inv.getPauldrons().add(item);
 				break;
-			case ItemType.TORSO:
+			case TORSO:
 				inv.getTorsos().add(item);
 				break;
-			case ItemType.GLOVES:
+			case GLOVES:
 				inv.getGloves().add(item);
 				break;
-			case ItemType.BOOTS:
+			case BOOTS:
 				inv.getBoots().add(item);
 				break;
 			}
