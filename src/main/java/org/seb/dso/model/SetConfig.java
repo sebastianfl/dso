@@ -6,6 +6,12 @@ import java.util.Map;
 import org.seb.dso.util.Constants;
 import org.seb.dso.util.PropertyManager;
 
+/**
+ * TODO could be different for different classes
+ * 
+ * @author sebastian
+ *
+ */
 public class SetConfig {
 
 	private static SetConfig sc = new SetConfig();
@@ -48,8 +54,12 @@ public class SetConfig {
 					String[] m = mod.split(":");
 					modifiers[k] = new Modifier();
 					modifiers[k].setType(m[0]);
-					modifiers[k].setValue(m[1]);
-
+					if (m[1].contains("%")) {
+						modifiers[k].setValue(Double.valueOf(m[1].substring(0, m[1].length() - 1)));
+						modifiers[k].setAbsolute(false);
+					} else {
+						modifiers[k].setValue(Double.valueOf(m[1]));
+					}
 				}
 				map.put(j, modifiers);
 			}

@@ -1,7 +1,6 @@
 package org.seb.dso;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +14,7 @@ import org.seb.dso.util.ItemUtils;
  */
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 
 		// SetConfig sc = new SetConfig();
 		Collection<Item> items = ItemUtils.getItems(new File("items.csv"));

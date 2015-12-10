@@ -1,6 +1,8 @@
 package org.seb.dso.model;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
 import org.seb.dso.util.Constants;
 import org.seb.dso.util.PropertyManager;
@@ -267,7 +269,8 @@ public class CharacterPower implements Serializable {
 		wmax += this.getCrit();
 		wmax += wmax * this.getPcrit() / 100;
 
-		wmax = (wmax * 100 / Integer.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_CRITICAL)));
+		wmax = (wmax * 100
+				/ Integer.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_CRITICAL)));
 		if (wmax > 80)
 			return 80;
 		return wmax;
@@ -310,6 +313,83 @@ public class CharacterPower implements Serializable {
 		double cd = (this.getCd() / 100) + 2;
 
 		return (1 - crit) * mediandmg + crit * cd * mediandmg;
+	}
+
+	/**
+	 * Processes the list of modifiers and updates the corresponding values of
+	 * the Snapshot Object.
+	 * 
+	 * @param mods
+	 */
+	public void processModifiers(List<Modifier> mods) {
+		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
+			Modifier modifier = (Modifier) iterator2.next();
+			Double ds = modifier.getValue();
+			switch (modifier.getType()) {
+			case Mod.DAMAGE:
+				if (modifier.isAbsolute()) {
+					this.setDmg(this.getDmg() + ds);
+				} else {
+					this.setPdmg(this.getPdmg() + ds);
+				}
+				break;
+			case Mod.MAXIMUM_DAMAGE:
+				if (modifier.isAbsolute()) {
+					this.setMaxdmg(this.getMaxdmg() + ds);
+				} else {
+					this.setPmaxdmg(this.getPmaxdmg() + ds);
+				}
+				break;
+			case Mod.CRITICAL_DAMAGE:
+				this.setCd(this.getCd() + ds);
+				break;
+			case Mod.ATTACK_SPEED:
+				this.setAspeed(this.getAspeed() + ds);
+				break;
+			case Mod.TRAVEL_SPEED:
+				this.setTspeed(this.getTspeed() + ds);
+				break;
+			case Mod.ARMOR:
+				if (modifier.isAbsolute()) {
+					this.setArmor(this.getArmor() + ds);
+				} else {
+					this.setParmor(this.getParmor() + ds);
+				}
+				break;
+			case Mod.HP:
+				if (modifier.isAbsolute()) {
+					this.setHp(this.getHp() + ds);
+				} else {
+					this.setPhp(this.getPhp() + ds);
+				}
+				break;
+			case Mod.RESIST:
+				if (modifier.isAbsolute()) {
+					this.setResist(this.getResist() + ds);
+				} else {
+					this.setPresist(this.getPresist() + ds);
+				}
+				break;
+			case Mod.CRITICAL_HIT:
+				if (modifier.isAbsolute()) {
+					this.setCrit(this.getCrit() + ds);
+				} else {
+					this.setPcrit(this.getPcrit() + ds);
+				}
+				break;
+			case Mod.WEAPON_DAMAGE:
+				if (modifier.isAbsolute()) {
+					this.setWdmg(this.getWdmg() + ds);
+				} else {
+					this.setPwdmg(this.getPwdmg() + ds);
+				}
+				break;
+			case Mod.EXTRA_WEAPON_DMG:
+				this.setPwde(this.getPwde() + ds);
+				break;
+
+			}
+		}
 	}
 
 	@Override

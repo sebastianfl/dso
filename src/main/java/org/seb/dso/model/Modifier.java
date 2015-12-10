@@ -7,23 +7,39 @@ public class Modifier implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getValue() {
+
+	public Double getValue() {
 		return value;
 	}
-	public void setValue(String value) {
+
+	public void setValue(Double value) {
 		this.value = value;
 	}
+
+	public synchronized boolean isAbsolute() {
+		return isAbsolute;
+	}
+
+	public synchronized void setAbsolute(boolean isAbsolute) {
+		this.isAbsolute = isAbsolute;
+	}
+
 	private String type;
-	private String value;
+	private Double value;
+	// TODO Consider polymorphism
+	private boolean isAbsolute = true;
+
 	@Override
 	public String toString() {
-		return type + "=" + value;
+		return type + "=" + value + (isAbsolute ? "" : "%");
 	}
 
 }

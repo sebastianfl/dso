@@ -23,6 +23,8 @@ public class CharacterSnapshot implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private CharacterPower cp = new CharacterPower();
+
 	private Item amulet;
 	private Item belt;
 	private Item cloak;
@@ -84,9 +86,10 @@ public class CharacterSnapshot implements Serializable {
 	}
 
 	/**
-	 * Sets the weapon adornment. Test javadoc for checkstyle 
+	 * Sets the weapon adornment. Test javadoc for checkstyle
 	 * 
-	 * @param c Item to set
+	 * @param c
+	 *            Item to set
 	 */
 	public final void setCrystal(final Item c) {
 		this.crystal = c;
@@ -210,24 +213,24 @@ public class CharacterSnapshot implements Serializable {
 
 	public List<Modifier> getModifiersAsList() {
 		List<Modifier> list = new ArrayList<Modifier>();
-		list.addAll(this.getAmulet().getModifiersAsList());
-		list.addAll(this.getBelt().getModifiersAsList());
-		list.addAll(this.getCloak().getModifiersAsList());
-		list.addAll(this.getRing1().getModifiersAsList());
-		list.addAll(this.getRing2().getModifiersAsList());
-		list.addAll(this.getCrystal().getModifiersAsList());
-		list.addAll(this.getHelmet().getModifiersAsList());
-		list.addAll(this.getPauldrons().getModifiersAsList());
-		list.addAll(this.getTorso().getModifiersAsList());
-		list.addAll(this.getGloves().getModifiersAsList());
-		list.addAll(this.getBoots().getModifiersAsList());
+		list.addAll(this.getAmulet().getMods());
+		list.addAll(this.getBelt().getMods());
+		list.addAll(this.getCloak().getMods());
+		list.addAll(this.getRing1().getMods());
+		list.addAll(this.getRing2().getMods());
+		list.addAll(this.getCrystal().getMods());
+		list.addAll(this.getHelmet().getMods());
+		list.addAll(this.getPauldrons().getMods());
+		list.addAll(this.getTorso().getMods());
+		list.addAll(this.getGloves().getMods());
+		list.addAll(this.getBoots().getMods());
 
 		if (null != this.getMainhand())
-			list.addAll(this.getMainhand().getModifiersAsList());
+			list.addAll(this.getMainhand().getMods());
 		if (null != this.getTwohand())
-			list.addAll(this.getTwohand().getModifiersAsList());
+			list.addAll(this.getTwohand().getMods());
 		if (null != this.getOffhand())
-			list.addAll(this.getOffhand().getModifiersAsList());
+			list.addAll(this.getOffhand().getMods());
 
 		return list;
 	}
@@ -256,8 +259,6 @@ public class CharacterSnapshot implements Serializable {
 		return list;
 	}
 
-	private CharacterPower cp = new CharacterPower();
-
 	public CharacterPower getCp() {
 		return cp;
 	}
@@ -284,68 +285,68 @@ public class CharacterSnapshot implements Serializable {
 	public void processModifiers(List<Modifier> mods) {
 		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
 			Modifier modifier = (Modifier) iterator2.next();
-			String ds = modifier.getValue();
+			Double ds = modifier.getValue();
 			switch (modifier.getType()) {
 			case Mod.DAMAGE:
-				if (!ds.contains("%")) {
-					cp.setDmg(cp.getDmg() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setDmg(cp.getDmg() + ds);
 				} else {
-					cp.setPdmg(cp.getPdmg() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPdmg(cp.getPdmg() + ds);
 				}
 				break;
 			case Mod.MAXIMUM_DAMAGE:
-				if (!ds.contains("%")) {
-					cp.setMaxdmg(cp.getMaxdmg() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setMaxdmg(cp.getMaxdmg() + ds);
 				} else {
-					cp.setPmaxdmg(cp.getPmaxdmg() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPmaxdmg(cp.getPmaxdmg() + ds);
 				}
 				break;
 			case Mod.CRITICAL_DAMAGE:
-				cp.setCd(cp.getCd() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+				cp.setCd(cp.getCd() + ds);
 				break;
 			case Mod.ATTACK_SPEED:
-				cp.setAspeed(cp.getAspeed() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+				cp.setAspeed(cp.getAspeed() + ds);
 				break;
 			case Mod.TRAVEL_SPEED:
-				cp.setTspeed(cp.getTspeed() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+				cp.setTspeed(cp.getTspeed() + ds);
 				break;
 			case Mod.ARMOR:
-				if (!ds.contains("%")) {
-					cp.setArmor(cp.getArmor() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setArmor(cp.getArmor() + ds);
 				} else {
-					cp.setParmor(cp.getParmor() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setParmor(cp.getParmor() + ds);
 				}
 				break;
 			case Mod.HP:
-				if (!ds.contains("%")) {
-					cp.setHp(cp.getHp() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setHp(cp.getHp() + ds);
 				} else {
-					cp.setPhp(cp.getPhp() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPhp(cp.getPhp() + ds);
 				}
 				break;
 			case Mod.RESIST:
-				if (!ds.contains("%")) {
-					cp.setResist(cp.getResist() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setResist(cp.getResist() + ds);
 				} else {
-					cp.setPresist(cp.getPresist() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPresist(cp.getPresist() + ds);
 				}
 				break;
 			case Mod.CRITICAL_HIT:
-				if (!ds.contains("%")) {
-					cp.setCrit(cp.getCrit() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setCrit(cp.getCrit() + ds);
 				} else {
-					cp.setPcrit(cp.getPcrit() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPcrit(cp.getPcrit() + ds);
 				}
 				break;
 			case Mod.WEAPON_DAMAGE:
-				if (!ds.contains("%")) {
-					cp.setWdmg(cp.getWdmg() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setWdmg(cp.getWdmg() + ds);
 				} else {
-					cp.setPwdmg(cp.getPwdmg() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPwdmg(cp.getPwdmg() + ds);
 				}
 				break;
 			case Mod.EXTRA_WEAPON_DMG:
-				cp.setPwde(cp.getPwde() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+				cp.setPwde(cp.getPwde() + ds);
 				break;
 
 			}
@@ -372,62 +373,62 @@ public class CharacterSnapshot implements Serializable {
 		}
 		for (Iterator<Modifier> iterator = mods.iterator(); iterator.hasNext();) {
 			Modifier modifier = iterator.next();
-			String ds = modifier.getValue();
+			Double ds = modifier.getValue();
 			switch (modifier.getType()) {
 			case Mod.DAMAGE:
-				if (!ds.contains("%")) {
-					cp.setDmg(cp.getDmg() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setDmg(cp.getDmg() + ds);
 				} else {
-					cp.setPdmg(cp.getPdmg() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPdmg(cp.getPdmg() + ds);
 				}
 				break;
 			case Mod.MAXIMUM_DAMAGE:
-				if (!ds.contains("%")) {
-					cp.setMaxdmg(cp.getMaxdmg() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setMaxdmg(cp.getMaxdmg() + ds);
 				} else {
-					cp.setPmaxdmg(cp.getPmaxdmg() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPmaxdmg(cp.getPmaxdmg() + ds);
 				}
 				break;
 			case Mod.CRITICAL_DAMAGE:
-				cp.setCd(cp.getCd() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+				cp.setCd(cp.getCd() + ds);
 				break;
 			case Mod.ATTACK_SPEED:
-				cp.setAspeed(cp.getAspeed() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+				cp.setAspeed(cp.getAspeed() + ds);
 				break;
 			case Mod.TRAVEL_SPEED:
-				cp.setTspeed(cp.getTspeed() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+				cp.setTspeed(cp.getTspeed() + ds);
 				break;
 			case Mod.ARMOR:
-				if (!ds.contains("%")) {
-					cp.setArmor(cp.getArmor() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setArmor(cp.getArmor() + ds);
 				} else {
-					cp.setParmor(cp.getParmor() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setParmor(cp.getParmor() + ds);
 				}
 				break;
 			case Mod.HP:
-				if (!ds.contains("%")) {
-					cp.setHp(cp.getHp() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setHp(cp.getHp() + ds);
 				} else {
-					cp.setPhp(cp.getPhp() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPhp(cp.getPhp() + ds);
 				}
 				break;
 			case Mod.RESIST:
-				if (!ds.contains("%")) {
-					cp.setResist(cp.getResist() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setResist(cp.getResist() + ds);
 				} else {
-					cp.setPresist(cp.getPresist() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPresist(cp.getPresist() + ds);
 				}
 				break;
 			case Mod.CRITICAL_HIT:
-				if (!ds.contains("%")) {
-					cp.setCrit(cp.getCrit() + Double.valueOf(ds));
+				if (modifier.isAbsolute()) {
+					cp.setCrit(cp.getCrit() + ds);
 				} else {
-					cp.setPcrit(cp.getPcrit() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+					cp.setPcrit(cp.getPcrit() + ds);
 				}
 				break;
 
 			case Mod.EXTRA_WEAPON_DMG:
-				cp.setPwde(cp.getPwde() + Double.valueOf(ds.substring(0, ds.length() - 1)));
+				cp.setPwde(cp.getPwde() + ds);
 				break;
 			}
 

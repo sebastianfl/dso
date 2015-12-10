@@ -22,16 +22,17 @@ public class ItemUtils {
 
 	Collection<Item> itemList;
 
-	public static Collection<Item> getItems(File file) {
+	public static Collection<Item> getItems(File file) throws Exception {
 		List<Item> items = new ArrayList<Item>();
 
 		Reader in;
 		try {
 			in = new FileReader(file);
 			Iterable<CSVRecord> records;
-			records = CSVFormat.EXCEL.withHeader().parse(in);
+			records = CSVFormat.EXCEL.withHeader().withSkipHeaderRecord().withIgnoreEmptyLines()
+					.withAllowMissingColumnNames().parse(in);
 			for (CSVRecord record : records) {
-				items.add(recordToItem(record));
+				items.add(recordToItemNew(record));
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -44,55 +45,37 @@ public class ItemUtils {
 		return items;
 	}
 
-	private static Item recordToItem(CSVRecord record) {
+	private static Item recordToItemNew(CSVRecord record) throws Exception {
 		Item item = new Item();
 
-		String modText = record.get("Modifier1");
-		String[] vals = modText.split(":");
-		if (vals.length < 2) {
-			vals = new String[] { "", "" };
-		}
-		Modifier mod = new Modifier();
-		mod.setType(vals[0]);
-		mod.setValue(vals[1]);
-		item.setMod1(mod);
-
-		modText = record.get("Modifier2");
-		vals = modText.split(":");
-		if (vals.length < 2) {
-			vals = new String[] { "", "" };
-		}
-		mod = new Modifier();
-		mod.setType(vals[0]);
-		mod.setValue(vals[1]);
-		item.setMod2(mod);
-
-		modText = record.get("Modifier3");
-		vals = modText.split(":");
-		if (vals.length < 2) {
-			vals = new String[] { "", "" };
-		}
-		mod = new Modifier();
-		mod.setType(vals[0]);
-		mod.setValue(vals[1]);
-		item.setMod3(mod);
-
-		modText = record.get("Modifier4");
-		vals = modText.split(":");
-		if (vals.length < 2) {
-			vals = new String[] { "", "" };
-		}
-		mod = new Modifier();
-		mod.setType(vals[0]);
-		mod.setValue(vals[1]);
-		item.setMod4(mod);
-
-		modText = record.get("ItemType");
+		Iterator<String> iter = record.iterator();
+		String modText = iter.next();
 		item.setItemType(modText);
 
-		modText = record.get("SetName");
+		modText = iter.next();
 		item.setItemSet(modText);
 
+		while (iter.hasNext()) {
+			modText = iter.next();
+			if ("".equals(modText)) {
+				continue;
+			}
+			String[] vals = modText.split(":");
+			if (vals.length < 2) {
+				throw new Exception("Wrong Modifier");
+			}
+			Modifier mod = new Modifier();
+			mod.setType(vals[0]);
+
+			if (vals[1].contains("%")) {
+				mod.setValue(Double.valueOf(vals[1].substring(0, vals[1].length() - 1)));
+				mod.setAbsolute(false);
+			} else {
+				mod.setValue(Double.valueOf(vals[1]));
+			}
+
+			item.getMods().add(mod);
+		}
 		return item;
 
 	}
@@ -306,7 +289,14 @@ public class ItemUtils {
 			String[] modstr = jstr.split(":");
 			mods[j] = new Modifier();
 			mods[j].setType(modstr[0]);
-			mods[j].setValue(modstr[1]);
+
+			if (modstr[1].contains("%")) {
+				mods[j].setValue(Double.valueOf(modstr[1].substring(0, modstr[1].length() - 1)));
+				mods[j].setAbsolute(false);
+			} else {
+				mods[j].setValue(Double.valueOf(modstr[1]));
+			}
+
 		}
 		return mods;
 

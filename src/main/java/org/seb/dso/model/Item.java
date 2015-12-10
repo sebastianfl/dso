@@ -2,42 +2,16 @@ package org.seb.dso.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Item implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public Modifier getMod1() {
-		return mod1;
-	}
-
-	public void setMod1(Modifier mod1) {
-		this.mod1 = mod1;
-	}
-
-	public Modifier getMod2() {
-		return mod2;
-	}
-
-	public void setMod2(Modifier mod2) {
-		this.mod2 = mod2;
-	}
-
-	public Modifier getMod3() {
-		return mod3;
-	}
-
-	public void setMod3(Modifier mod3) {
-		this.mod3 = mod3;
-	}
-
-	public Modifier getMod4() {
-		return mod4;
-	}
-
-	public void setMod4(Modifier mod4) {
-		this.mod4 = mod4;
+	public Item() {
+		super();
+		mods = new ArrayList<Modifier>();
 	}
 
 	public boolean isSetItem() {
@@ -60,29 +34,28 @@ public class Item implements Serializable {
 		this.itemType = itemType;
 	}
 
-	private Modifier mod1;
-	private Modifier mod2;
-	private Modifier mod3;
-	private Modifier mod4;
-	private String itemSet;
-	private String itemType;
+	private List<Modifier> mods;
+
+	public synchronized List<Modifier> getMods() {
+		return mods;
+	}
+
+	public synchronized void setMods(List<Modifier> mods) {
+		this.mods = mods;
+	}
 
 	@Override
 	public String toString() {
-		return mod1 + ", " + mod2 + ", " + mod3 + ", " + mod4 + ", " + itemSet;
+		StringBuffer sb = new StringBuffer();
+		for (Iterator<Modifier> iterator = mods.iterator(); iterator.hasNext();) {
+			Modifier modifier = iterator.next();
+			sb.append(modifier);
+			sb.append(", ");
+		}
+		sb.append(itemSet);
+		return sb.toString();
 	}
 
-	public List<Modifier> getModifiersAsList() {
-		List<Modifier> list = new ArrayList<Modifier>();
-		if (null != this.mod1)
-			list.add(this.mod1);
-		if (null != this.mod2)
-			list.add(this.mod2);
-		if (null != this.mod3)
-			list.add(this.mod3);
-		if (null != this.mod4)
-			list.add(this.mod4);
-
-		return list;
-	}
+	private String itemSet;
+	private String itemType;
 }

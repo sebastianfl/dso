@@ -588,7 +588,15 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	 * Generates all possible snapshots given item list
 	 */
 	private void generateSnapshots() {
-		Collection<Item> items = ItemUtils.getItems(itemsFile);
+		Collection<Item> items;
+		try {
+			items = ItemUtils.getItems(itemsFile);
+		} catch (Exception e) {
+			this.progressLabel.setText(e.getMessage());
+			this.progressLabel.setVisible(true);
+			// TODO make it nice
+			return;
+		}
 		Inventory inv = ItemUtils.parseInventoryFromItems(items);
 
 		// Number of snapshots to be generated
@@ -636,11 +644,13 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		Modifier attack = new Modifier();
 		attack.setType(Mod.DAMAGE);
-		attack.setValue(String.valueOf(sliderAttack.getValue() * 2.0) + "%");
+		attack.setValue(sliderAttack.getValue() * 2.0);
+		attack.setAbsolute(false);
 
 		Modifier agility = new Modifier();
 		agility.setType(Mod.ATTACK_SPEED);
-		agility.setValue(String.valueOf(sliderAgility.getValue() * 1.6) + "%");
+		agility.setValue(sliderAgility.getValue() * 1.6);
+		attack.setAbsolute(false);
 
 		Modifier[] weaponDmg = null;
 		if (checkboxWeaponDamage.isSelected()) {
@@ -649,9 +659,11 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			weaponDmg[0] = new Modifier();
 			weaponDmg[1] = new Modifier();
 			weaponDmg[0].setType(Mod.EXTRA_WEAPON_DMG);
-			weaponDmg[0].setValue("50%");
+			weaponDmg[0].setValue(50.0);
+			weaponDmg[0].setAbsolute(false);
 			weaponDmg[1].setType(Mod.ATTACK_SPEED);
-			weaponDmg[1].setValue("-10%");
+			weaponDmg[1].setValue(-10.0);
+			weaponDmg[1].setAbsolute(false);
 		}
 		Modifier[] rage = null;
 		if (checkboxRage.isSelected()) {
@@ -660,26 +672,32 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			rage[0] = new Modifier();
 			rage[1] = new Modifier();
 			rage[0].setType(Mod.MANA);
-			rage[0].setValue("25%");
+			rage[0].setValue(25.0);
+			rage[0].setAbsolute(false);
+
 			rage[1].setType(Mod.TRAVEL_SPEED);
-			rage[1].setValue("-5%");
+			rage[1].setValue(-5.0);
+			rage[1].setAbsolute(false);
 		}
 
-		String v = "0";
-		if (radioGreen.isSelected())
-			v = "50";
-		else if (radioBlue.isSelected())
-			v = "100%";
-		else if (radioPurple.isSelected())
-			v = "200%";
-		else if (radioRed.isSelected())
-			v = "300%";
 		Modifier essence = new Modifier();
 		essence.setType(Mod.DAMAGE);
+		essence.setAbsolute(false);
+		Double v = 0.0;
+		if (radioGreen.isSelected()) {
+			v = 50.0;
+			essence.setAbsolute(true);
+		} else if (radioBlue.isSelected()) {
+			v = 100.0;
+		} else if (radioPurple.isSelected()) {
+			v = 200.0;
+		} else if (radioRed.isSelected()) {
+			v = 300.0;
+		}
 		essence.setValue(v);
 
 		fLogger.log(Level.INFO, "Essence in use:" + v);
-		
+
 		Modifier[] additionalMods = { attack, agility, essence };
 
 		double max = 0;
@@ -848,9 +866,9 @@ public class OptimizerApp extends JPanel implements ActionListener {
 						.setText(String.valueOf(Math.round((cs.getCp().getCd() + 200) * 100.0) / 100.0) + "%");
 				double attackSpeed = 0.83333333 + cs.getCp().getAspeed() / 100.0 * 0.83333333;
 				System.out.println(attackSpeed);
-				labelAttackSpeed.setText(
-						String.valueOf(Math.round((0.83333333 + cs.getCp().getAspeed() / 100.0 * 0.83333333) * 100.0) / 100.0)
-								+ " ps");
+				labelAttackSpeed.setText(String
+						.valueOf(Math.round((0.83333333 + cs.getCp().getAspeed() / 100.0 * 0.83333333) * 100.0) / 100.0)
+						+ " ps");
 				labelTravelSpeed.setText(String.valueOf(Math.round(cs.getCp().getTspeed() * 100.0) / 100.0) + "%");
 
 				progressBar.setVisible(false);

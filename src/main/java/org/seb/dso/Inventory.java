@@ -2,6 +2,7 @@ package org.seb.dso;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.seb.dso.model.Item;
 
@@ -25,6 +26,49 @@ public class Inventory {
 	private Collection<Item> helmets;
 	private Collection<Item> pauldrons;
 	private Collection<Item> torsos;
+	private Collection<Item> gloves;
+	private Collection<Item> boots;
+
+	private List<Collection<Item>> itemMatrix;
+
+	public synchronized List<Collection<Item>> getItemMatrix() {
+		return itemMatrix;
+	}
+
+	public synchronized void setItemMatrix(List<Collection<Item>> itemMatrix) {
+		this.itemMatrix = itemMatrix;
+	}
+
+	/**
+	 * Compiles collection of collections of items for either two handed or one
+	 * handed builds. This martix will replace the list of all item combinations
+	 * for better performance
+	 * 
+	 * @param isTwohanded
+	 *            boolean - determines whether user wants to use 2 handed or 1
+	 *            handed setups
+	 */
+	public void setupItemMatrix(boolean isTwohanded) {
+		this.itemMatrix = new ArrayList<Collection<Item>>();
+		this.itemMatrix.add(this.amulets);
+		this.itemMatrix.add(this.cloaks);
+		this.itemMatrix.add(this.belts);
+		this.itemMatrix.add(this.rings);
+		this.itemMatrix.add(this.rings);
+		this.itemMatrix.add(this.crystals);
+		this.itemMatrix.add(this.helmets);
+		this.itemMatrix.add(this.pauldrons);
+		this.itemMatrix.add(this.torsos);
+		this.itemMatrix.add(this.gloves);
+		this.itemMatrix.add(this.boots);
+		if (isTwohanded) {
+			this.itemMatrix.add(this.twohands);
+		} else {
+			this.itemMatrix.add(this.mainhands);
+			this.itemMatrix.add(this.offhands);
+		}
+
+	}
 
 	public Collection<Item> getAmulets() {
 		return amulets;
@@ -130,9 +174,6 @@ public class Inventory {
 		this.boots = boots;
 	}
 
-	private Collection<Item> gloves;
-	private Collection<Item> boots;
-
 	public Inventory() {
 		super();
 		this.rings = new ArrayList<Item>();
@@ -148,6 +189,7 @@ public class Inventory {
 		this.gloves = new ArrayList<Item>();
 		this.cloaks = new ArrayList<Item>();
 		this.boots = new ArrayList<Item>();
+
 	}
 
 	@Override
