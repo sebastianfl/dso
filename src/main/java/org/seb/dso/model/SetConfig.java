@@ -53,11 +53,12 @@ public class SetConfig {
 					String mod = mods[k];
 					String[] m = mod.split(":");
 					modifiers[k] = new Modifier();
-					modifiers[k].setType(m[0]);
 					if (m[1].contains("%")) {
+						modifiers[k].setTypeByCode(m[0],false);
 						modifiers[k].setValue(Double.valueOf(m[1].substring(0, m[1].length() - 1)));
 						modifiers[k].setAbsolute(false);
 					} else {
+						modifiers[k].setTypeByCode(m[0],true);
 						modifiers[k].setValue(Double.valueOf(m[1]));
 					}
 				}

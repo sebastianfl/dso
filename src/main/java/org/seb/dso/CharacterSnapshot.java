@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.seb.dso.model.CharacterPower;
 import org.seb.dso.model.Item;
-import org.seb.dso.model.Mod;
 import org.seb.dso.model.Modifier;
 import org.seb.dso.model.SetConfig;
 
@@ -287,70 +286,82 @@ public class CharacterSnapshot implements Serializable {
 			Modifier modifier = (Modifier) iterator2.next();
 			Double ds = modifier.getValue();
 			switch (modifier.getType()) {
-			case Mod.DAMAGE:
-				if (modifier.isAbsolute()) {
-					cp.setDmg(cp.getDmg() + ds);
-				} else {
-					cp.setPdmg(cp.getPdmg() + ds);
-				}
+			case DAMAGE: {
+				cp.setDmg(cp.getDmg() + ds);
 				break;
-			case Mod.MAXIMUM_DAMAGE:
-				if (modifier.isAbsolute()) {
-					cp.setMaxdmg(cp.getMaxdmg() + ds);
-				} else {
-					cp.setPmaxdmg(cp.getPmaxdmg() + ds);
-				}
+			}
+			case PDAMAGE: {
+				cp.setPdmg(cp.getPdmg() + ds);
 				break;
-			case Mod.CRITICAL_DAMAGE:
+			}
+			case MAXIMUM_DAMAGE: {
+				cp.setMaxdmg(cp.getMaxdmg() + ds);
+				break;
+			}
+			case PMAXIMUM_DAMAGE: {
+				cp.setPmaxdmg(cp.getPmaxdmg() + ds);
+				break;
+			}
+			case PCRITICAL_DAMAGE: {
 				cp.setCd(cp.getCd() + ds);
 				break;
-			case Mod.ATTACK_SPEED:
+			}
+			case PATTACK_SPEED: {
 				cp.setAspeed(cp.getAspeed() + ds);
 				break;
-			case Mod.TRAVEL_SPEED:
+			}
+			case PTRAVEL_SPEED: {
 				cp.setTspeed(cp.getTspeed() + ds);
 				break;
-			case Mod.ARMOR:
-				if (modifier.isAbsolute()) {
-					cp.setArmor(cp.getArmor() + ds);
-				} else {
-					cp.setParmor(cp.getParmor() + ds);
-				}
+			}
+			case ARMOR: {
+				cp.setArmor(cp.getArmor() + ds);
 				break;
-			case Mod.HP:
-				if (modifier.isAbsolute()) {
-					cp.setHp(cp.getHp() + ds);
-				} else {
-					cp.setPhp(cp.getPhp() + ds);
-				}
+			}
+			case PARMOR: {
+				cp.setParmor(cp.getParmor() + ds);
 				break;
-			case Mod.RESIST:
-				if (modifier.isAbsolute()) {
-					cp.setResist(cp.getResist() + ds);
-				} else {
-					cp.setPresist(cp.getPresist() + ds);
-				}
+			}
+			case HP: {
+				cp.setHp(cp.getHp() + ds);
 				break;
-			case Mod.CRITICAL_HIT:
-				if (modifier.isAbsolute()) {
-					cp.setCrit(cp.getCrit() + ds);
-				} else {
-					cp.setPcrit(cp.getPcrit() + ds);
-				}
+			}
+			case PHP: {
+				cp.setPhp(cp.getPhp() + ds);
 				break;
-			case Mod.WEAPON_DAMAGE:
-				if (modifier.isAbsolute()) {
-					cp.setWdmg(cp.getWdmg() + ds);
-				} else {
-					cp.setPwdmg(cp.getPwdmg() + ds);
-				}
+			}
+			case RESIST: {
+				cp.setResist(cp.getResist() + ds);
 				break;
-			case Mod.EXTRA_WEAPON_DMG:
+			}
+			case PRESIST: {
+				cp.setPresist(cp.getPresist() + ds);
+				break;
+			}
+			case CRITICAL_HIT: {
+				cp.setCrit(cp.getCrit() + ds);
+				break;
+			}
+			case PCRITICAL_HIT: {
+				cp.setPcrit(cp.getPcrit() + ds);
+				break;
+			}
+			case WEAPON_DAMAGE: {
+				cp.setWdmg(cp.getWdmg() + ds);
+				break;
+			}
+			case PWEAPON_DAMAGE: {
+				cp.setPwdmg(cp.getPwdmg() + ds);
+				break;
+			}
+			case PEXTRA_WEAPON_DMG: {
 				cp.setPwde(cp.getPwde() + ds);
 				break;
+			}
 
 			}
 		}
+
 	}
 
 	public void processSets() {
@@ -372,66 +383,82 @@ public class CharacterSnapshot implements Serializable {
 			}
 		}
 		for (Iterator<Modifier> iterator = mods.iterator(); iterator.hasNext();) {
-			Modifier modifier = iterator.next();
+			Modifier modifier = (Modifier) iterator.next();
 			Double ds = modifier.getValue();
 			switch (modifier.getType()) {
-			case Mod.DAMAGE:
-				if (modifier.isAbsolute()) {
-					cp.setDmg(cp.getDmg() + ds);
-				} else {
-					cp.setPdmg(cp.getPdmg() + ds);
-				}
+			case DAMAGE: {
+				cp.setDmg(cp.getDmg() + ds);
 				break;
-			case Mod.MAXIMUM_DAMAGE:
-				if (modifier.isAbsolute()) {
-					cp.setMaxdmg(cp.getMaxdmg() + ds);
-				} else {
-					cp.setPmaxdmg(cp.getPmaxdmg() + ds);
-				}
+			}
+			case PDAMAGE: {
+				cp.setPdmg(cp.getPdmg() + ds);
 				break;
-			case Mod.CRITICAL_DAMAGE:
+			}
+			case MAXIMUM_DAMAGE: {
+				cp.setMaxdmg(cp.getMaxdmg() + ds);
+				break;
+			}
+			case PMAXIMUM_DAMAGE: {
+				cp.setPmaxdmg(cp.getPmaxdmg() + ds);
+				break;
+			}
+			case PCRITICAL_DAMAGE: {
 				cp.setCd(cp.getCd() + ds);
 				break;
-			case Mod.ATTACK_SPEED:
+			}
+			case PATTACK_SPEED: {
 				cp.setAspeed(cp.getAspeed() + ds);
 				break;
-			case Mod.TRAVEL_SPEED:
+			}
+			case PTRAVEL_SPEED: {
 				cp.setTspeed(cp.getTspeed() + ds);
 				break;
-			case Mod.ARMOR:
-				if (modifier.isAbsolute()) {
-					cp.setArmor(cp.getArmor() + ds);
-				} else {
-					cp.setParmor(cp.getParmor() + ds);
-				}
+			}
+			case ARMOR: {
+				cp.setArmor(cp.getArmor() + ds);
 				break;
-			case Mod.HP:
-				if (modifier.isAbsolute()) {
-					cp.setHp(cp.getHp() + ds);
-				} else {
-					cp.setPhp(cp.getPhp() + ds);
-				}
+			}
+			case PARMOR: {
+				cp.setParmor(cp.getParmor() + ds);
 				break;
-			case Mod.RESIST:
-				if (modifier.isAbsolute()) {
-					cp.setResist(cp.getResist() + ds);
-				} else {
-					cp.setPresist(cp.getPresist() + ds);
-				}
+			}
+			case HP: {
+				cp.setHp(cp.getHp() + ds);
 				break;
-			case Mod.CRITICAL_HIT:
-				if (modifier.isAbsolute()) {
-					cp.setCrit(cp.getCrit() + ds);
-				} else {
-					cp.setPcrit(cp.getPcrit() + ds);
-				}
+			}
+			case PHP: {
+				cp.setPhp(cp.getPhp() + ds);
 				break;
-
-			case Mod.EXTRA_WEAPON_DMG:
+			}
+			case RESIST: {
+				cp.setResist(cp.getResist() + ds);
+				break;
+			}
+			case PRESIST: {
+				cp.setPresist(cp.getPresist() + ds);
+				break;
+			}
+			case CRITICAL_HIT: {
+				cp.setCrit(cp.getCrit() + ds);
+				break;
+			}
+			case PCRITICAL_HIT: {
+				cp.setPcrit(cp.getPcrit() + ds);
+				break;
+			}
+			case WEAPON_DAMAGE: {
+				cp.setWdmg(cp.getWdmg() + ds);
+				break;
+			}
+			case PWEAPON_DAMAGE: {
+				cp.setPwdmg(cp.getPwdmg() + ds);
+				break;
+			}
+			case PEXTRA_WEAPON_DMG: {
 				cp.setPwde(cp.getPwde() + ds);
 				break;
 			}
-
+			}
 		}
 	}
 }

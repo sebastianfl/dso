@@ -322,71 +322,82 @@ public class CharacterPower implements Serializable {
 	 * @param mods
 	 */
 	public void processModifiers(List<Modifier> mods) {
-		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
-			Modifier modifier = (Modifier) iterator2.next();
+		for (Iterator<Modifier> iterator = mods.iterator(); iterator.hasNext();) {
+			Modifier modifier = (Modifier) iterator.next();
 			Double ds = modifier.getValue();
 			switch (modifier.getType()) {
-			case Mod.DAMAGE:
-				if (modifier.isAbsolute()) {
-					this.setDmg(this.getDmg() + ds);
-				} else {
-					this.setPdmg(this.getPdmg() + ds);
-				}
+			case DAMAGE: {
+				this.setDmg(this.getDmg() + ds);
 				break;
-			case Mod.MAXIMUM_DAMAGE:
-				if (modifier.isAbsolute()) {
-					this.setMaxdmg(this.getMaxdmg() + ds);
-				} else {
-					this.setPmaxdmg(this.getPmaxdmg() + ds);
-				}
+			}
+			case PDAMAGE: {
+				this.setPdmg(this.getPdmg() + ds);
 				break;
-			case Mod.CRITICAL_DAMAGE:
+			}
+			case MAXIMUM_DAMAGE: {
+				this.setMaxdmg(this.getMaxdmg() + ds);
+				break;
+			}
+			case PMAXIMUM_DAMAGE: {
+				this.setPmaxdmg(this.getPmaxdmg() + ds);
+				break;
+			}
+			case PCRITICAL_DAMAGE: {
 				this.setCd(this.getCd() + ds);
 				break;
-			case Mod.ATTACK_SPEED:
+			}
+			case PATTACK_SPEED: {
 				this.setAspeed(this.getAspeed() + ds);
 				break;
-			case Mod.TRAVEL_SPEED:
+			}
+			case PTRAVEL_SPEED: {
 				this.setTspeed(this.getTspeed() + ds);
 				break;
-			case Mod.ARMOR:
-				if (modifier.isAbsolute()) {
-					this.setArmor(this.getArmor() + ds);
-				} else {
-					this.setParmor(this.getParmor() + ds);
-				}
+			}
+			case ARMOR: {
+				this.setArmor(this.getArmor() + ds);
 				break;
-			case Mod.HP:
-				if (modifier.isAbsolute()) {
-					this.setHp(this.getHp() + ds);
-				} else {
-					this.setPhp(this.getPhp() + ds);
-				}
+			}
+			case PARMOR: {
+				this.setParmor(this.getParmor() + ds);
 				break;
-			case Mod.RESIST:
-				if (modifier.isAbsolute()) {
-					this.setResist(this.getResist() + ds);
-				} else {
-					this.setPresist(this.getPresist() + ds);
-				}
+			}
+			case HP: {
+				this.setHp(this.getHp() + ds);
 				break;
-			case Mod.CRITICAL_HIT:
-				if (modifier.isAbsolute()) {
-					this.setCrit(this.getCrit() + ds);
-				} else {
-					this.setPcrit(this.getPcrit() + ds);
-				}
+			}
+			case PHP: {
+				this.setPhp(this.getPhp() + ds);
 				break;
-			case Mod.WEAPON_DAMAGE:
-				if (modifier.isAbsolute()) {
-					this.setWdmg(this.getWdmg() + ds);
-				} else {
-					this.setPwdmg(this.getPwdmg() + ds);
-				}
+			}
+			case RESIST: {
+				this.setResist(this.getResist() + ds);
 				break;
-			case Mod.EXTRA_WEAPON_DMG:
+			}
+			case PRESIST: {
+				this.setPresist(this.getPresist() + ds);
+				break;
+			}
+			case CRITICAL_HIT: {
+				this.setCrit(this.getCrit() + ds);
+				break;
+			}
+			case PCRITICAL_HIT: {
+				this.setPcrit(this.getPcrit() + ds);
+				break;
+			}
+			case WEAPON_DAMAGE: {
+				this.setWdmg(this.getWdmg() + ds);
+				break;
+			}
+			case PWEAPON_DAMAGE: {
+				this.setPwdmg(this.getPwdmg() + ds);
+				break;
+			}
+			case PEXTRA_WEAPON_DMG: {
 				this.setPwde(this.getPwde() + ds);
 				break;
+			}
 
 			}
 		}

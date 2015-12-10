@@ -65,12 +65,13 @@ public class ItemUtils {
 				throw new Exception("Wrong Modifier");
 			}
 			Modifier mod = new Modifier();
-			mod.setType(vals[0]);
 
 			if (vals[1].contains("%")) {
+				mod.setTypeByCode(vals[0], false);
 				mod.setValue(Double.valueOf(vals[1].substring(0, vals[1].length() - 1)));
 				mod.setAbsolute(false);
 			} else {
+				mod.setTypeByCode(vals[0], true);
 				mod.setValue(Double.valueOf(vals[1]));
 			}
 
@@ -288,12 +289,13 @@ public class ItemUtils {
 			String jstr = modArr[j];
 			String[] modstr = jstr.split(":");
 			mods[j] = new Modifier();
-			mods[j].setType(modstr[0]);
 
 			if (modstr[1].contains("%")) {
+				mods[j].setTypeByCode(modstr[0], false);
 				mods[j].setValue(Double.valueOf(modstr[1].substring(0, modstr[1].length() - 1)));
 				mods[j].setAbsolute(false);
 			} else {
+				mods[j].setTypeByCode(modstr[0], true);
 				mods[j].setValue(Double.valueOf(modstr[1]));
 			}
 

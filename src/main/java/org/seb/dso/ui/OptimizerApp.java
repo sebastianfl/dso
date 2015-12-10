@@ -51,7 +51,6 @@ import javax.swing.border.MatteBorder;
 import org.seb.dso.CharacterSnapshot;
 import org.seb.dso.Inventory;
 import org.seb.dso.model.Item;
-import org.seb.dso.model.Mod;
 import org.seb.dso.model.Modifier;
 import org.seb.dso.util.ItemUtils;
 import org.seb.dso.util.PropertyManager;
@@ -643,12 +642,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		fLogger.log(Level.INFO, "PetAndBuffs: " + str);
 
 		Modifier attack = new Modifier();
-		attack.setType(Mod.DAMAGE);
+		attack.setType(Modifier.Type.PDAMAGE);
 		attack.setValue(sliderAttack.getValue() * 2.0);
 		attack.setAbsolute(false);
 
 		Modifier agility = new Modifier();
-		agility.setType(Mod.ATTACK_SPEED);
+		agility.setType(Modifier.Type.PATTACK_SPEED);
 		agility.setValue(sliderAgility.getValue() * 1.6);
 		attack.setAbsolute(false);
 
@@ -658,10 +657,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			weaponDmg = new Modifier[2];
 			weaponDmg[0] = new Modifier();
 			weaponDmg[1] = new Modifier();
-			weaponDmg[0].setType(Mod.EXTRA_WEAPON_DMG);
+			weaponDmg[0].setType(Modifier.Type.PEXTRA_WEAPON_DMG);
 			weaponDmg[0].setValue(50.0);
 			weaponDmg[0].setAbsolute(false);
-			weaponDmg[1].setType(Mod.ATTACK_SPEED);
+			weaponDmg[1].setType(Modifier.Type.PATTACK_SPEED);
 			weaponDmg[1].setValue(-10.0);
 			weaponDmg[1].setAbsolute(false);
 		}
@@ -671,22 +670,23 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			rage = new Modifier[2];
 			rage[0] = new Modifier();
 			rage[1] = new Modifier();
-			rage[0].setType(Mod.MANA);
+			rage[0].setType(Modifier.Type.PMANA);
 			rage[0].setValue(25.0);
 			rage[0].setAbsolute(false);
 
-			rage[1].setType(Mod.TRAVEL_SPEED);
+			rage[1].setType(Modifier.Type.PTRAVEL_SPEED);
 			rage[1].setValue(-5.0);
 			rage[1].setAbsolute(false);
 		}
 
 		Modifier essence = new Modifier();
-		essence.setType(Mod.DAMAGE);
+		essence.setType(Modifier.Type.PDAMAGE);
 		essence.setAbsolute(false);
 		Double v = 0.0;
 		if (radioGreen.isSelected()) {
 			v = 50.0;
 			essence.setAbsolute(true);
+			essence.setType(Modifier.Type.DAMAGE);
 		} else if (radioBlue.isSelected()) {
 			v = 100.0;
 		} else if (radioPurple.isSelected()) {
