@@ -257,9 +257,7 @@ public class CharacterPower implements Serializable {
 		// add max dmg from items
 		wmax += this.getMaxdmg();
 		// add max % dmg from witch set if any
-		wmax += wmax * this.getPmaxdmg() / 100;
-		// add % total dmg
-		wmax += wmax * this.getPdmg() / 100;
+		wmax += wmax * (this.getPmaxdmg() + this.getPdmg()) / 100;
 
 		return wmax;
 	}

@@ -639,11 +639,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		String currentCharClass = (String) dropdownCharacterClass.getSelectedItem();
 		PropertyManager.getPropertyManager().setCurrentClass(currentCharClass);
 
-		progressLabel.setText("Snapshots sacurrentCharClassved. Pre-processing for a class: " + currentCharClass);
-
 		SetConfig.getSetConfig().reinitialize();
 		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
-
+		startProgress(size, "Snapshots saved. Pre-processing for a class: " + currentCharClass);
+		int i = 0;
 		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
 			CharacterSnapshot cs = iterator.next();
 			cs.clean();
@@ -651,12 +650,15 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			cs.processModifiers();
 			// process sets if any
 			cs.processSets();
+			++i;
+			updateProgress(i, cs);
 		}
 		progressLabel.setText("Snapshots are ready for calculations");
+		progressBar.setVisible(false);
 	}
 
 	private void processItems() throws Exception {
-		startProgress(snapshots.size());
+		startProgress(snapshots.size(), "Processing...");
 
 		// off gem mods, def gem mods, attack mods, agility mods, essence mods,
 		// wp mod, rage mod
@@ -775,11 +777,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		fLogger.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
 	}
 
-	private void startProgress(int size) {
+	private void startProgress(int size, String message) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				progressBar.setMaximum(size);
 				progressBar.setVisible(true);
+				progressLabel.setText(message);
 				progressLabel.setVisible(true);
 			}
 		});
@@ -899,16 +902,14 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				labelHP.setText(String.valueOf(Math.round(cp.calculateHP())));
 				labelArmor.setText(String.valueOf(Math.round(cp.calculateArmor())));
 				labelCriticalHit.setText(String.valueOf(Math.round(cp.calculateCrit() * 100.0) / 100.0) + "%");
-				labelOffenseIndex
-						.setText(String.valueOf(Math.round(cp.calculateEffectiveDamage() * 100.0) / 100.0));
+				labelOffenseIndex.setText(String.valueOf(Math.round(cp.calculateEffectiveDamage() * 100.0) / 100.0));
 				labelResistance.setText(String.valueOf(Math.round(cp.calculateResist())));
-				labelCriticalDamage
-						.setText(String.valueOf(Math.round((cp.getCd() + 200) * 100.0) / 100.0) + "%");
+				labelCriticalDamage.setText(String.valueOf(Math.round((cp.getCd() + 200) * 100.0) / 100.0) + "%");
 				double attackSpeed = 0.83333333 + cp.getAspeed() / 100.0 * 0.83333333;
 				System.out.println(attackSpeed);
-				labelAttackSpeed.setText(String
-						.valueOf(Math.round((0.83333333 + cp.getAspeed() / 100.0 * 0.83333333) * 100.0) / 100.0)
-						+ " ps");
+				labelAttackSpeed.setText(
+						String.valueOf(Math.round((0.83333333 + cp.getAspeed() / 100.0 * 0.83333333) * 100.0) / 100.0)
+								+ " ps");
 				labelTravelSpeed.setText(String.valueOf(Math.round(cp.getTspeed() * 100.0) / 100.0) + "%");
 
 				progressBar.setVisible(false);
