@@ -16,8 +16,8 @@ The user has to provide the application with his item list in a excel CSV format
 ###The csv file 
 It consists of a list with 6 columns.
 - The first column reprents the Item Type (Amulet, Belt, Cloak, Ring, Crystal, Twohand, Helmet, Pauldrons, Torso, Gloves, Boots). <b>Books, 1handed weapons and orbs are not yet supported, do not add them.</b>
-- columns 2nd through 5th represent the item modifiers e.g. <b>d:31</b> means item has a modifier with <i>damage = 31</i>
-- final, 6th column represents the name of the item set. Three sets are preconfigured and ready to use. They are <i>dragan, witch, darkness</i> and so if you have dragan cloak, you should write the word 'dragan' in that cell. Those sets are pre-configured in the property file, which we will talk about below. You are able to add additional sets, or change names as you want, but that will require minor updates to the property file.
+- columns 3nd through 6th represent the item modifiers e.g. <b>d:31</b> means item has a modifier with <i>damage = 31</i>
+- second column represents the name of the item set. Three sets are preconfigured and ready to use. They are <i>dragan, witch, darkness</i> and so if you have dragan cloak, you should write the word 'dragan' in that cell. Those sets are pre-configured in the property file, which we will talk about below. You are able to add additional sets, or change names as you want, but that will require minor updates to the property file. Leave it empty in case of legendary item
 
 Each modifier (columns 2nd, 3rd, 4th and 5th) are represented by a pair of a Modifier Code and Value. Columns could be blank, like for instance with the Darkness Set Items. Here is the list of the Modifier Codes:
 * <b>d</b> - Damage, use 'd' for rings, amulets etc. do not use it for weapon/2handed items
