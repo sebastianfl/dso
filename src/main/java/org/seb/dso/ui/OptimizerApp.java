@@ -687,7 +687,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		Modifier agility = new Modifier();
 		agility.setType(Modifier.Type.PATTACK_SPEED);
 		agility.setValue(sliderAgility.getValue() * 1.6);
-		attack.setAbsolute(false);
+		agility.setAbsolute(false);
 
 		Modifier[] weaponDmg = null;
 		if (checkboxWeaponDamage.isSelected()) {
@@ -773,8 +773,63 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			cs.setCp(power);
 			updateProgress(i, bestSnapshot);
 		}
-		updateGUI(bestSnapshot, bestPower);
+		bestSnapshot.setCp(bestPower);
+		CharacterPower power1 = bestSnapshot.getCharacterPowerCopy();
+		Modifier whatIfDmg = new Modifier();
+		whatIfDmg.setType(Modifier.Type.DAMAGE);
+		whatIfDmg.setValue(31.0);
+		whatIfDmg.setAbsolute(true);
+		Modifier[] arr = { whatIfDmg };
+		power1.processModifiers(Arrays.asList(arr));
+		double effDmg1 = power1.calculateEffectiveDamage();
+
+		CharacterPower power2 = bestSnapshot.getCharacterPowerCopy();
+		whatIfDmg = new Modifier();
+		whatIfDmg.setType(Modifier.Type.CRITICAL_HIT);
+		whatIfDmg.setValue(221.0);
+		whatIfDmg.setAbsolute(true);
+		Modifier[] arr2 = { whatIfDmg };
+		power2.processModifiers(Arrays.asList(arr2));
+		double effDmg2 = power2.calculateEffectiveDamage();
+
+		CharacterPower power3 = bestSnapshot.getCharacterPowerCopy();
+		whatIfDmg = new Modifier();
+		whatIfDmg.setType(Modifier.Type.PCRITICAL_DAMAGE);
+		whatIfDmg.setValue(13.5);
+		whatIfDmg.setAbsolute(false);
+		Modifier[] arr3 = { whatIfDmg };
+		power3.processModifiers(Arrays.asList(arr3));
+		double effDmg3 = power3.calculateEffectiveDamage();
+
+		String il = "";
+		if (effDmg1 > effDmg2 && effDmg1 > effDmg3) {
+			il += "Dmg, ";
+			if (effDmg2 > effDmg3) {
+				il += "Crit, CritDmg%.";
+			} else {
+				il += "CritDmg%, Crit.";
+			}
+		} else if (effDmg2 > effDmg3 && effDmg2 > effDmg1) {
+			il += "Crit,";
+			if (effDmg1 > effDmg3) {
+				il += "Dmg, CritDmg%.";
+			} else {
+				il += "CritDmg%, Dmg.";
+			}
+		} else {
+			il += "CritDmg%, ";
+			if (effDmg1 > effDmg2) {
+				il += "Damage, Crit.";
+			} else {
+				il += "Crit, Damage.";
+			}
+		}
+
+		updateGUI(bestSnapshot, bestPower, il);
 		fLogger.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
+		fLogger.log(Level.INFO, "1 snapshot: " + effDmg1);
+		fLogger.log(Level.INFO, "2 snapshot: " + effDmg2);
+		fLogger.log(Level.INFO, "3 snapshot: " + effDmg3);
 	}
 
 	private void startProgress(int size, String message) {
@@ -805,7 +860,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		});
 	}
 
-	private void updateGUI(final CharacterSnapshot cs, final CharacterPower cp) {
+	private void updateGUI(final CharacterSnapshot cs, final CharacterPower cp, final String l) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
@@ -913,7 +968,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				labelTravelSpeed.setText(String.valueOf(Math.round(cp.getTspeed() * 100.0) / 100.0) + "%");
 
 				progressBar.setVisible(false);
-				progressLabel.setText("Calculation completed");
+				progressLabel.setText("Calculation completed. Improve " + l);
 
 			}
 
