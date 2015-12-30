@@ -9,18 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -47,13 +36,21 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.seb.dso.CharacterSnapshot;
 import org.seb.dso.Inventory;
 import org.seb.dso.model.CharacterPower;
+import org.seb.dso.model.EnumTypes;
 import org.seb.dso.model.Item;
 import org.seb.dso.model.Modifier;
+import org.seb.dso.model.OptimizerModel;
 import org.seb.dso.model.SetConfig;
+import org.seb.dso.model.e.ModelChangeEvent;
+import org.seb.dso.model.e.ModelChangeListener;
 import org.seb.dso.util.ItemUtils;
 import org.seb.dso.util.PropertyManager;
 
@@ -69,6 +66,16 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1238659605741906256L;
 	private static final Logger fLogger = Logger.getLogger(OptimizerApp.class.getPackage().getName());
+
+	private OptimizerModel om = new OptimizerModel();
+
+	public synchronized OptimizerModel getOM() {
+		return om;
+	}
+
+	public synchronized void setOM(OptimizerModel om) {
+		this.om = om;
+	}
 
 	private JFrame frame;
 	private JFileChooser fileChooser;
@@ -116,10 +123,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JLabel labelArmor;
 	private JLabel labelResistance;
 	private JLabel labelTravelSpeed;
-	private JButton btnLoadSnapshots;
 	private JButton buttonGenerateSnapshots;
 	private JLabel labelAttack;
 	private JComboBox<String> dropdownCharacterClass;
+	private JCheckBox checkboxTwohanded;
 	private JCheckBox checkboxWeaponDamage;
 	private JRadioButton radioGreen;
 	private JRadioButton radioBlue;
@@ -186,7 +193,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			e.printStackTrace();
 		}
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1000, 480);
+		frame.setBounds(100, 100, 1000, 540);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		initNorth();
@@ -197,15 +204,135 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		// TODO PanelEast will contain last 10 compiled snapshots
 		panelEast = new JPanel();
 		frame.getContentPane().add(panelEast, BorderLayout.EAST);
+
+		om.addModelChangeListener(new ModelChangeListener() {
+
+			@Override
+			public void modelChanged(ModelChangeEvent e) {
+				switch (e.getEventType()) {
+				case CHARCLASS:
+					break;
+				case INVETORY:
+					break;
+				case MODIFIER:
+					break;
+				case STATE: {
+					progressLabel.setForeground(Color.BLACK);
+					switch (e.getCommand()) {
+					case CALCULATED:
+						progressLabel.setText("Found the best build");
+						progressBar.setVisible(false);
+						break;
+					case CALCULATING:
+						progressLabel.setText("Looking for the best build");
+						progressBar.setValue(0);
+						progressBar.setVisible(true);
+						break;
+					case CLEAN:
+						progressLabel.setText("Start by loading items ");
+						progressBar.setVisible(false);
+						break;
+					case ERROR:
+						progressLabel.setText("Error:  " + e.getMessage());
+						progressBar.setVisible(false);
+						progressLabel.setForeground(Color.RED);
+						setComponentEnable(processButton, false);
+						break;
+					case GENERATED_SNAPSHOTS:
+						progressLabel.setText("Generated " + e.getMessage() + " snapshots");
+						progressBar.setVisible(false);
+						break;
+					case GENERATING_SNAPSHOTS:
+						progressLabel.setText("Generating " + e.getMessage() + " snapshots");
+						progressBar.setVisible(false);
+						break;
+					case LOADED:
+						progressLabel.setText("Preprocessing required.");
+						progressBar.setVisible(false);
+						setComponentEnable(buttonGenerateSnapshots, true);
+						setComponentEnable(checkboxTwohanded, true);
+						setComponentEnable(dropdownCharacterClass, true);
+
+						setComponentEnable(processButton, false);
+						setComponentEnable(textFieldDefGems, false);
+						setComponentEnable(textFieldPetAndBuffs, false);
+						setComponentEnable(textFieldOffGems, false);
+						setComponentEnable(sliderAttack, false);
+						setComponentEnable(sliderAgility, false);
+						setComponentEnable(checkboxRage, false);
+						setComponentEnable(checkboxWeaponDamage, false);
+						setComponentEnable(radioBlue, false);
+						setComponentEnable(radioGreen, false);
+						setComponentEnable(radioNo, false);
+						setComponentEnable(radioPurple, false);
+						setComponentEnable(radioRed, false);
+
+						break;
+					case LOADING:
+						progressLabel.setText("Loading items");
+						progressBar.setVisible(false);
+						setComponentEnable(checkboxTwohanded, false);
+						setComponentEnable(dropdownCharacterClass, false);
+						setComponentEnable(buttonGenerateSnapshots, false);
+						setComponentEnable(processButton, false);
+						setComponentEnable(textFieldDefGems, false);
+						setComponentEnable(textFieldPetAndBuffs, false);
+						setComponentEnable(textFieldOffGems, false);
+						setComponentEnable(sliderAttack, false);
+						setComponentEnable(sliderAgility, false);
+						setComponentEnable(checkboxRage, false);
+						setComponentEnable(checkboxWeaponDamage, false);
+						setComponentEnable(radioBlue, false);
+						setComponentEnable(radioGreen, false);
+						setComponentEnable(radioNo, false);
+						setComponentEnable(radioPurple, false);
+						setComponentEnable(radioRed, false);
+
+						break;
+					case PREPROCESSED:
+						progressLabel.setText("Ready for calculation");
+						progressBar.setVisible(false);
+						setComponentEnable(processButton, true);
+						setComponentEnable(textFieldDefGems, true);
+						setComponentEnable(textFieldPetAndBuffs, true);
+						setComponentEnable(textFieldOffGems, true);
+						setComponentEnable(sliderAttack, true);
+						setComponentEnable(sliderAgility, true);
+						setComponentEnable(checkboxRage, true);
+						setComponentEnable(checkboxWeaponDamage, true);
+						setComponentEnable(radioBlue, true);
+						setComponentEnable(radioGreen, true);
+						setComponentEnable(radioNo, true);
+						setComponentEnable(radioPurple, true);
+						setComponentEnable(radioRed, true);
+
+						break;
+					case PREPROCESSING:
+						progressLabel.setText("Preprocessing for a class: " + e.getMessage());
+						progressBar.setValue(0);
+						progressBar.setVisible(true);
+						break;
+					default:
+						break;
+					}
+					break;
+				}
+				default:
+					break;
+
+				}
+				refresh();
+			}
+		});
 	}
 
 	private void initSouth() {
 		panelSouth = new JPanel();
 		frame.getContentPane().add(panelSouth, BorderLayout.SOUTH);
 
-		progressLabel = new JLabel("Creating Snapshot Database...");
+		progressLabel = new JLabel("Start by loading items");
 		panelSouth.add(progressLabel);
-		progressLabel.setVisible(false);
+		progressLabel.setVisible(true);
 
 		progressBar = new JProgressBar();
 		panelSouth.add(progressBar);
@@ -218,12 +345,17 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		frame.getContentPane().add(panelWest, BorderLayout.WEST);
 		panelWest.setLayout(new MigLayout("", "[140px,grow]", "[23px][23px][23px][23px][23px][23px]"));
 
+		// Defensive gems and the value change listener to update the model
+
 		lblDefensiveGems = new JLabel("Defensive Gems");
 		panelWest.add(lblDefensiveGems, "cell 0 0");
 
 		textFieldDefGems = new JTextField();
 		panelWest.add(textFieldDefGems, "cell 0 1,growx");
 		textFieldDefGems.setColumns(10);
+		textFieldDefGems.getDocument().addDocumentListener(new ModifierFieldDocumentListener());
+
+		// Offensive gems and the value change listener to update the model
 
 		lblOffensiveGems = new JLabel("Offensive Gems");
 		panelWest.add(lblOffensiveGems, "cell 0 2");
@@ -231,6 +363,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		textFieldOffGems = new JTextField();
 		panelWest.add(textFieldOffGems, "cell 0 3,growx");
 		textFieldOffGems.setColumns(10);
+		textFieldOffGems.getDocument().addDocumentListener(new ModifierFieldDocumentListener());
+
+		// Pet and Buffs editfield and label, and the value change listener to
+		// update the model
 
 		labelPetAndBuff = new JLabel("Pet and Buffs");
 		panelWest.add(labelPetAndBuff, "cell 0 4");
@@ -238,13 +374,19 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		textFieldPetAndBuffs = new JTextField();
 		panelWest.add(textFieldPetAndBuffs, "cell 0 5,growx");
 		textFieldPetAndBuffs.setColumns(10);
+		textFieldPetAndBuffs.getDocument().addDocumentListener(new ModifierFieldDocumentListener());
+
+		textFieldDefGems.setEnabled(false);
+		textFieldPetAndBuffs.setEnabled(false);
+		textFieldOffGems.setEnabled(false);
+
 	}
 
 	private void initCenter() {
 		panelCenter = new JPanel();
 		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
 		panelCenter.setLayout(new MigLayout("",
-				"[100px:100px:100px,grow][100px:100px,grow][100px:100px:100px,grow][100px:100px,grow]",
+				"[100px:100px:100px][100px:100px,grow,fill][100px:100px:100px][100px:100px]",
 				"[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
 
 		labelAmulet = new JLabel("Amulet");
@@ -395,30 +537,35 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		openButton.addActionListener(this);
 		fileChooser = new JFileChooser(".");
 
-		rigidArea_3 = Box.createRigidArea(new Dimension(20, 20));
-		panelTopLevelMenu.add(rigidArea_3);
-
-		buttonGenerateSnapshots = new JButton("Generate Snapshots");
-		panelTopLevelMenu.add(buttonGenerateSnapshots);
-		buttonGenerateSnapshots.addActionListener(this);
-
-		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
-		panelTopLevelMenu.add(rigidArea_2);
-
-		btnLoadSnapshots = new JButton("Load Snapshots");
-		btnLoadSnapshots.addActionListener(this);
-		panelTopLevelMenu.add(btnLoadSnapshots);
-
 		rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		panelTopLevelMenu.add(rigidArea_1);
 
 		JLabel lblSelectClass = new JLabel("Select Class");
 		panelTopLevelMenu.add(lblSelectClass);
 
+		// Character class dropdown and the action listener to update the model
 		dropdownCharacterClass = new JComboBox<String>();
 		panelTopLevelMenu.add(dropdownCharacterClass);
 		dropdownCharacterClass.addItem("Mage");
 		dropdownCharacterClass.addItem("Dragonknight");
+		// dropdownCharacterClass.addItem("Ranger");
+		// dropdownCharacterClass.addItem("Dwarf");
+		dropdownCharacterClass.addActionListener(new FieldActionListener());
+
+		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
+		panelTopLevelMenu.add(rigidArea_2);
+
+		checkboxTwohanded = new JCheckBox("Twohanded");
+		panelTopLevelMenu.add(checkboxTwohanded);
+		checkboxTwohanded.addActionListener(new FieldActionListener());
+
+		rigidArea_3 = Box.createRigidArea(new Dimension(20, 20));
+		panelTopLevelMenu.add(rigidArea_3);
+
+		buttonGenerateSnapshots = new JButton("Generate Snapshots");
+		panelTopLevelMenu.add(buttonGenerateSnapshots);
+		buttonGenerateSnapshots.addActionListener(this);
+		buttonGenerateSnapshots.setEnabled(false);
 
 		rigidArea = Box.createRigidArea(new Dimension(40, 20));
 		panelTopLevelMenu.add(rigidArea);
@@ -464,6 +611,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		sliderAttack.setPaintTicks(true);
 		sliderAttack.setPaintLabels(true);
 		panelSecondLevelMenu.add(sliderAttack);
+		sliderAttack.addChangeListener(new ModifierFieldChangeListener());
 
 		lblAgility = new JLabel("Agility");
 		panelSecondLevelMenu.add(lblAgility);
@@ -476,12 +624,15 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		sliderAgility.setPaintTicks(true);
 		sliderAgility.setPaintLabels(true);
 		panelSecondLevelMenu.add(sliderAgility);
+		sliderAgility.addChangeListener(new ModifierFieldChangeListener());
 
 		checkboxWeaponDamage = new JCheckBox("50% Weapon Damage");
 		panelSecondLevelMenu.add(checkboxWeaponDamage);
+		checkboxWeaponDamage.addActionListener(new ModifierFieldActionListener());
 
 		checkboxRage = new JCheckBox("25% Rage/Mana");
 		panelSecondLevelMenu.add(checkboxRage);
+		checkboxRage.addActionListener(new ModifierFieldActionListener());
 
 		panelThirdLevelMenu = new JPanel();
 		panelThirdLevelMenu.setBorder(new MatteBorder(1, 1, 1, 1, (Color) SystemColor.windowBorder));
@@ -512,12 +663,23 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		bp.add(radioPurple);
 		bp.add(radioRed);
 
-		radioBlue.addActionListener(this);
-		radioGreen.addActionListener(this);
-		radioNo.addActionListener(this);
-		radioRed.addActionListener(this);
-		radioPurple.addActionListener(this);
+		radioBlue.addActionListener(new ModifierFieldActionListener());
+		radioGreen.addActionListener(new ModifierFieldActionListener());
+		radioNo.addActionListener(new ModifierFieldActionListener());
+		radioRed.addActionListener(new ModifierFieldActionListener());
+		radioPurple.addActionListener(new ModifierFieldActionListener());
 
+		sliderAttack.setEnabled(false);
+		sliderAgility.setEnabled(false);
+		checkboxRage.setEnabled(false);
+		checkboxTwohanded.setEnabled(false);
+		checkboxWeaponDamage.setEnabled(false);
+		radioBlue.setEnabled(false);
+		radioGreen.setEnabled(false);
+		radioNo.setEnabled(false);
+		radioPurple.setEnabled(false);
+		radioRed.setEnabled(false);
+		dropdownCharacterClass.setEnabled(false);
 	}
 
 	@Override
@@ -525,8 +687,23 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		if (e.getSource() == openButton) {
 			int ret = fileChooser.showOpenDialog(OptimizerApp.this);
 			if (ret == JFileChooser.APPROVE_OPTION) {
+				om.setState(EnumTypes.State.LOADING);
 				itemsFile = fileChooser.getSelectedFile();
-				progressLabel.setText("Items Loaded Successfully");
+				try {
+					Collection<Item> items = ItemUtils.getItems(itemsFile);
+					om.setItems(items);
+					Inventory inv = ItemUtils.parseInventoryFromItems(items);
+					om.setInventory(inv);
+				} catch (Exception ex) {
+					om.setState(EnumTypes.State.ERROR, ex.getMessage());
+					// this.progressLabel.setText(ex.getMessage());
+					this.progressLabel.setVisible(true);
+					// TODO make it nice
+					return;
+				}
+				om.setState(EnumTypes.State.LOADED);
+
+				// progressLabel.setText("Items Loaded Successfully");
 				progressLabel.setVisible(true);
 			}
 		} else if (e.getSource() == buttonGenerateSnapshots) {
@@ -535,25 +712,13 @@ public class OptimizerApp extends JPanel implements ActionListener {
 					try {
 						generateSnapshots();
 					} catch (Exception e) {
-						progressLabel.setText(e.getMessage());
-						progressLabel.setForeground(Color.RED);
-						progressBar.setVisible(false);
-						setComponentEnable(processButton, false);
+						om.setState(EnumTypes.State.ERROR, e.getMessage());
+						// progressLabel.setText(e.getMessage());
 						e.printStackTrace();
 					}
-					setComponentEnable(processButton, true);
 				}
 			};
 			qthread.start();
-		} else if (e.getSource() == btnLoadSnapshots) {
-			int ret = fileChooser.showOpenDialog(OptimizerApp.this);
-			if (ret == JFileChooser.APPROVE_OPTION) {
-				itemsFile = fileChooser.getSelectedFile();
-				loadSnapshotsFromFile();
-				setComponentEnable(processButton, true);
-
-			}
-
 		} else if (e.getSource() == processButton) {
 			Thread qthread = new Thread() {
 
@@ -561,9 +726,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 					try {
 						processItems();
 					} catch (Exception e) {
-						progressLabel.setText(e.getMessage());
-						progressLabel.setForeground(Color.RED);
-						progressBar.setVisible(false);
+						om.setState(EnumTypes.State.ERROR, e.getLocalizedMessage());
+						// progressLabel.setText(e.getMessage());
 						e.printStackTrace();
 					}
 				}
@@ -574,74 +738,54 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	}
 
 	/**
-	 * TODO implement real Save/Load function
-	 * 
-	 * TODO implement zip
-	 * 
-	 * Reads the snapshots from the cache file.
-	 */
-	@SuppressWarnings("unchecked")
-	private void loadSnapshotsFromFile() {
-		try {
-			progressLabel.setText("Loading Snapshots from hard drive...");
-			InputStream file = new FileInputStream("snapshots.sn");
-			InputStream buffer = new BufferedInputStream(file);
-			ObjectInput input = new ObjectInputStream(buffer);
-			snapshots = (List<CharacterSnapshot>) input.readObject();
-			input.close();
-			progressLabel.setText("Successfully loaded " + snapshots.size() + " snapshots.");
-			lblSnapshotsLoaded.setText("Snapshots loaded: " + snapshots.size());
-			fLogger.log(Level.INFO, "Recovered snapshots: " + snapshots.size());
-
-		} catch (ClassNotFoundException ex) {
-			fLogger.log(Level.SEVERE, "Cannot perform input. Class not found.", ex);
-		} catch (IOException ex) {
-			fLogger.log(Level.SEVERE, "Cannot perform input.", ex);
-		}
-	}
-
-	/**
-	 * Generates all possible snapshots given item list
+	 * Generates all possible snapshots given the list of the items
 	 * 
 	 * @throws Exception
 	 */
 	private void generateSnapshots() throws Exception {
-		Collection<Item> items;
-		try {
-			items = ItemUtils.getItems(itemsFile);
-		} catch (Exception e) {
-			this.progressLabel.setText(e.getMessage());
-			this.progressLabel.setVisible(true);
-			// TODO make it nice
-			return;
-		}
-		Inventory inv = ItemUtils.parseInventoryFromItems(items);
-
-		// Number of snapshots to be generated
-		// TODO optimize the array
-		int size = inv.getAmulets().size() * inv.getBelts().size() * inv.getCloaks().size() * inv.getCrystals().size()
-				* inv.getTwohands().size() * inv.getHelmets().size() * inv.getPauldrons().size()
-				* inv.getTorsos().size() * inv.getGloves().size() * inv.getBoots().size() * (inv.getRings().size())
-				* (inv.getRings().size() - 1) / 2;
-		progressLabel.setText("Loading " + size + "snapshots...");
-
-		snapshots = ItemUtils.getAllSnapshots(inv);
-		progressLabel.setText("Snapshots loaded. Saving...");
-		try (OutputStream file = new FileOutputStream("snapshots.sn");
-				OutputStream buffer = new BufferedOutputStream(file);
-				ObjectOutput output = new ObjectOutputStream(buffer);) {
-			output.writeObject(snapshots);
-		} catch (IOException ex) {
-			fLogger.log(Level.SEVERE, "Cannot perform output.", ex);
-		}
-		lblSnapshotsLoaded.setText("Snapshots loaded: " + size);
 
 		String currentCharClass = (String) dropdownCharacterClass.getSelectedItem();
+		om.setCharClass(OptimizerModel.CharClass.valueOf(currentCharClass.toUpperCase()));
 		PropertyManager.getPropertyManager().setCurrentClass(currentCharClass);
 
 		SetConfig.getSetConfig().reinitialize();
 		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
-		startProgress(size, "Snapshots saved. Pre-processing for a class: " + currentCharClass);
+
+		boolean b = checkboxTwohanded.isSelected();
+		om.setTwoHanded(b);
+
+		// Number of snapshots to be generated
+		// TODO optimize the array
+		int size;
+		if (b) {
+			size = om.getInventory().getAmulets().size() * om.getInventory().getBelts().size()
+					* om.getInventory().getCloaks().size() * om.getInventory().getCrystals().size()
+					* om.getInventory().getTwohands().size() * om.getInventory().getHelmets().size()
+					* om.getInventory().getPauldrons().size() * om.getInventory().getTorsos().size()
+					* om.getInventory().getGloves().size() * om.getInventory().getBoots().size()
+					* (om.getInventory().getRings().size()) * (om.getInventory().getRings().size() - 1) / 2;
+		} else {
+			size = om.getInventory().getAmulets().size() * om.getInventory().getBelts().size()
+					* om.getInventory().getCloaks().size() * om.getInventory().getCrystals().size()
+					* om.getInventory().getMainhands().size() * om.getInventory().getOffhands().size()
+					* om.getInventory().getHelmets().size() * om.getInventory().getPauldrons().size()
+					* om.getInventory().getTorsos().size() * om.getInventory().getGloves().size()
+					* om.getInventory().getBoots().size() * (om.getInventory().getRings().size())
+					* (om.getInventory().getRings().size() - 1) / 2;
+		}
+		if (size == 0) {
+			throw new Exception("There should be at least one item of each kind.");
+		}
+
+		om.setState(EnumTypes.State.GENERATING_SNAPSHOTS, String.valueOf(size));
+
+		snapshots = ItemUtils.getAllSnapshots(om.getInventory(), b);
+		om.setState(EnumTypes.State.GENERATED_SNAPSHOTS, String.valueOf(size));
+
+		lblSnapshotsLoaded.setText("Snapshots loaded: " + size);
+
+		om.setState(EnumTypes.State.PREPROCESSING, currentCharClass);
+		startProgress(size, "Snapshots generated. Pre-processing for a class: " + currentCharClass);
 		int i = 0;
 		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
 			CharacterSnapshot cs = iterator.next();
@@ -653,41 +797,101 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			++i;
 			updateProgress(i, cs);
 		}
-		progressLabel.setText("Snapshots are ready for calculations");
-		progressBar.setVisible(false);
+		om.setState(EnumTypes.State.PREPROCESSED);
 	}
 
 	private void processItems() throws Exception {
+		System.out.println(om);
+		om.setState(EnumTypes.State.CALCULATING);
+		populateModel();
+
 		startProgress(snapshots.size(), "Processing...");
 
 		// off gem mods, def gem mods, attack mods, agility mods, essence mods,
 		// wp mod, rage mod
 
-		PropertyManager.getPropertyManager().setCurrentClass((String) dropdownCharacterClass.getSelectedItem());
+		Modifier[] additionalMods = { om.getAttack(), om.getAgility(), om.getEssence() };
+
+		double max = 0;
+		CharacterSnapshot bestSnapshot = null;
+		CharacterPower bestPower = null;
+		int i = 0;
+		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
+			CharacterSnapshot cs = iterator.next();
+			CharacterPower power = cs.getCharacterPowerCopy();
+			if (null != om.getOffGems())
+				cs.processModifiers(Arrays.asList(om.getOffGems()));
+			if (null != om.getDefGems())
+				cs.processModifiers(Arrays.asList(om.getDefGems()));
+			if (null != om.getWeaponDmg())
+				cs.processModifiers(Arrays.asList(om.getWeaponDmg()));
+			if (null != om.getRage())
+				cs.processModifiers(Arrays.asList(om.getRage()));
+			if (null != om.getPetAndBuffs())
+				cs.processModifiers(Arrays.asList(om.getPetAndBuffs()));
+
+			cs.processModifiers(Arrays.asList(additionalMods));
+			double cmd = cs.getCp().calculateEffectiveDamage();
+			if (cmd > max) {
+				max = cmd;
+				bestSnapshot = cs;
+				bestPower = cs.getCp();
+			}
+			++i;
+			cs.setCp(power);
+			updateProgress(i, bestSnapshot);
+		}
+		//bestSnapshot.setCp(bestPower);
+		om.setState(EnumTypes.State.CALCULATED);
+
+		updateGUI(bestSnapshot, bestPower);
+		fLogger.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
+
+	}
+
+	/**
+	 * @throws Exception
+	 * 
+	 */
+	private void populateModel() throws Exception {
+		String cc = (String) dropdownCharacterClass.getSelectedItem();
+		PropertyManager.getPropertyManager().setCurrentClass(cc);
+		om.setCharClass(OptimizerModel.CharClass.valueOf(cc.toUpperCase()));
+
 		SetConfig.getSetConfig().reinitialize();
 		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
 
+		boolean b = checkboxTwohanded.isSelected();
+		om.setTwoHanded(b);
+
 		String str = textFieldOffGems.getText();
 		Modifier[] offGemMods = ItemUtils.parseModifiersFromString(str);
+		om.setOffGems(offGemMods);
 		fLogger.log(Level.INFO, "OffGems: " + str);
 
 		str = textFieldDefGems.getText();
 		Modifier[] defGemMods = ItemUtils.parseModifiersFromString(str);
+
+		om.setDefGems(defGemMods);
 		fLogger.log(Level.INFO, "DefGems: " + str);
 
 		str = textFieldPetAndBuffs.getText();
 		Modifier[] petAndBuffs = ItemUtils.parseModifiersFromString(str);
+
+		om.setPetAndBuffs(petAndBuffs);
 		fLogger.log(Level.INFO, "PetAndBuffs: " + str);
 
 		Modifier attack = new Modifier();
 		attack.setType(Modifier.Type.PDAMAGE);
 		attack.setValue(sliderAttack.getValue() * 2.0);
 		attack.setAbsolute(false);
+		om.setAttack(attack);
 
 		Modifier agility = new Modifier();
 		agility.setType(Modifier.Type.PATTACK_SPEED);
 		agility.setValue(sliderAgility.getValue() * 1.6);
 		agility.setAbsolute(false);
+		om.setAgility(agility);
 
 		Modifier[] weaponDmg = null;
 		if (checkboxWeaponDamage.isSelected()) {
@@ -702,6 +906,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			weaponDmg[1].setValue(-10.0);
 			weaponDmg[1].setAbsolute(false);
 		}
+		om.setWeaponDmg(weaponDmg);
+
 		Modifier[] rage = null;
 		if (checkboxRage.isSelected()) {
 			fLogger.log(Level.INFO, "CheckBox Rage selected.");
@@ -716,6 +922,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			rage[1].setValue(-5.0);
 			rage[1].setAbsolute(false);
 		}
+		om.setRage(rage);
 
 		Modifier essence = new Modifier();
 		essence.setType(Modifier.Type.PDAMAGE);
@@ -733,112 +940,16 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			v = 300.0;
 		}
 		essence.setValue(v);
+		om.setEssence(essence);
 
 		fLogger.log(Level.INFO, "Essence in use:" + v);
 
-		Modifier[] additionalMods = { attack, agility, essence };
-
-		double max = 0;
-		CharacterSnapshot bestSnapshot = null;
-		CharacterPower bestPower = null;
-		int i = 0;
-		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
-			CharacterSnapshot cs = iterator.next();
-			CharacterPower power = cs.getCharacterPowerCopy();
-			// cs.clean();
-			// // Process all the items
-			// cs.processModifiers();
-			// // process sets if any
-			// cs.processSets();
-			// process gems if any
-			if (null != offGemMods)
-				cs.processModifiers(Arrays.asList(offGemMods));
-			if (null != defGemMods)
-				cs.processModifiers(Arrays.asList(defGemMods));
-			if (null != weaponDmg)
-				cs.processModifiers(Arrays.asList(weaponDmg));
-			if (null != rage)
-				cs.processModifiers(Arrays.asList(rage));
-			if (null != petAndBuffs)
-				cs.processModifiers(Arrays.asList(petAndBuffs));
-
-			cs.processModifiers(Arrays.asList(additionalMods));
-			double cmd = cs.getCp().calculateEffectiveDamage();
-			if (cmd > max) {
-				max = cmd;
-				bestSnapshot = cs;
-				bestPower = cs.getCp();
-			}
-			++i;
-			cs.setCp(power);
-			updateProgress(i, bestSnapshot);
-		}
-		bestSnapshot.setCp(bestPower);
-		CharacterPower power1 = bestSnapshot.getCharacterPowerCopy();
-		Modifier whatIfDmg = new Modifier();
-		whatIfDmg.setType(Modifier.Type.DAMAGE);
-		whatIfDmg.setValue(31.0);
-		whatIfDmg.setAbsolute(true);
-		Modifier[] arr = { whatIfDmg };
-		power1.processModifiers(Arrays.asList(arr));
-		double effDmg1 = power1.calculateEffectiveDamage();
-
-		CharacterPower power2 = bestSnapshot.getCharacterPowerCopy();
-		whatIfDmg = new Modifier();
-		whatIfDmg.setType(Modifier.Type.CRITICAL_HIT);
-		whatIfDmg.setValue(221.0);
-		whatIfDmg.setAbsolute(true);
-		Modifier[] arr2 = { whatIfDmg };
-		power2.processModifiers(Arrays.asList(arr2));
-		double effDmg2 = power2.calculateEffectiveDamage();
-
-		CharacterPower power3 = bestSnapshot.getCharacterPowerCopy();
-		whatIfDmg = new Modifier();
-		whatIfDmg.setType(Modifier.Type.PCRITICAL_DAMAGE);
-		whatIfDmg.setValue(13.5);
-		whatIfDmg.setAbsolute(false);
-		Modifier[] arr3 = { whatIfDmg };
-		power3.processModifiers(Arrays.asList(arr3));
-		double effDmg3 = power3.calculateEffectiveDamage();
-
-		String il = "";
-		if (effDmg1 > effDmg2 && effDmg1 > effDmg3) {
-			il += "Dmg, ";
-			if (effDmg2 > effDmg3) {
-				il += "Crit, CritDmg%.";
-			} else {
-				il += "CritDmg%, Crit.";
-			}
-		} else if (effDmg2 > effDmg3 && effDmg2 > effDmg1) {
-			il += "Crit,";
-			if (effDmg1 > effDmg3) {
-				il += "Dmg, CritDmg%.";
-			} else {
-				il += "CritDmg%, Dmg.";
-			}
-		} else {
-			il += "CritDmg%, ";
-			if (effDmg1 > effDmg2) {
-				il += "Damage, Crit.";
-			} else {
-				il += "Crit, Damage.";
-			}
-		}
-
-		updateGUI(bestSnapshot, bestPower, il);
-		fLogger.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
-		fLogger.log(Level.INFO, "1 snapshot: " + effDmg1);
-		fLogger.log(Level.INFO, "2 snapshot: " + effDmg2);
-		fLogger.log(Level.INFO, "3 snapshot: " + effDmg3);
 	}
 
 	private void startProgress(int size, String message) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				progressBar.setMaximum(size);
-				progressBar.setVisible(true);
-				progressLabel.setText(message);
-				progressLabel.setVisible(true);
 			}
 		});
 
@@ -860,7 +971,17 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		});
 	}
 
-	private void updateGUI(final CharacterSnapshot cs, final CharacterPower cp, final String l) {
+	private void refresh() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				frame.invalidate();
+				frame.revalidate();
+				frame.repaint();
+			}
+		});
+	}
+
+	private void updateGUI(final CharacterSnapshot cs, final CharacterPower cp) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
@@ -967,12 +1088,55 @@ public class OptimizerApp extends JPanel implements ActionListener {
 								+ " ps");
 				labelTravelSpeed.setText(String.valueOf(Math.round(cp.getTspeed() * 100.0) / 100.0) + "%");
 
-				progressBar.setVisible(false);
-				progressLabel.setText("Calculation completed. Improve " + l);
+				// progressLabel.setText("Calculation completed.");
+				om.setState(EnumTypes.State.CALCULATED);
 
 			}
 
 		});
 
+	}
+
+	class ModifierFieldDocumentListener implements DocumentListener {
+
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			om.setState(EnumTypes.State.PREPROCESSED);
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			om.setState(EnumTypes.State.PREPROCESSED);
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			om.setState(EnumTypes.State.PREPROCESSED);
+		}
+	}
+
+	class FieldActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			om.setState(EnumTypes.State.LOADED);
+		}
+	}
+
+	class ModifierFieldActionListener extends FieldActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			om.setState(EnumTypes.State.PREPROCESSED);
+		}
+	}
+
+	class ModifierFieldChangeListener implements ChangeListener {
+
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			om.setState(EnumTypes.State.PREPROCESSED);
+
+		}
 	}
 }

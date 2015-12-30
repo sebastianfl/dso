@@ -79,7 +79,7 @@ public class PropertyManager {
 	}
 	
 	public void setCurrentClass(String name){
-		currentClass = name;
+		this.currentClass = name;
 	}
 
 	public static PropertyManager getPropertyManager() {

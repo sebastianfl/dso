@@ -21,7 +21,7 @@ public class Main {
 
 		Inventory inv = ItemUtils.parseInventoryFromItems(items);
 
-		List<CharacterSnapshot> snapshots = ItemUtils.getAllSnapshots(inv);
+		List<CharacterSnapshot> snapshots = ItemUtils.getAllSnapshots(inv, true);
 		System.out.println(snapshots.size());
 		double max = 0;
 		CharacterSnapshot bestSnapshot = null;

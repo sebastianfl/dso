@@ -32,7 +32,9 @@ public class ItemUtils {
 			records = CSVFormat.EXCEL.withHeader().withSkipHeaderRecord().withIgnoreEmptyLines()
 					.withAllowMissingColumnNames().parse(in);
 			for (CSVRecord record : records) {
-				items.add(recordToItemNew(record));
+				Item item = recordToItemNew(record);
+				if (null != item)
+					items.add(item);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -50,6 +52,8 @@ public class ItemUtils {
 
 		Iterator<String> iter = record.iterator();
 		String modText = iter.next();
+		if (null == modText || modText.equals(""))
+			return null;
 		Item.Type t = null;
 		switch (modText.toLowerCase()) {
 		case "ring":
@@ -175,26 +179,21 @@ public class ItemUtils {
 		return inv;
 	}
 
-	public static List<CharacterSnapshot> getAllSnapshots(Inventory inv) {
+	public static List<CharacterSnapshot> getAllSnapshots(Inventory inv, boolean twohand) {
 		List<CharacterSnapshot> snapshots = new ArrayList<CharacterSnapshot>();
-		continueWithAmulet(inv, snapshots);
+		if (twohand) {
+			continueWithTwohand(inv, snapshots);
+		} else {
+			continueWithMainhand(inv, snapshots);
+		}
 		return snapshots;
 	}
 
-	/**
-	 * The recursion entry method. All the amulets will be taken 1 by 1 and
-	 * passed into the following structure for the snapshot generation
-	 * 
-	 * @param inv
-	 *            - represents inventory, the list of items
-	 * @param snapshots
-	 *            - the resulting collection of snapshots
-	 */
-	private static void continueWithAmulet(Inventory inv, List<CharacterSnapshot> snapshots) {
+	private static void continueWithAmulet(Inventory inv, List<CharacterSnapshot> snapshots, CharacterSnapshot tmp) {
 
 		for (Iterator<Item> iterator = inv.getAmulets().iterator(); iterator.hasNext();) {
 			Item item = iterator.next();
-			CharacterSnapshot cs = new CharacterSnapshot();
+			CharacterSnapshot cs = tmp.copy();
 			cs.setAmulet(item);
 			// cs.processModifiers(item.getModifiersAsList());
 			continueWithBelt(inv, snapshots, cs);
@@ -309,41 +308,70 @@ public class ItemUtils {
 			CharacterSnapshot cs = tmp.copy();
 			cs.setCloak(item);
 			// cs.processModifiers(item.getModifiersAsList());
-			continueWithTwohand(inv, snapshots, cs);
+			// continueWithTwohand(inv, snapshots, cs);
+			snapshots.add(cs);
 		}
 	}
 
-	private static void continueWithTwohand(Inventory inv, List<CharacterSnapshot> snapshots, CharacterSnapshot tmp) {
+	private static void continueWithTwohand(Inventory inv, List<CharacterSnapshot> snapshots) {
 		for (Iterator<Item> iterator = inv.getTwohands().iterator(); iterator.hasNext();) {
 			Item item = iterator.next();
-			CharacterSnapshot cs = tmp.copy();
+			CharacterSnapshot cs = new CharacterSnapshot();
 			cs.setTwohand(item);
 			// cs.processModifiers(item.getModifiersAsList());
 			// continueWithGems(inv, snapshots, cs);
-			snapshots.add(cs);
+			continueWithAmulet(inv, snapshots, cs);
 		}
 
 	}
 
-	public static Modifier[] parseModifiersFromString(String str) {
+	private static void continueWithMainhand(Inventory inv, List<CharacterSnapshot> snapshots) {
+		for (Iterator<Item> iterator = inv.getMainhands().iterator(); iterator.hasNext();) {
+			Item item = iterator.next();
+			CharacterSnapshot cs = new CharacterSnapshot();
+			cs.setMainhand(item);
+			// cs.processModifiers(item.getModifiersAsList());
+			// continueWithGems(inv, snapshots, cs);
+			continueWithOffhand(inv, snapshots, cs);
+		}
+
+	}
+
+	private static void continueWithOffhand(Inventory inv, List<CharacterSnapshot> snapshots, CharacterSnapshot tmp) {
+		for (Iterator<Item> iterator = inv.getOffhands().iterator(); iterator.hasNext();) {
+			Item item = iterator.next();
+			CharacterSnapshot cs = tmp.copy();
+			cs.setOffhand(item);
+			// cs.processModifiers(item.getModifiersAsList());
+			// continueWithGems(inv, snapshots, cs);
+			continueWithAmulet(inv, snapshots, cs);
+		}
+
+	}
+
+	public static Modifier[] parseModifiersFromString(String str) throws Exception {
 		if (str.equals("") || null == str)
 			return null;
 		String[] modArr = str.split(",");
 		Modifier[] mods = new Modifier[modArr.length];
-		for (int j = 0; j < modArr.length; j++) {
-			String jstr = modArr[j];
-			String[] modstr = jstr.split(":");
-			mods[j] = new Modifier();
+		try {
+			for (int j = 0; j < modArr.length; j++) {
+				String jstr = modArr[j];
+				String[] modstr = jstr.split(":");
+				mods[j] = new Modifier();
 
-			if (modstr[1].contains("%")) {
-				mods[j].setTypeByCode(modstr[0], false);
-				mods[j].setValue(Double.valueOf(modstr[1].substring(0, modstr[1].length() - 1)));
-				mods[j].setAbsolute(false);
-			} else {
-				mods[j].setTypeByCode(modstr[0], true);
-				mods[j].setValue(Double.valueOf(modstr[1]));
+				if (modstr[1].contains("%")) {
+					mods[j].setTypeByCode(modstr[0], false);
+					mods[j].setValue(Double.valueOf(modstr[1].substring(0, modstr[1].length() - 1)));
+					mods[j].setAbsolute(false);
+				} else {
+					mods[j].setTypeByCode(modstr[0], true);
+					mods[j].setValue(Double.valueOf(modstr[1]));
+				}
+
 			}
-
+		} catch (Exception e) {
+			throw new Exception("Invalid Modifier");
 		}
 		return mods;
 

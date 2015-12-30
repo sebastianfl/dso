@@ -231,7 +231,7 @@ public class CharacterPower implements Serializable {
 	}
 
 	public double calculateMinDamage() {
-		double wmin = Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MIN_DAMAGE));
+		double wmin = 0;// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MIN_DAMAGE));
 		wmin += this.getWdmg();
 		wmin += wmin * this.getPwdmg() / 100;
 		wmin += wmin * this.getPwde() / 100;
@@ -244,7 +244,7 @@ public class CharacterPower implements Serializable {
 
 	public double calculateMaxDamage() {
 		// first calculate weapon dmg
-		double wmax = Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MAX_DAMAGE));
+		double wmax = 0;// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MAX_DAMAGE));
 		wmax += this.getWdmg();
 		// get % from the weapon
 		wmax += wmax * this.getPwdmg() / 100;
@@ -284,13 +284,20 @@ public class CharacterPower implements Serializable {
 	public double calculateArmor() {
 		double wmax = 0;
 		wmax += this.getArmor();
-		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_BELT));
-		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_CLOAK));
-		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_HELMET));
-		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_PAULDRONS));
-		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_TORSO));
-		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_GLOVES));
-		wmax += Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_BOOTS));
+		// wmax +=
+		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_BELT));
+		// wmax +=
+		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_CLOAK));
+		// wmax +=
+		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_HELMET));
+		// wmax +=
+		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_PAULDRONS));
+		// wmax +=
+		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_TORSO));
+		// wmax +=
+		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_GLOVES));
+		// wmax +=
+		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_BOOTS));
 
 		wmax += wmax * this.getParmor() / 100;
 
