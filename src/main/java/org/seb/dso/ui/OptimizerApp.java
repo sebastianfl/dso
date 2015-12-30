@@ -10,10 +10,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +48,7 @@ import org.seb.dso.model.OptimizerModel;
 import org.seb.dso.model.SetConfig;
 import org.seb.dso.model.e.ModelChangeEvent;
 import org.seb.dso.model.e.ModelChangeListener;
+import org.seb.dso.model.e.ProgressChangeListener;
 import org.seb.dso.util.ItemUtils;
 import org.seb.dso.util.PropertyManager;
 
@@ -128,7 +126,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JLabel labelTravelSpeed;
 	private JButton buttonGenerateSnapshots;
 	private JLabel labelAttack;
-	private JComboBox<String> dropdownCharacterClass;
+	private JComboBox<OptimizerModel.CharClass> dropdownCharacterClass;
 	private JCheckBox checkboxTwohanded;
 	private JCheckBox checkboxWeaponDamage;
 	private JRadioButton radioGreen;
@@ -158,7 +156,6 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private Component rigidArea_4;
 	private JButton processButton;
 
-	private List<CharacterSnapshot> snapshots;
 	private File itemsFile;
 
 	/**
@@ -189,12 +186,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	 */
 	private void initialize() {
 
-		try {
-			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");
+//		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+//				| UnsupportedLookAndFeelException e) {
+//			e.printStackTrace();
+//		}
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1000, 540);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -223,34 +220,37 @@ public class OptimizerApp extends JPanel implements ActionListener {
 					progressLabel.setForeground(Color.BLACK);
 					switch (e.getCommand()) {
 					case CALCULATED:
-						progressLabel.setText("Found the best build");
+						progressLabel.setText(Messages.getString("UI.MESSAGE.FOUND.BEST.BUILD"));
 						progressBar.setVisible(false);
 						break;
 					case CALCULATING:
-						progressLabel.setText("Looking for the best build");
+						progressLabel.setText(Messages.getString("UI.MESSAGE.LOOKING.FOR.BEST.BUILD"));
 						progressBar.setValue(0);
 						progressBar.setVisible(true);
 						break;
 					case CLEAN:
-						progressLabel.setText("Start by loading items ");
+						progressLabel.setText(Messages.getString("UI.MESSAGE.START.BY.LOADING.ITEMS"));
 						progressBar.setVisible(false);
 						break;
 					case ERROR:
-						progressLabel.setText("Error:  " + e.getMessage());
+						progressLabel.setText(Messages.getString("UI.MESSAGE.ERROR") + e.getMessage());
 						progressBar.setVisible(false);
 						progressLabel.setForeground(Color.RED);
 						setComponentEnable(processButton, false);
 						break;
 					case GENERATED_SNAPSHOTS:
-						progressLabel.setText("Generated " + e.getMessage() + " snapshots");
+						progressLabel.setText(
+								Messages.getString("UI.MESSAGE.GENERATED.SNAPSHOTS") + e.getMessage()); //$NON-NLS-2$
+						lblSnapshotsLoaded.setText(Messages.getString("UI.MESSAGE.SNAPSHOTS.LOADED") + e.getMessage());
 						progressBar.setVisible(false);
 						break;
 					case GENERATING_SNAPSHOTS:
-						progressLabel.setText("Generating " + e.getMessage() + " snapshots");
+						progressLabel.setText(
+								Messages.getString("UI.MESSAGE.GENERATING.SNAPSHOTS") + e.getMessage()); //$NON-NLS-2$
 						progressBar.setVisible(false);
 						break;
 					case LOADED:
-						progressLabel.setText("Preprocessing required.");
+						progressLabel.setText(Messages.getString("UI.MESSAGE.PREPROCESSING.REQUIRED"));
 						progressBar.setVisible(false);
 						setComponentEnable(buttonGenerateSnapshots, true);
 						setComponentEnable(checkboxTwohanded, true);
@@ -272,7 +272,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 						break;
 					case LOADING:
-						progressLabel.setText("Loading items");
+						progressLabel.setText(Messages.getString("UI.MESSAGE.LOADING.ITEMS"));
 						progressBar.setVisible(false);
 						setComponentEnable(checkboxTwohanded, false);
 						setComponentEnable(dropdownCharacterClass, false);
@@ -293,7 +293,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 						break;
 					case PREPROCESSED:
-						progressLabel.setText("Ready for calculation");
+						progressLabel.setText(Messages.getString("UI.MESSAGE.READY.FOR.CALCULATION"));
 						progressBar.setVisible(false);
 						setComponentEnable(processButton, true);
 						setComponentEnable(textFieldDefGems, true);
@@ -311,7 +311,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 						break;
 					case PREPROCESSING:
-						progressLabel.setText("Preprocessing for a class: " + e.getMessage());
+						progressLabel
+								.setText(Messages.getString("UI.MESSAGE.PREPROCESSING.FOR.CLASS") + e.getMessage());
 						progressBar.setValue(0);
 						progressBar.setVisible(true);
 						break;
@@ -333,7 +334,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		panelSouth = new JPanel();
 		frame.getContentPane().add(panelSouth, BorderLayout.SOUTH);
 
-		progressLabel = new JLabel("Start by loading items");
+		progressLabel = new JLabel(Messages.getString("UI.MESSAGE.START.BY.LOADING.ITEMS"));
 		panelSouth.add(progressLabel);
 		progressLabel.setVisible(true);
 
@@ -346,11 +347,11 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private void initWest() {
 		panelWest = new JPanel();
 		frame.getContentPane().add(panelWest, BorderLayout.WEST);
-		panelWest.setLayout(new MigLayout("", "[140px,grow]", "[23px][23px][23px][23px][23px][23px]"));
+		panelWest.setLayout(new MigLayout("", "[140px,grow]", "[23px][23px][23px][23px][23px][23px]")); //$NON-NLS-2$ //$NON-NLS-3$
 
 		// Defensive gems and the value change listener to update the model
 
-		lblDefensiveGems = new JLabel("Defensive Gems");
+		lblDefensiveGems = new JLabel(Messages.getString("UI.LABEL.DEFENSIVE.GEMS"));
 		panelWest.add(lblDefensiveGems, "cell 0 0");
 
 		textFieldDefGems = new JTextField();
@@ -360,7 +361,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		// Offensive gems and the value change listener to update the model
 
-		lblOffensiveGems = new JLabel("Offensive Gems");
+		lblOffensiveGems = new JLabel(Messages.getString("UI.LABEL.OFFENSIVE.GEMS"));
 		panelWest.add(lblOffensiveGems, "cell 0 2");
 
 		textFieldOffGems = new JTextField();
@@ -371,7 +372,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		// Pet and Buffs editfield and label, and the value change listener to
 		// update the model
 
-		labelPetAndBuff = new JLabel("Pet and Buffs");
+		labelPetAndBuff = new JLabel(Messages.getString("UI.LABEL.PET.AND.BUFFS"));
 		panelWest.add(labelPetAndBuff, "cell 0 4");
 
 		textFieldPetAndBuffs = new JTextField();
@@ -388,47 +389,45 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private void initCenter() {
 		panelCenter = new JPanel();
 		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
-		panelCenter.setLayout(new MigLayout("",
-				"[100px:100px:100px][100px:100px,grow,fill][100px:100px:100px][100px:100px]",
-				"[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
+		panelCenter.setLayout(new MigLayout("", "[100px:100px:100px][100px:n,grow,fill][100px:n,grow][100px:100px]", "[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
 
-		labelAmulet = new JLabel("Amulet");
+		labelAmulet = new JLabel(Messages.getString("UI.LABEL.AMULET"));
 		panelCenter.add(labelAmulet, "cell 0 0");
 
-		labelBelt = new JLabel("Belt");
+		labelBelt = new JLabel(Messages.getString("UI.LABEL.BELT"));
 		panelCenter.add(labelBelt, "cell 0 1");
 
-		labelCloak = new JLabel("Cloak");
+		labelCloak = new JLabel(Messages.getString("UI.LABEL.CLOAK"));
 		panelCenter.add(labelCloak, "cell 0 2");
 
-		labelRing1 = new JLabel("Ring");
+		labelRing1 = new JLabel(Messages.getString("UI.LABEL.RING"));
 		panelCenter.add(labelRing1, "cell 0 3");
 
-		labelRing2 = new JLabel("Ring");
+		labelRing2 = new JLabel(Messages.getString("UI.LABEL.RING"));
 		panelCenter.add(labelRing2, "cell 0 4");
 
-		labelAdornment = new JLabel("Adornment");
+		labelAdornment = new JLabel(Messages.getString("UI.LABEL.ADORNMENT"));
 		panelCenter.add(labelAdornment, "cell 0 5");
 
-		labelWeapon = new JLabel("Weapon");
+		labelWeapon = new JLabel(Messages.getString("UI.LABEL.WEAPON"));
 		panelCenter.add(labelWeapon, "cell 0 6");
 
-		labelHelmet = new JLabel("Helmet");
+		labelHelmet = new JLabel(Messages.getString("UI.LABEL.HELMET"));
 		panelCenter.add(labelHelmet, "cell 0 7");
 
-		labelPauldrons = new JLabel("Pauldrons");
+		labelPauldrons = new JLabel(Messages.getString("UI.LABEL.PAULDRONS"));
 		panelCenter.add(labelPauldrons, "cell 0 8");
 
-		labelTorso = new JLabel("Torso");
+		labelTorso = new JLabel(Messages.getString("UI.LABEL.TORSO"));
 		panelCenter.add(labelTorso, "cell 0 9");
 
-		labelGloves = new JLabel("Gloves");
+		labelGloves = new JLabel(Messages.getString("UI.LABEL.GLOVES"));
 		panelCenter.add(labelGloves, "cell 0 10");
 
-		labelBoots = new JLabel("Boots");
+		labelBoots = new JLabel(Messages.getString("UI.LABEL.BOOTS"));
 		panelCenter.add(labelBoots, "cell 0 11");
 
-		labelOffhand = new JLabel("Offhand");
+		labelOffhand = new JLabel(Messages.getString("UI.LABEL.OFFHAND"));
 		panelCenter.add(labelOffhand, "cell 0 12");
 
 		labelAmuletValue = new JLabel("");
@@ -470,57 +469,57 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		labelOffhandValue = new JLabel("");
 		panelCenter.add(labelOffhandValue, "cell 1 12");
 
-		JLabel tmp = new JLabel("Offense Index");
+		JLabel tmp = new JLabel(Messages.getString("UI.LABEL.OFFENSE.INDEX"));
 		panelCenter.add(tmp, "cell 2 0");
 		labelOffenseIndex = new JLabel();
 		panelCenter.add(labelOffenseIndex, "cell 3 0");
 
-		tmp = new JLabel("Minimal Damage");
+		tmp = new JLabel(Messages.getString("UI.LABEL.MINIMUM.DAMAGE"));
 		panelCenter.add(tmp, "cell 2 1");
 		labelMinDamage = new JLabel();
 		panelCenter.add(labelMinDamage, "cell 3 1");
 
-		tmp = new JLabel("Maximum Damage");
+		tmp = new JLabel(Messages.getString("UI.LABEL.MAXIMUM.DAMAGE"));
 		panelCenter.add(tmp, "cell 2 2");
 		labelMaxDamage = new JLabel();
 		panelCenter.add(labelMaxDamage, "cell 3 2");
 
-		tmp = new JLabel("Median Damage");
+		tmp = new JLabel(Messages.getString("UI.LABEL.MEDIAN.DAMAGE"));
 		panelCenter.add(tmp, "cell 2 3");
 		labelMedianDamage = new JLabel();
 		panelCenter.add(labelMedianDamage, "cell 3 3");
 
-		tmp = new JLabel("Attack Speed");
+		tmp = new JLabel(Messages.getString("UI.LABEL.ATTACK.SPEED"));
 		panelCenter.add(tmp, "cell 2 4");
 		labelAttackSpeed = new JLabel();
 		panelCenter.add(labelAttackSpeed, "cell 3 4");
 
-		tmp = new JLabel("Critical Hit");
+		tmp = new JLabel(Messages.getString("UI.LABEL.CRITICAL.HIT"));
 		panelCenter.add(tmp, "cell 2 5");
 		labelCriticalHit = new JLabel();
 		panelCenter.add(labelCriticalHit, "cell 3 5");
 
-		tmp = new JLabel("Critical Damage");
+		tmp = new JLabel(Messages.getString("UI.LABEL.CRITICAL.DAMAGE"));
 		panelCenter.add(tmp, "cell 2 6");
 		labelCriticalDamage = new JLabel();
 		panelCenter.add(labelCriticalDamage, "cell 3 6");
 
-		tmp = new JLabel("Health Points");
+		tmp = new JLabel(Messages.getString("UI.LABEL.HEALTH.POINTS"));
 		panelCenter.add(tmp, "cell 2 7");
 		labelHP = new JLabel();
 		panelCenter.add(labelHP, "cell 3 7");
 
-		tmp = new JLabel("Armor");
+		tmp = new JLabel(Messages.getString("UI.LABEL.ARMOR"));
 		panelCenter.add(tmp, "cell 2 8");
 		labelArmor = new JLabel();
 		panelCenter.add(labelArmor, "cell 3 8");
 
-		tmp = new JLabel("Resistance");
+		tmp = new JLabel(Messages.getString("UI.LABEL.RESISTANCE"));
 		panelCenter.add(tmp, "cell 2 9");
 		labelResistance = new JLabel();
 		panelCenter.add(labelResistance, "cell 3 9");
 
-		tmp = new JLabel("Travel Speed");
+		tmp = new JLabel(Messages.getString("UI.LABEL.TRAVEL.SPEED"));
 		panelCenter.add(tmp, "cell 2 10");
 		labelTravelSpeed = new JLabel();
 		panelCenter.add(labelTravelSpeed, "cell 3 10");
@@ -541,7 +540,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
 
 		panelNorth.add(panelTopLevelMenu, BorderLayout.NORTH);
-		openButton = new JButton("Load Items");
+		openButton = new JButton(Messages.getString("UI.BUTTON.LOAD.ITEMS"));
 		panelTopLevelMenu.add(openButton);
 		openButton.addActionListener(this);
 		fileChooser = new JFileChooser(".");
@@ -549,29 +548,35 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		panelTopLevelMenu.add(rigidArea_1);
 
-		JLabel lblSelectClass = new JLabel("Select Class");
+		JLabel lblSelectClass = new JLabel(Messages.getString("UI.SELECT.CLASS.LABEL"));
 		panelTopLevelMenu.add(lblSelectClass);
 
 		// Character class dropdown and the action listener to update the model
-		dropdownCharacterClass = new JComboBox<String>();
+		dropdownCharacterClass = new JComboBox<OptimizerModel.CharClass>();
 		panelTopLevelMenu.add(dropdownCharacterClass);
-		dropdownCharacterClass.addItem("Mage");
-		dropdownCharacterClass.addItem("Dragonknight");
-		dropdownCharacterClass.addItem("Ranger");
-		dropdownCharacterClass.addItem("Dwarf");
+		dropdownCharacterClass.addItem(OptimizerModel.CharClass.MAGE);
+		dropdownCharacterClass.addItem(OptimizerModel.CharClass.DRAGONKNIGHT);
+		dropdownCharacterClass.addItem(OptimizerModel.CharClass.RANGER);
+		dropdownCharacterClass.addItem(OptimizerModel.CharClass.DWARF);
 		dropdownCharacterClass.addActionListener(new FieldActionListener());
+
+//		dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.MAGE"));
+//		dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.DRAGONKNIGHT"));
+//		dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.RANGER"));
+//		dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.DWARF"));
+//		dropdownCharacterClass.addActionListener(new FieldActionListener());
 
 		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
 		panelTopLevelMenu.add(rigidArea_2);
 
-		checkboxTwohanded = new JCheckBox("Twohanded");
+		checkboxTwohanded = new JCheckBox(Messages.getString("UI.CHECKBOX.TWOHANDED"));
 		panelTopLevelMenu.add(checkboxTwohanded);
 		checkboxTwohanded.addActionListener(new FieldActionListener());
 
 		rigidArea_3 = Box.createRigidArea(new Dimension(20, 20));
 		panelTopLevelMenu.add(rigidArea_3);
 
-		buttonGenerateSnapshots = new JButton("Generate Snapshots");
+		buttonGenerateSnapshots = new JButton(Messages.getString("UI.BUTTON.GENERATE.SNAPSHOTS"));
 		panelTopLevelMenu.add(buttonGenerateSnapshots);
 		buttonGenerateSnapshots.addActionListener(this);
 		buttonGenerateSnapshots.setEnabled(false);
@@ -579,10 +584,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		rigidArea = Box.createRigidArea(new Dimension(40, 20));
 		panelTopLevelMenu.add(rigidArea);
 
-		lblFunctions = new JLabel("Functions");
+		lblFunctions = new JLabel(Messages.getString("UI.LABEL.FUNCTIONS"));
 		panelTopLevelMenu.add(lblFunctions);
 
-		processButton = new JButton("Process");
+		processButton = new JButton(Messages.getString("UI.BUTTON.PROCESS"));
 		processButton.setEnabled(false);
 		panelTopLevelMenu.add(processButton);
 		processButton.setVerticalAlignment(SwingConstants.TOP);
@@ -590,12 +595,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		processButton.setOpaque(true);
 
 		// TODO Implement other functions
-		JButton defenseButton = new JButton("Most Defense");
+		JButton defenseButton = new JButton(Messages.getString("UI.BUTTON.MOST.DEFENSE"));
 		panelTopLevelMenu.add(defenseButton);
 		defenseButton.setVerticalAlignment(SwingConstants.TOP);
 		defenseButton.setEnabled(false);
 		defenseButton.setVisible(true);
-		defenseButton.setToolTipText("Not implemented yet");
+		defenseButton.setToolTipText(Messages.getString("UI.TOOLTIP.NOT.IMPLEMENTED.YET"));
 
 		panelSecondLevelMenu = new JPanel();
 		panelSecondLevelMenu.setBorder(new MatteBorder(1, 1, 1, 1, (Color) SystemColor.windowBorder));
@@ -603,13 +608,13 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		panelNorth.add(panelSecondLevelMenu, BorderLayout.CENTER);
 
-		lblSnapshotsLoaded = new JLabel("Snapshots loaded: 0");
+		lblSnapshotsLoaded = new JLabel(Messages.getString("UI.LABEL.SNAPSHOTS.LOADED"));
 		panelSecondLevelMenu.add(lblSnapshotsLoaded);
 
 		rigidArea_4 = Box.createRigidArea(new Dimension(20, 20));
 		panelSecondLevelMenu.add(rigidArea_4);
 
-		labelAttack = new JLabel("Attack");
+		labelAttack = new JLabel(Messages.getString("UI.LABEL.ATTACK"));
 		panelSecondLevelMenu.add(labelAttack);
 
 		sliderAttack = new JSlider();
@@ -622,7 +627,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		panelSecondLevelMenu.add(sliderAttack);
 		sliderAttack.addChangeListener(new ModifierFieldChangeListener());
 
-		lblAgility = new JLabel("Agility");
+		lblAgility = new JLabel(Messages.getString("UI.LABEL.AGILITY"));
 		panelSecondLevelMenu.add(lblAgility);
 
 		sliderAgility = new JSlider();
@@ -635,11 +640,11 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		panelSecondLevelMenu.add(sliderAgility);
 		sliderAgility.addChangeListener(new ModifierFieldChangeListener());
 
-		checkboxWeaponDamage = new JCheckBox("50% Weapon Damage");
+		checkboxWeaponDamage = new JCheckBox(Messages.getString("UI.CHECKBOX.WEAPON.DAMAGE"));
 		panelSecondLevelMenu.add(checkboxWeaponDamage);
 		checkboxWeaponDamage.addActionListener(new ModifierFieldActionListener());
 
-		checkboxRage = new JCheckBox("25% Rage/Mana");
+		checkboxRage = new JCheckBox(Messages.getString("UI.CHECKBOX.RAGE"));
 		panelSecondLevelMenu.add(checkboxRage);
 		checkboxRage.addActionListener(new ModifierFieldActionListener());
 
@@ -649,20 +654,20 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		flowLayout_2.setAlignment(FlowLayout.LEFT);
 		panelNorth.add(panelThirdLevelMenu, BorderLayout.SOUTH);
 
-		radioNo = new JRadioButton("No Essence");
+		radioNo = new JRadioButton(Messages.getString("UI.RADIO.NOESSENCE"));
 		panelThirdLevelMenu.add(radioNo);
 		radioNo.setSelected(true);
 
-		radioGreen = new JRadioButton("Green");
+		radioGreen = new JRadioButton(Messages.getString("UI.RADIO.GREEN"));
 		panelThirdLevelMenu.add(radioGreen);
 
-		radioBlue = new JRadioButton("Blue");
+		radioBlue = new JRadioButton(Messages.getString("UI.RADIO.BLUE"));
 		panelThirdLevelMenu.add(radioBlue);
 
-		radioPurple = new JRadioButton("Purple");
+		radioPurple = new JRadioButton(Messages.getString("UI.RADIO.PURPLE"));
 		panelThirdLevelMenu.add(radioPurple);
 
-		radioRed = new JRadioButton("Red");
+		radioRed = new JRadioButton(Messages.getString("UI.RADIO.RED"));
 		panelThirdLevelMenu.add(radioRed);
 
 		ButtonGroup bp = new ButtonGroup();
@@ -712,7 +717,6 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				}
 				om.setState(EnumTypes.State.LOADED);
 
-				// progressLabel.setText("Items Loaded Successfully");
 				progressLabel.setVisible(true);
 			}
 		} else if (e.getSource() == buttonGenerateSnapshots) {
@@ -722,7 +726,6 @@ public class OptimizerApp extends JPanel implements ActionListener {
 						generateSnapshots();
 					} catch (Exception e) {
 						om.setState(EnumTypes.State.ERROR, e.getMessage());
-						// progressLabel.setText(e.getMessage());
 						e.printStackTrace();
 					}
 				}
@@ -730,17 +733,14 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			qthread.start();
 		} else if (e.getSource() == processButton) {
 			Thread qthread = new Thread() {
-
 				public void run() {
 					try {
 						processItems();
 					} catch (Exception e) {
 						om.setState(EnumTypes.State.ERROR, e.getLocalizedMessage());
-						// progressLabel.setText(e.getMessage());
 						e.printStackTrace();
 					}
 				}
-
 			};
 			qthread.start();
 		}
@@ -753,123 +753,40 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	 */
 	private void generateSnapshots() throws Exception {
 
-		String currentCharClass = (String) dropdownCharacterClass.getSelectedItem();
-		om.setCharClass(OptimizerModel.CharClass.valueOf(currentCharClass.toUpperCase()));
-		PropertyManager.getPropertyManager().setCurrentClass(currentCharClass);
-		boolean isRanger = currentCharClass.equalsIgnoreCase("ranger");
+		OptimizerModel.CharClass currentCharClass =  (OptimizerModel.CharClass)dropdownCharacterClass.getSelectedItem();
+		om.setCharClass(OptimizerModel.CharClass.valueOf(currentCharClass.name().toUpperCase()));
+		om.setTwoHanded(checkboxTwohanded.isSelected());
 
-		SetConfig.getSetConfig().reinitialize();
-		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
+		startProgress(om.calculateSize());
+		om.setProgressListener(new ProgressChangeListener() {
 
-		boolean b = checkboxTwohanded.isSelected();
-		om.setTwoHanded(b);
-
-		// Number of snapshots to be generated
-		// TODO optimize the array
-		int size;
-		if (isRanger && b) {
-			size = om.getInventory().getAmulets().size() * om.getInventory().getBelts().size()
-					* om.getInventory().getCloaks().size() * om.getInventory().getCrystals().size()
-					* om.getInventory().getTwohands().size() * om.getInventory().getOffhands().size()
-					* om.getInventory().getHelmets().size() * om.getInventory().getPauldrons().size()
-					* om.getInventory().getTorsos().size() * om.getInventory().getGloves().size()
-					* om.getInventory().getBoots().size() * (om.getInventory().getRings().size())
-					* (om.getInventory().getRings().size() - 1) / 2;
-
-		} else if (b) {
-			size = om.getInventory().getAmulets().size() * om.getInventory().getBelts().size()
-					* om.getInventory().getCloaks().size() * om.getInventory().getCrystals().size()
-					* om.getInventory().getTwohands().size() * om.getInventory().getHelmets().size()
-					* om.getInventory().getPauldrons().size() * om.getInventory().getTorsos().size()
-					* om.getInventory().getGloves().size() * om.getInventory().getBoots().size()
-					* (om.getInventory().getRings().size()) * (om.getInventory().getRings().size() - 1) / 2;
-		} else {
-			size = om.getInventory().getAmulets().size() * om.getInventory().getBelts().size()
-					* om.getInventory().getCloaks().size() * om.getInventory().getCrystals().size()
-					* om.getInventory().getMainhands().size() * om.getInventory().getOffhands().size()
-					* om.getInventory().getHelmets().size() * om.getInventory().getPauldrons().size()
-					* om.getInventory().getTorsos().size() * om.getInventory().getGloves().size()
-					* om.getInventory().getBoots().size() * (om.getInventory().getRings().size())
-					* (om.getInventory().getRings().size() - 1) / 2;
-		}
-		if (size == 0) {
-			throw new Exception("There should be at least one item of each kind.");
-		}
-
-		om.setState(EnumTypes.State.GENERATING_SNAPSHOTS, String.valueOf(size));
-
-		snapshots = ItemUtils.getAllSnapshots(om.getInventory(), b, isRanger);
-		om.setState(EnumTypes.State.GENERATED_SNAPSHOTS, String.valueOf(size));
-
-		lblSnapshotsLoaded.setText("Snapshots loaded: " + size);
-
-		om.setState(EnumTypes.State.PREPROCESSING, currentCharClass);
-		startProgress(size);
-		int i = 0;
-		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
-			CharacterSnapshot cs = iterator.next();
-			cs.clean();
-			// Process all the items
-			cs.processModifiers();
-			// process sets if any
-			cs.processSets();
-			++i;
-			updateProgress(i, cs);
-		}
-		om.setState(EnumTypes.State.PREPROCESSED);
+			@Override
+			public void progressChanged(int i) {
+				updateProgress(i);
+			}
+		});
+		om.generateSnapshots();
 	}
 
+	/**
+	 * Populates the model with the user input and calculates the best build.
+	 * 
+	 * @throws Exception
+	 */
 	private void processItems() throws Exception {
-		System.out.println(om);
-		om.setState(EnumTypes.State.CALCULATING);
 		populateModel();
+		startProgress(om.getSnapshots().size());
+		om.setProgressListener(new ProgressChangeListener() {
 
-		startProgress(snapshots.size());
-
-		// off gem mods, def gem mods, attack mods, agility mods, essence mods,
-		// wp mod, rage mod
-
-		Modifier[] additionalMods = { om.getAttack(), om.getAgility(), om.getEssence() };
-
-		double max = 0;
-		CharacterSnapshot bestSnapshot = null;
-		CharacterPower bestPower = null;
-		int i = 0;
-		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
-			CharacterSnapshot cs = iterator.next();
-			CharacterPower power = cs.getCharacterPowerCopy();
-			if (null != om.getOffGems()) {
-				cs.processModifiers(Arrays.asList(om.getOffGems()));
+			@Override
+			public void progressChanged(int i) {
+				updateProgress(i);
 			}
-			if (null != om.getDefGems()) {
-				cs.processModifiers(Arrays.asList(om.getDefGems()));
-			}
-			if (null != om.getWeaponDmg()) {
-				cs.processModifiers(Arrays.asList(om.getWeaponDmg()));
-			}
-			if (null != om.getRage()) {
-				cs.processModifiers(Arrays.asList(om.getRage()));
-			}
-			if (null != om.getPetAndBuffs()) {
-				cs.processModifiers(Arrays.asList(om.getPetAndBuffs()));
-			}
+		});
+		om.processItems();
 
-			cs.processModifiers(Arrays.asList(additionalMods));
-			double cmd = cs.getCp().calculateEffectiveDamage();
-			if (cmd > max) {
-				max = cmd;
-				bestSnapshot = cs;
-				bestPower = cs.getCp();
-			}
-			++i;
-			cs.setCp(power);
-			updateProgress(i, bestSnapshot);
-		}
-		om.setState(EnumTypes.State.CALCULATED);
-
-		updateGUI(bestSnapshot, bestPower);
-		fLogger.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
-
+		updateGUI(om.getBestSnapshot(), om.getBestPower());
+		fLogger.log(Level.INFO, "Best snapshot" + om.getBestSnapshot().toString());
 	}
 
 	/**
@@ -878,12 +795,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	 * 
 	 */
 	private void populateModel() throws Exception {
-		String cc = (String) dropdownCharacterClass.getSelectedItem();
-		PropertyManager.getPropertyManager().setCurrentClass(cc);
-		om.setCharClass(OptimizerModel.CharClass.valueOf(cc.toUpperCase()));
+//		String cc = (String) dropdownCharacterClass.getSelectedItem();
+//		PropertyManager.getPropertyManager().setCurrentClass(cc);
+//		om.setCharClass(OptimizerModel.CharClass.valueOf(cc.toUpperCase()));
 
 		SetConfig.getSetConfig().reinitialize();
-		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
+		fLogger.log(Level.INFO, "Character Class" + dropdownCharacterClass.getSelectedItem());
 
 		boolean b = checkboxTwohanded.isSelected();
 		om.setTwoHanded(b);
@@ -891,19 +808,19 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		String str = textFieldOffGems.getText();
 		Modifier[] offGemMods = ItemUtils.parseModifiersFromString(str);
 		om.setOffGems(offGemMods);
-		fLogger.log(Level.INFO, "OffGems: " + str);
+		fLogger.log(Level.INFO, "OffGems" + str);
 
 		str = textFieldDefGems.getText();
 		Modifier[] defGemMods = ItemUtils.parseModifiersFromString(str);
 
 		om.setDefGems(defGemMods);
-		fLogger.log(Level.INFO, "DefGems: " + str);
+		fLogger.log(Level.INFO, "DefGems" + str);
 
 		str = textFieldPetAndBuffs.getText();
 		Modifier[] petAndBuffs = ItemUtils.parseModifiersFromString(str);
 
 		om.setPetAndBuffs(petAndBuffs);
-		fLogger.log(Level.INFO, "PetAndBuffs: " + str);
+		fLogger.log(Level.INFO, "PetAndBuffs" + str);
 
 		Modifier attack = new Modifier();
 		attack.setType(Modifier.Type.PDAMAGE);
@@ -987,7 +904,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		});
 	}
 
-	private void updateProgress(int i, CharacterSnapshot cs) {
+	private void updateProgress(int i) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				progressBar.setValue(i);
@@ -1067,12 +984,17 @@ public class OptimizerApp extends JPanel implements ActionListener {
 					labelWeaponValue.setText(cs.getMainhand().toString());
 				}
 				if (null != cs.getOffhand()) {
+					labelOffhand.setVisible(true);
+					labelOffhandValue.setVisible(true);
 					if (labelOffhandValue.getText().equals(cs.getOffhand().toString())) {
 						labelOffhandValue.setForeground(Color.DARK_GRAY);
 					} else {
 						labelOffhandValue.setForeground(Color.red);
 					}
 					labelOffhandValue.setText(cs.getOffhand().toString());
+				} else {
+					labelOffhand.setVisible(false);
+					labelOffhandValue.setVisible(false);
 				}
 
 				if (labelHelmetValue.getText().equals(cs.getHelmet().toString())) {
@@ -1124,7 +1046,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				labelResistance.setText(String.valueOf(Math.round(cp.calculateResist())));
 				labelCriticalDamage.setText(String.valueOf(Math.round((cp.getCd() + 200) * 100.0) / 100.0) + "%");
 				double attackSpeed = cp.getWaspeed() + cp.getAspeed() / 100.0 * cp.getWaspeed();
-				labelAttackSpeed.setText(String.valueOf(Math.round(attackSpeed * 100.0) / 100.0) + " ps");
+				System.out.println(cp.getWaspeed());
+				System.out.println(cp.getAspeed());
+				labelAttackSpeed.setText(
+						String.valueOf(Math.round(attackSpeed) / 100.0) + Messages.getString("UI.MESSAGE.PER.SECOND"));
 				labelTravelSpeed.setText(String.valueOf(Math.round(cp.getTspeed() * 100.0) / 100.0) + "%");
 
 				om.setState(EnumTypes.State.CALCULATED);
@@ -1177,4 +1102,5 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		}
 	}
+
 }

@@ -336,7 +336,7 @@ public class CharacterSnapshot implements Serializable {
 	 * Processes all modifiers of this.
 	 */
 	public final void processModifiers() {
-		processModifiers(this.getModifiersAsList());
+		this.getCp().processModifiers(this.getModifiersAsList());
 	}
 
 	/**
@@ -345,92 +345,6 @@ public class CharacterSnapshot implements Serializable {
 	public final void clean() {
 		this.cp = new CharacterPower();
 		this.sets.clear();
-	}
-
-	/**
-	 * TODO Rewrite to apply all the modifiers at once, so it could be used
-	 * against the DB in a query
-	 * 
-	 * Processes the list of modifiers and updates the corresponding values of
-	 * the Snapshot Object.
-	 * 
-	 * @param mods
-	 *            list of modifiers to be processed
-	 */
-	public final void processModifiers(final List<Modifier> mods) {
-		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
-			Modifier modifier = (Modifier) iterator2.next();
-			Double ds = modifier.getValue();
-			switch (modifier.getType()) {
-			case DAMAGE:
-				cp.setDmg(cp.getDmg() + ds);
-				break;
-			case PDAMAGE:
-				cp.setPdmg(cp.getPdmg() + ds);
-				break;
-			case MAXIMUM_DAMAGE:
-				cp.setMaxdmg(cp.getMaxdmg() + ds);
-				break;
-			case PMAXIMUM_DAMAGE:
-				cp.setPmaxdmg(cp.getPmaxdmg() + ds);
-				break;
-			case PCRITICAL_DAMAGE:
-				cp.setCd(cp.getCd() + ds);
-				break;
-			case PATTACK_SPEED:
-				cp.setAspeed(cp.getAspeed() + ds);
-				break;
-			case PWEAPON_ATTACK_SPEED:
-				cp.setWaspeed(cp.getWaspeed() + ds);
-				break;
-			case PTRAVEL_SPEED:
-				cp.setTspeed(cp.getTspeed() + ds);
-				break;
-			case ARMOR:
-				cp.setArmor(cp.getArmor() + ds);
-				break;
-			case PARMOR:
-				cp.setParmor(cp.getParmor() + ds);
-				break;
-			case HP:
-				cp.setHp(cp.getHp() + ds);
-				break;
-			case PHP:
-				cp.setPhp(cp.getPhp() + ds);
-				break;
-			case RESIST:
-				cp.setResist(cp.getResist() + ds);
-				break;
-			case PRESIST:
-				cp.setPresist(cp.getPresist() + ds);
-				break;
-			case CRITICAL_HIT:
-				cp.setCrit(cp.getCrit() + ds);
-				break;
-			case PCRITICAL_HIT:
-				cp.setPcrit(cp.getPcrit() + ds);
-				break;
-			case WEAPON_DAMAGE:
-				cp.setWdmg(cp.getWdmg() + ds);
-				break;
-			case WEAPON_DAMAGE_MIN:
-				cp.setWmindmg(cp.getWmindmg() + ds);
-				break;
-			case WEAPON_DAMAGE_MAX:
-				cp.setWmaxdmg(cp.getWmaxdmg() + ds);
-				break;
-			case PWEAPON_DAMAGE:
-				cp.setPwdmg(cp.getPwdmg() + ds);
-				break;
-			case PEXTRA_WEAPON_DMG:
-				cp.setPwde(cp.getPwde() + ds);
-				break;
-			default:
-				break;
-
-			}
-		}
-
 	}
 
 	/**

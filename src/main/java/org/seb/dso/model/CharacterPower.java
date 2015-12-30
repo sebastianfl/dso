@@ -1,6 +1,8 @@
 package org.seb.dso.model;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
 import org.seb.dso.util.Constants;
 import org.seb.dso.util.PropertyManager;
@@ -77,6 +79,33 @@ public class CharacterPower implements Serializable {
 		this.wmindmg = wmindmg;
 		this.wmaxdmg = wmaxdmg;
 		this.waspeed = waspeed;
+	}
+
+	public void append(CharacterPower cp) {
+		this.dmg += cp.dmg;
+		this.crit += cp.crit;
+		this.hp += cp.hp;
+		this.armor += cp.armor;
+		this.resist += cp.resist;
+		this.cd += cp.cd;
+		this.mindmg += cp.mindmg;
+		this.maxdmg += cp.maxdmg;
+		this.pdmg += cp.pdmg;
+		this.pcrit += cp.pcrit;
+		this.php += cp.php;
+		this.parmor += cp.parmor;
+		this.presist += cp.presist;
+		this.pmaxdmg += cp.pmaxdmg;
+		this.tspeed += cp.tspeed;
+		this.aspeed += cp.aspeed;
+		this.wdmg += cp.wdmg;
+		this.pwdmg += cp.pwdmg;
+		this.bc += cp.bc;
+		this.br += cp.br;
+		this.pwde += cp.pwde;
+		this.wmindmg += cp.wmindmg;
+		this.wmaxdmg += cp.wmaxdmg;
+		this.waspeed += cp.waspeed;
 	}
 
 	public final double getDmg() {
@@ -361,6 +390,92 @@ public class CharacterPower implements Serializable {
 		double cd = (this.getCd() / 100) + 2;
 
 		return (1 - crit) * mediandmg + crit * cd * mediandmg;
+	}
+
+	/**
+	 * TODO Rewrite to apply all the modifiers at once, so it could be used
+	 * against the DB in a query
+	 * 
+	 * Processes the list of modifiers and updates the corresponding values of
+	 * the Snapshot Object.
+	 * 
+	 * @param mods
+	 *            list of modifiers to be processed
+	 */
+	public final void processModifiers(final List<Modifier> mods) {
+		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
+			Modifier modifier = (Modifier) iterator2.next();
+			Double ds = modifier.getValue();
+			switch (modifier.getType()) {
+			case DAMAGE:
+				this.setDmg(this.getDmg() + ds);
+				break;
+			case PDAMAGE:
+				this.setPdmg(this.getPdmg() + ds);
+				break;
+			case MAXIMUM_DAMAGE:
+				this.setMaxdmg(this.getMaxdmg() + ds);
+				break;
+			case PMAXIMUM_DAMAGE:
+				this.setPmaxdmg(this.getPmaxdmg() + ds);
+				break;
+			case PCRITICAL_DAMAGE:
+				this.setCd(this.getCd() + ds);
+				break;
+			case PATTACK_SPEED:
+				this.setAspeed(this.getAspeed() + ds);
+				break;
+			case PWEAPON_ATTACK_SPEED:
+				this.setWaspeed(this.getWaspeed() + ds);
+				break;
+			case PTRAVEL_SPEED:
+				this.setTspeed(this.getTspeed() + ds);
+				break;
+			case ARMOR:
+				this.setArmor(this.getArmor() + ds);
+				break;
+			case PARMOR:
+				this.setParmor(this.getParmor() + ds);
+				break;
+			case HP:
+				this.setHp(this.getHp() + ds);
+				break;
+			case PHP:
+				this.setPhp(this.getPhp() + ds);
+				break;
+			case RESIST:
+				this.setResist(this.getResist() + ds);
+				break;
+			case PRESIST:
+				this.setPresist(this.getPresist() + ds);
+				break;
+			case CRITICAL_HIT:
+				this.setCrit(this.getCrit() + ds);
+				break;
+			case PCRITICAL_HIT:
+				this.setPcrit(this.getPcrit() + ds);
+				break;
+			case WEAPON_DAMAGE:
+				this.setWdmg(this.getWdmg() + ds);
+				break;
+			case WEAPON_DAMAGE_MIN:
+				this.setWmindmg(this.getWmindmg() + ds);
+				break;
+			case WEAPON_DAMAGE_MAX:
+				this.setWmaxdmg(this.getWmaxdmg() + ds);
+				break;
+			case PWEAPON_DAMAGE:
+				this.setPwdmg(this.getPwdmg() + ds);
+				break;
+			case PEXTRA_WEAPON_DMG:
+				this.setPwde(this.getPwde() + ds);
+				break;
+			default:
+				break;
+
+			}
+		}
+
 	}
 
 	@Override
