@@ -179,9 +179,22 @@ public class ItemUtils {
 		return inv;
 	}
 
-	public static List<CharacterSnapshot> getAllSnapshots(Inventory inv, boolean twohand) {
+	/**
+	 * TODO Consider H2 DB or OrientDB without in-memory operation
+	 * 
+	 * Recursively creates the massive collection of all possible item
+	 * combinations
+	 * 
+	 * @param inv
+	 * @param twohand
+	 *            Specifies either twohanded or onehanded setups should be used
+	 * @return
+	 */
+	public static List<CharacterSnapshot> getAllSnapshots(Inventory inv, boolean isTwohand, boolean isRanger) {
 		List<CharacterSnapshot> snapshots = new ArrayList<CharacterSnapshot>();
-		if (twohand) {
+		if (isRanger) {
+			continueWithTwohandRanger(inv, snapshots);			
+		} else if (isTwohand) {
 			continueWithTwohand(inv, snapshots);
 		} else {
 			continueWithMainhand(inv, snapshots);
@@ -321,6 +334,18 @@ public class ItemUtils {
 			// cs.processModifiers(item.getModifiersAsList());
 			// continueWithGems(inv, snapshots, cs);
 			continueWithAmulet(inv, snapshots, cs);
+		}
+
+	}
+
+	private static void continueWithTwohandRanger(Inventory inv, List<CharacterSnapshot> snapshots) {
+		for (Iterator<Item> iterator = inv.getTwohands().iterator(); iterator.hasNext();) {
+			Item item = iterator.next();
+			CharacterSnapshot cs = new CharacterSnapshot();
+			cs.setTwohand(item);
+			// cs.processModifiers(item.getModifiersAsList());
+			// continueWithGems(inv, snapshots, cs);
+			continueWithOffhand(inv, snapshots, cs);
 		}
 
 	}

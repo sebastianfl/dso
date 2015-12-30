@@ -7,7 +7,12 @@ public class Modifier implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum Type {
-		DAMAGE, CRITICAL_HIT, HP, ARMOR, RESIST, RESISTANCE_COLD, RESISTANCE_FIRE, RESISTANCE_POISON, RESISTANCE_ANDERMAGIC, RESISTANCE_LIGHT, BLOCK_REDUCTION, MAXIMUM_DAMAGE, WEAPON_DAMAGE, MANA, PDAMAGE, PCRITICAL_HIT, PCRITICAL_DAMAGE, PHP, PARMOR, PRESIST, PTRAVEL_SPEED, PATTACK_SPEED, PBLOCK_STRENGTH, PRESISTANCE_COLD, PRESISTANCE_FIRE, PRESISTANCE_POISON, PRESISTANCE_ANDERMAGIC, PRESISTANCE_LIGHT, PMAXIMUM_DAMAGE, PWEAPON_DAMAGE, PEXTRA_WEAPON_DMG, PMANA, MINIMUM_DAMAGE, PMINIMUM_DAMAGE
+		DAMAGE, CRITICAL_HIT, HP, ARMOR, RESIST, RESISTANCE_COLD, RESISTANCE_FIRE, RESISTANCE_POISON,
+		RESISTANCE_ANDERMAGIC, RESISTANCE_LIGHT, BLOCK_REDUCTION, MAXIMUM_DAMAGE, WEAPON_DAMAGE, WEAPON_DAMAGE_MAX,
+		WEAPON_DAMAGE_MIN, MANA, PDAMAGE, PCRITICAL_HIT, PCRITICAL_DAMAGE, PHP, PARMOR, PRESIST, PTRAVEL_SPEED,
+		PATTACK_SPEED, PWEAPON_ATTACK_SPEED, PBLOCK_STRENGTH, PRESISTANCE_COLD, PRESISTANCE_FIRE, PRESISTANCE_POISON,
+		PRESISTANCE_ANDERMAGIC, PRESISTANCE_LIGHT, PMAXIMUM_DAMAGE, PWEAPON_DAMAGE, PEXTRA_WEAPON_DMG, PMANA,
+		MINIMUM_DAMAGE, PMINIMUM_DAMAGE
 
 	}
 
@@ -69,6 +74,14 @@ public class Modifier implements Serializable {
 			}
 			break;
 		}
+		case WEAPON_DAMAGE_MIN: {
+			this.type = Type.WEAPON_DAMAGE_MIN;
+			break;
+		}
+		case WEAPON_DAMAGE_MAX: {
+			this.type = Type.WEAPON_DAMAGE_MAX;
+			break;
+		}
 		case CRITICAL_DAMAGE: {
 			this.type = Type.PCRITICAL_DAMAGE;
 			break;
@@ -99,6 +112,10 @@ public class Modifier implements Serializable {
 		}
 		case ATTACK_SPEED: {
 			this.type = Type.PATTACK_SPEED;
+			break;
+		}
+		case WEAPON_ATTACK_SPEED: {
+			this.type = Type.PWEAPON_ATTACK_SPEED;
 			break;
 		}
 		case HP: {
@@ -219,6 +236,12 @@ public class Modifier implements Serializable {
 		case MINIMUM_DAMAGE:
 			s = ModifierCode.MINIMUM_DAMAGE.getCode();
 			break;
+		case WEAPON_DAMAGE_MIN:
+			s = ModifierCode.WEAPON_DAMAGE_MIN.getCode();
+			break;
+		case WEAPON_DAMAGE_MAX:
+			s = ModifierCode.WEAPON_DAMAGE_MAX.getCode();
+			break;
 		case RESIST:
 			s = ModifierCode.RESIST.getCode();
 			break;
@@ -246,6 +269,10 @@ public class Modifier implements Serializable {
 			break;
 		case PATTACK_SPEED:
 			s = ModifierCode.ATTACK_SPEED.getCode();
+			a = "%";
+			break;
+		case PWEAPON_ATTACK_SPEED:
+			s = ModifierCode.WEAPON_ATTACK_SPEED.getCode();
 			a = "%";
 			break;
 		case PBLOCK_STRENGTH:

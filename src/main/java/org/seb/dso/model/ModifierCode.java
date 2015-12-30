@@ -5,7 +5,8 @@ public enum ModifierCode {
 	DAMAGE("d"), CRITICAL_HIT("c"), HP("h"), ARMOR("a"), RESIST("r"), RESISTANCE_COLD("rc"), RESISTANCE_FIRE("rf"),
 	RESISTANCE_POISON("rp"), RESISTANCE_ANDERMAGIC("ra"), RESISTANCE_LIGHT("rl"), BLOCK_REDUCTION("br"),
 	MAXIMUM_DAMAGE("dmax"), MINIMUM_DAMAGE("dmin"), WEAPON_DAMAGE("wd"), MANA("m"), CRITICAL_DAMAGE("cd"),
-	TRAVEL_SPEED("ts"), ATTACK_SPEED("as"), BLOCK_STRENGTH("bs"), EXTRA_WEAPON_DMG("wde");
+	TRAVEL_SPEED("ts"), ATTACK_SPEED("as"), WEAPON_ATTACK_SPEED("was"), BLOCK_STRENGTH("bs"), EXTRA_WEAPON_DMG("wde"), WEAPON_DAMAGE_MIN("wdmin"),
+	WEAPON_DAMAGE_MAX("wdmax");
 
 	private String code;
 
@@ -25,6 +26,5 @@ public enum ModifierCode {
 		}
 		return null;
 	}
-	
-	
+
 }

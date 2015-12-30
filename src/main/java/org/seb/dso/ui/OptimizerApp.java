@@ -57,7 +57,8 @@ import org.seb.dso.util.PropertyManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * TODO Fix all 1000+ checkstyle warnings TODO Constants TODO L10N/I18N
+ * TODO Fix all 1000+ checkstyle warnings TODO Constants TODO L10N/I18N TODO Add
+ * SpringFramework container part for the 'singletons'
  * 
  * @author Sebastian
  *
@@ -93,6 +94,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JLabel labelRing2;
 	private JLabel labelAdornment;
 	private JLabel labelWeapon;
+	private JLabel labelOffhand;
 	private JLabel labelHelmet;
 	private JLabel labelBoots;
 	private JLabel labelPauldrons;
@@ -105,6 +107,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JLabel labelRing2Value;
 	private JLabel labelAdornmentValue;
 	private JLabel labelWeaponValue;
+	private JLabel labelOffhandValue;
 	private JLabel labelHelmetValue;
 	private JLabel labelBootsValue;
 	private JLabel labelPauldronsValue;
@@ -385,9 +388,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private void initCenter() {
 		panelCenter = new JPanel();
 		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
-		panelCenter.setLayout(new MigLayout("",
-				"[100px:100px:100px][100px:100px,grow,fill][100px:100px:100px][100px:100px]",
-				"[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
+		panelCenter.setLayout(new MigLayout("", "[100px:100px:100px][100px:100px,grow,fill][100px:100px:100px][100px:100px]", "[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
 
 		labelAmulet = new JLabel("Amulet");
 		panelCenter.add(labelAmulet, "cell 0 0");
@@ -425,6 +426,9 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		labelBoots = new JLabel("Boots");
 		panelCenter.add(labelBoots, "cell 0 11");
 
+		labelOffhand = new JLabel("Offhand");
+		panelCenter.add(labelOffhand, "cell 0 12");
+
 		labelAmuletValue = new JLabel("");
 		panelCenter.add(labelAmuletValue, "cell 1 0");
 
@@ -460,6 +464,9 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		labelBootsValue = new JLabel("");
 		panelCenter.add(labelBootsValue, "cell 1 11");
+
+		labelOffhandValue = new JLabel("");
+		panelCenter.add(labelOffhandValue, "cell 1 12");
 
 		JLabel tmp = new JLabel("Offense Index");
 		panelCenter.add(tmp, "cell 2 0");
@@ -548,8 +555,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		panelTopLevelMenu.add(dropdownCharacterClass);
 		dropdownCharacterClass.addItem("Mage");
 		dropdownCharacterClass.addItem("Dragonknight");
-		// dropdownCharacterClass.addItem("Ranger");
-		// dropdownCharacterClass.addItem("Dwarf");
+		dropdownCharacterClass.addItem("Ranger");
+		dropdownCharacterClass.addItem("Dwarf");
 		dropdownCharacterClass.addActionListener(new FieldActionListener());
 
 		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
@@ -747,6 +754,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		String currentCharClass = (String) dropdownCharacterClass.getSelectedItem();
 		om.setCharClass(OptimizerModel.CharClass.valueOf(currentCharClass.toUpperCase()));
 		PropertyManager.getPropertyManager().setCurrentClass(currentCharClass);
+		boolean isRanger = currentCharClass.equalsIgnoreCase("ranger");
 
 		SetConfig.getSetConfig().reinitialize();
 		fLogger.log(Level.INFO, "Character Class: " + (String) dropdownCharacterClass.getSelectedItem());
@@ -757,7 +765,16 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		// Number of snapshots to be generated
 		// TODO optimize the array
 		int size;
-		if (b) {
+		if (isRanger && b) {
+			size = om.getInventory().getAmulets().size() * om.getInventory().getBelts().size()
+					* om.getInventory().getCloaks().size() * om.getInventory().getCrystals().size()
+					* om.getInventory().getTwohands().size() * om.getInventory().getOffhands().size()
+					* om.getInventory().getHelmets().size() * om.getInventory().getPauldrons().size()
+					* om.getInventory().getTorsos().size() * om.getInventory().getGloves().size()
+					* om.getInventory().getBoots().size() * (om.getInventory().getRings().size())
+					* (om.getInventory().getRings().size() - 1) / 2;
+
+		} else if (b) {
 			size = om.getInventory().getAmulets().size() * om.getInventory().getBelts().size()
 					* om.getInventory().getCloaks().size() * om.getInventory().getCrystals().size()
 					* om.getInventory().getTwohands().size() * om.getInventory().getHelmets().size()
@@ -779,13 +796,13 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		om.setState(EnumTypes.State.GENERATING_SNAPSHOTS, String.valueOf(size));
 
-		snapshots = ItemUtils.getAllSnapshots(om.getInventory(), b);
+		snapshots = ItemUtils.getAllSnapshots(om.getInventory(), b, isRanger);
 		om.setState(EnumTypes.State.GENERATED_SNAPSHOTS, String.valueOf(size));
 
 		lblSnapshotsLoaded.setText("Snapshots loaded: " + size);
 
 		om.setState(EnumTypes.State.PREPROCESSING, currentCharClass);
-		startProgress(size, "Snapshots generated. Pre-processing for a class: " + currentCharClass);
+		startProgress(size);
 		int i = 0;
 		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
 			CharacterSnapshot cs = iterator.next();
@@ -805,7 +822,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		om.setState(EnumTypes.State.CALCULATING);
 		populateModel();
 
-		startProgress(snapshots.size(), "Processing...");
+		startProgress(snapshots.size());
 
 		// off gem mods, def gem mods, attack mods, agility mods, essence mods,
 		// wp mod, rage mod
@@ -841,7 +858,6 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			cs.setCp(power);
 			updateProgress(i, bestSnapshot);
 		}
-		//bestSnapshot.setCp(bestPower);
 		om.setState(EnumTypes.State.CALCULATED);
 
 		updateGUI(bestSnapshot, bestPower);
@@ -946,7 +962,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 	}
 
-	private void startProgress(int size, String message) {
+	private void startProgress(int size) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				progressBar.setMaximum(size);
@@ -984,7 +1000,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private void updateGUI(final CharacterSnapshot cs, final CharacterPower cp) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-
+				// TODO replace by change listeners
 				if (labelAmuletValue.getText().equals(cs.getAmulet().toString())) {
 					labelAmuletValue.setForeground(Color.DARK_GRAY);
 				} else {
@@ -1027,13 +1043,31 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				}
 				labelAdornmentValue.setText(cs.getCrystal().toString());
 
-				if (labelWeaponValue.getText().equals(cs.getTwohand().toString())) {
-					labelWeaponValue.setForeground(Color.DARK_GRAY);
-				} else {
-					labelWeaponValue.setForeground(Color.red);
+				if (null != cs.getTwohand()) {
+					if (labelWeaponValue.getText().equals(cs.getTwohand().toString())) {
+						labelWeaponValue.setForeground(Color.DARK_GRAY);
+					} else {
+						labelWeaponValue.setForeground(Color.red);
+					}
+					labelWeaponValue.setText(cs.getTwohand().toString());
 				}
-				labelWeaponValue.setText(cs.getTwohand().toString());
-
+				else {
+					if (labelWeaponValue.getText().equals(cs.getMainhand().toString())) {
+						labelWeaponValue.setForeground(Color.DARK_GRAY);
+					} else {
+						labelWeaponValue.setForeground(Color.red);
+					}
+					labelWeaponValue.setText(cs.getMainhand().toString());
+				}
+				if (null != cs.getOffhand()) {
+					if (labelOffhandValue.getText().equals(cs.getOffhand().toString())) {
+						labelOffhandValue.setForeground(Color.DARK_GRAY);
+					} else {
+						labelOffhandValue.setForeground(Color.red);
+					}
+					labelOffhandValue.setText(cs.getOffhand().toString());
+				}
+				
 				if (labelHelmetValue.getText().equals(cs.getHelmet().toString())) {
 					labelHelmetValue.setForeground(Color.DARK_GRAY);
 				} else {
@@ -1071,18 +1105,21 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 				double minDmg = Math.round(cp.calculateMinDamage() * 100.0) / 100.0;
 				double maxDmg = Math.round(cp.calculateMaxDamage() * 100.0) / 100.0;
+				double medianDmg = Math.round(((minDmg + maxDmg) / 2) * 100.0) / 100.0;
 
 				labelMinDamage.setText(String.valueOf(minDmg));
 				labelMaxDamage.setText(String.valueOf(maxDmg));
-				labelMedianDamage.setText(String.valueOf((maxDmg + minDmg) / 2.00));
+				labelMedianDamage.setText(String.valueOf(medianDmg));
 				labelHP.setText(String.valueOf(Math.round(cp.calculateHP())));
 				labelArmor.setText(String.valueOf(Math.round(cp.calculateArmor())));
 				labelCriticalHit.setText(String.valueOf(Math.round(cp.calculateCrit() * 100.0) / 100.0) + "%");
 				labelOffenseIndex.setText(String.valueOf(Math.round(cp.calculateEffectiveDamage() * 100.0) / 100.0));
 				labelResistance.setText(String.valueOf(Math.round(cp.calculateResist())));
 				labelCriticalDamage.setText(String.valueOf(Math.round((cp.getCd() + 200) * 100.0) / 100.0) + "%");
-				double attackSpeed = 0.83333333 + cp.getAspeed() / 100.0 * 0.83333333;
+				double attackSpeed = cp.getWaspeed() + cp.getAspeed() / 100.0 * cp.getWaspeed();
 				System.out.println(attackSpeed);
+				System.out.println(cp.getAspeed());
+				System.out.println(cp.getWaspeed());
 				labelAttackSpeed.setText(
 						String.valueOf(Math.round((0.83333333 + cp.getAspeed() / 100.0 * 0.83333333) * 100.0) / 100.0)
 								+ " ps");

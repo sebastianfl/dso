@@ -207,7 +207,8 @@ public class CharacterSnapshot implements Serializable {
 				this.getCp().getMaxdmg(), this.getCp().getPdmg(), this.getCp().getPcrit(), this.getCp().getPhp(),
 				this.getCp().getParmor(), this.getCp().getPresist(), this.getCp().getPmaxdmg(),
 				this.getCp().getTspeed(), this.getCp().getAspeed(), this.getCp().getWdmg(), this.getCp().getPwdmg(),
-				this.getCp().getBc(), this.getCp().getBr(), this.getCp().getPwde());
+				this.getCp().getBc(), this.getCp().getBr(), this.getCp().getPwde(), this.getCp().getWmindmg(),
+				this.getCp().getWmaxdmg(), this.getCp().getWaspeed());
 	}
 
 	public List<Modifier> getModifiersAsList() {
@@ -276,6 +277,9 @@ public class CharacterSnapshot implements Serializable {
 	}
 
 	/**
+	 * TODO Rewrite to apply all the modifiers at once, so it could be used
+	 * against the DB in a query
+	 * 
 	 * Processes the list of modifiers and updates the corresponding values of
 	 * the Snapshot Object.
 	 * 
@@ -308,6 +312,10 @@ public class CharacterSnapshot implements Serializable {
 			}
 			case PATTACK_SPEED: {
 				cp.setAspeed(cp.getAspeed() + ds);
+				break;
+			}
+			case PWEAPON_ATTACK_SPEED: {
+				cp.setWaspeed(cp.getWaspeed() + ds);
 				break;
 			}
 			case PTRAVEL_SPEED: {
@@ -350,6 +358,14 @@ public class CharacterSnapshot implements Serializable {
 				cp.setWdmg(cp.getWdmg() + ds);
 				break;
 			}
+			case WEAPON_DAMAGE_MIN: {
+				cp.setWmindmg(cp.getWmindmg() + ds);
+				break;
+			}
+			case WEAPON_DAMAGE_MAX: {
+				cp.setWmaxdmg(cp.getWmaxdmg() + ds);
+				break;
+			}
 			case PWEAPON_DAMAGE: {
 				cp.setPwdmg(cp.getPwdmg() + ds);
 				break;
@@ -378,7 +394,7 @@ public class CharacterSnapshot implements Serializable {
 					sets.put(setName, 1);
 				}
 				Map<Integer, Modifier[]> map = cs.getSetMap().get(setName);
-				if (null == map ){
+				if (null == map) {
 					throw new Exception("Set: " + setName + " is not properly configured. Check the property file");
 				}
 				Modifier[] m = map.get(sets.get(setName));

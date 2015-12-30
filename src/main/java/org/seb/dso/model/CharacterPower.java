@@ -1,8 +1,6 @@
 package org.seb.dso.model;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
 
 import org.seb.dso.util.Constants;
 import org.seb.dso.util.PropertyManager;
@@ -17,6 +15,8 @@ public class CharacterPower implements Serializable {
 	private double cd = 0;
 	private double mindmg = 0;
 	private double maxdmg = 0;
+	private double wmindmg = 0;
+	private double wmaxdmg = 0;
 	private double pdmg = 0;
 	private double pcrit = 0;
 	private double php = 0;
@@ -25,6 +25,7 @@ public class CharacterPower implements Serializable {
 	private double pmaxdmg = 0;
 	private double tspeed = 0;
 	private double aspeed = 0;
+	private double waspeed = 0;
 	private double wdmg = 0;
 	private double pwdmg = 0;
 	private double bc = 0;
@@ -45,7 +46,8 @@ public class CharacterPower implements Serializable {
 
 	public CharacterPower(double dmg, double crit, double hp, double armor, double resist, double cd, double mindmg2,
 			double maxdmg2, double pdmg, double pcrit, double php, double parmor, double presist, double pmaxdmg,
-			double tspeed, double aspeed, double wdmg, double pwdmg, double bc, double br, double pwde) {
+			double tspeed, double aspeed, double wdmg, double pwdmg, double bc, double br, double pwde, double wmindmg,
+			double wmaxdmg, double waspeed) {
 		super();
 		this.dmg = dmg;
 		this.crit = crit;
@@ -68,6 +70,9 @@ public class CharacterPower implements Serializable {
 		this.bc = bc;
 		this.br = br;
 		this.pwde = pwde;
+		this.wmindmg = wmindmg;
+		this.wmaxdmg = wmaxdmg;
+		this.waspeed = waspeed;
 	}
 
 	public double getDmg() {
@@ -76,6 +81,22 @@ public class CharacterPower implements Serializable {
 
 	public void setDmg(double dmg) {
 		this.dmg = dmg;
+	}
+
+	public double getWmindmg() {
+		return wmindmg;
+	}
+
+	public void setWmindmg(double wmindmg) {
+		this.wmindmg = wmindmg;
+	}
+
+	public double getWmaxdmg() {
+		return wmaxdmg;
+	}
+
+	public void setWmaxdmg(double wmaxdmg) {
+		this.wmaxdmg = wmaxdmg;
 	}
 
 	public double getCrit() {
@@ -198,6 +219,14 @@ public class CharacterPower implements Serializable {
 		this.aspeed = aspeed;
 	}
 
+	public double getWaspeed() {
+		return waspeed;
+	}
+
+	public void setWaspeed(double waspeed) {
+		this.waspeed = waspeed;
+	}
+
 	public double getPwdmg() {
 		return pwdmg;
 	}
@@ -231,7 +260,8 @@ public class CharacterPower implements Serializable {
 	}
 
 	public double calculateMinDamage() {
-		double wmin = 0;// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MIN_DAMAGE));
+		double wmin = this.wmindmg;
+		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MIN_DAMAGE));
 		wmin += this.getWdmg();
 		wmin += wmin * this.getPwdmg() / 100;
 		wmin += wmin * this.getPwde() / 100;
@@ -244,7 +274,8 @@ public class CharacterPower implements Serializable {
 
 	public double calculateMaxDamage() {
 		// first calculate weapon dmg
-		double wmax = 0;// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MAX_DAMAGE));
+		double wmax = this.wmaxdmg;
+		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.TWOHAND_MAX_DAMAGE));
 		wmax += this.getWdmg();
 		// get % from the weapon
 		wmax += wmax * this.getPwdmg() / 100;
@@ -267,8 +298,7 @@ public class CharacterPower implements Serializable {
 		wmax += this.getCrit();
 		wmax += wmax * this.getPcrit() / 100;
 
-		wmax = (wmax * 100
-				/ Integer.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_CRITICAL)));
+		wmax = (wmax * 100 / Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_CRITICAL)));
 		if (wmax > 80)
 			return 80;
 		return wmax;
@@ -318,94 +348,6 @@ public class CharacterPower implements Serializable {
 		double cd = (this.getCd() / 100) + 2;
 
 		return (1 - crit) * mediandmg + crit * cd * mediandmg;
-	}
-
-	/**
-	 * Processes the list of modifiers and updates the corresponding values of
-	 * the Snapshot Object.
-	 * 
-	 * @param mods
-	 */
-	public void processModifiers(List<Modifier> mods) {
-		for (Iterator<Modifier> iterator = mods.iterator(); iterator.hasNext();) {
-			Modifier modifier = (Modifier) iterator.next();
-			Double ds = modifier.getValue();
-			switch (modifier.getType()) {
-			case DAMAGE: {
-				this.setDmg(this.getDmg() + ds);
-				break;
-			}
-			case PDAMAGE: {
-				this.setPdmg(this.getPdmg() + ds);
-				break;
-			}
-			case MAXIMUM_DAMAGE: {
-				this.setMaxdmg(this.getMaxdmg() + ds);
-				break;
-			}
-			case PMAXIMUM_DAMAGE: {
-				this.setPmaxdmg(this.getPmaxdmg() + ds);
-				break;
-			}
-			case PCRITICAL_DAMAGE: {
-				this.setCd(this.getCd() + ds);
-				break;
-			}
-			case PATTACK_SPEED: {
-				this.setAspeed(this.getAspeed() + ds);
-				break;
-			}
-			case PTRAVEL_SPEED: {
-				this.setTspeed(this.getTspeed() + ds);
-				break;
-			}
-			case ARMOR: {
-				this.setArmor(this.getArmor() + ds);
-				break;
-			}
-			case PARMOR: {
-				this.setParmor(this.getParmor() + ds);
-				break;
-			}
-			case HP: {
-				this.setHp(this.getHp() + ds);
-				break;
-			}
-			case PHP: {
-				this.setPhp(this.getPhp() + ds);
-				break;
-			}
-			case RESIST: {
-				this.setResist(this.getResist() + ds);
-				break;
-			}
-			case PRESIST: {
-				this.setPresist(this.getPresist() + ds);
-				break;
-			}
-			case CRITICAL_HIT: {
-				this.setCrit(this.getCrit() + ds);
-				break;
-			}
-			case PCRITICAL_HIT: {
-				this.setPcrit(this.getPcrit() + ds);
-				break;
-			}
-			case WEAPON_DAMAGE: {
-				this.setWdmg(this.getWdmg() + ds);
-				break;
-			}
-			case PWEAPON_DAMAGE: {
-				this.setPwdmg(this.getPwdmg() + ds);
-				break;
-			}
-			case PEXTRA_WEAPON_DMG: {
-				this.setPwde(this.getPwde() + ds);
-				break;
-			}
-
-			}
-		}
 	}
 
 	@Override
