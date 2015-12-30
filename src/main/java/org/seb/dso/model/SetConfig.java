@@ -34,9 +34,10 @@ public class SetConfig {
 		return sc;
 	}
 
-	public void reinitialize(){
+	public void reinitialize() {
 		init();
-	} 
+	}
+
 	private void init() {
 		String setList = PropertyManager.getPropertyManager().getProperty(Constants.SET_LIST);
 		String[] sets = setList.split(",");
@@ -57,11 +58,11 @@ public class SetConfig {
 					String[] m = mod.split(":");
 					modifiers[k] = new Modifier();
 					if (m[1].contains("%")) {
-						modifiers[k].setTypeByCode(m[0],false);
+						modifiers[k].setTypeByCode(m[0], false);
 						modifiers[k].setValue(Double.valueOf(m[1].substring(0, m[1].length() - 1)));
 						modifiers[k].setAbsolute(false);
 					} else {
-						modifiers[k].setTypeByCode(m[0],true);
+						modifiers[k].setTypeByCode(m[0], true);
 						modifiers[k].setValue(Double.valueOf(m[1]));
 					}
 				}

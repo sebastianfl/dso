@@ -18,30 +18,32 @@ public class PropertyManager {
 	private static PropertyManager propertyManager = null;
 	private Properties mageProps = new Properties();
 	private Properties dkProps = new Properties();
+	private Properties rangerProps = new Properties();
+	private Properties dwarfProps = new Properties();
 	private String currentClass;
 
-//	 public static int BASE_DMG =
-//	 Integer.valueOf(getPropertyManager().getProperty("base.dmg"));
-//	 public static int BASE_HP =
-//	 Integer.valueOf(getPropertyManager().getProperty("base.hp"));
-//	 public static double TWOHAND_MIN_DMG =
-//	 Double.valueOf(getPropertyManager().getProperty("twohand.min.dmg"));
-//	 public static double TWOHAND_MAX_DMG =
-//	 Double.valueOf(getPropertyManager().getProperty("twohand.max.dmg"));
-//	 public static int BASE_ARMOR_CLOAK =
-//	 Integer.valueOf(getPropertyManager().getProperty("base.armor.cloak"));
-//	 public static int BASE_ARMOR_BELT =
-//	 Integer.valueOf(getPropertyManager().getProperty("base.armor.belt"));
-//	 public static int BASE_ARMOR_HELMET =
-//	 Integer.valueOf(getPropertyManager().getProperty("base.armor.helmet"));
-//	 public static int BASE_ARMOR_PAULDRONS =
-//	 Integer.valueOf(getPropertyManager().getProperty("base.armor.pauldrons"));
-//	 public static int BASE_ARMOR_TORSO =
-//	 Integer.valueOf(getPropertyManager().getProperty("base.armor.torso"));
-//	 public static int BASE_ARMOR_GLOVES =
-//	 Integer.valueOf(getPropertyManager().getProperty("base.armor.gloves"));
-//	 public static int BASE_ARMOR_BOOTS =
-//	 Integer.valueOf(getPropertyManager().getProperty("base.armor.boots"));
+	// public static int BASE_DMG =
+	// Integer.valueOf(getPropertyManager().getProperty("base.dmg"));
+	// public static int BASE_HP =
+	// Integer.valueOf(getPropertyManager().getProperty("base.hp"));
+	// public static double TWOHAND_MIN_DMG =
+	// Double.valueOf(getPropertyManager().getProperty("twohand.min.dmg"));
+	// public static double TWOHAND_MAX_DMG =
+	// Double.valueOf(getPropertyManager().getProperty("twohand.max.dmg"));
+	// public static int BASE_ARMOR_CLOAK =
+	// Integer.valueOf(getPropertyManager().getProperty("base.armor.cloak"));
+	// public static int BASE_ARMOR_BELT =
+	// Integer.valueOf(getPropertyManager().getProperty("base.armor.belt"));
+	// public static int BASE_ARMOR_HELMET =
+	// Integer.valueOf(getPropertyManager().getProperty("base.armor.helmet"));
+	// public static int BASE_ARMOR_PAULDRONS =
+	// Integer.valueOf(getPropertyManager().getProperty("base.armor.pauldrons"));
+	// public static int BASE_ARMOR_TORSO =
+	// Integer.valueOf(getPropertyManager().getProperty("base.armor.torso"));
+	// public static int BASE_ARMOR_GLOVES =
+	// Integer.valueOf(getPropertyManager().getProperty("base.armor.gloves"));
+	// public static int BASE_ARMOR_BOOTS =
+	// Integer.valueOf(getPropertyManager().getProperty("base.armor.boots"));
 
 	protected PropertyManager() throws IOException {
 		super();
@@ -51,6 +53,14 @@ public class PropertyManager {
 
 		input = new FileInputStream("dragonknight.properties");
 		dkProps.load(input);
+		input.close(); // why dont they close the freaking stream themselves?
+
+		input = new FileInputStream("ranger.properties");
+		rangerProps.load(input);
+		input.close(); // why dont they close the freaking stream themselves?
+
+		input = new FileInputStream("dwarf.properties");
+		dwarfProps.load(input);
 		input.close(); // why dont they close the freaking stream themselves?
 	}
 
@@ -64,12 +74,13 @@ public class PropertyManager {
 	 * @return
 	 */
 	public String getProperty(String name, String c) {
-		if ("mage".equalsIgnoreCase(c))
+		if ("mage".equalsIgnoreCase(c)) {
 			return mageProps.getProperty(name);
-		else if ("ranger".equalsIgnoreCase(c))
-			return null;
-		else if ("dwarf".equalsIgnoreCase(c))
-			return null;
+		} else if ("ranger".equalsIgnoreCase(c)) {
+			return rangerProps.getProperty(name);
+		} else if ("dwarf".equalsIgnoreCase(c)) {
+			return dwarfProps.getProperty(name);
+		}
 		return dkProps.getProperty(name);
 
 	}
@@ -77,8 +88,8 @@ public class PropertyManager {
 	public String getProperty(String name) {
 		return this.getProperty(name, this.currentClass);
 	}
-	
-	public void setCurrentClass(String name){
+
+	public void setCurrentClass(String name) {
 		this.currentClass = name;
 	}
 

@@ -4,6 +4,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * @author Sebastian
+ *
+ */
 public class SnapshotTree {
 	public TreeNode<Item> itemTree;
 

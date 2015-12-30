@@ -22,65 +22,114 @@ public class CharacterSnapshot implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * CharacterPower object for given snapshot.
+	 */
 	private CharacterPower cp = new CharacterPower();
 
+	/**
+	 * Amulet item used in the snapshot.
+	 */
 	private Item amulet;
+	/**
+	 * Belt item used in the snapshot.
+	 */
 	private Item belt;
+	/**
+	 * Cloak item used in the snapshot.
+	 */
 	private Item cloak;
+	/**
+	 * First ring item used in the snapshot.
+	 */
 	private Item ring1;
+	/**
+	 * Second ring item used in the snapshot.
+	 */
 	private Item ring2;
+	/**
+	 * Weapon adornment item used in the snapshot.
+	 */
 	private Item crystal;
+	/**
+	 * Mainhand item used in the snapshot. Might be null for 2handed setups.
+	 */
 	private Item mainhand;
+	/**
+	 * Twohand item used in the snapshot. Might be null for 1handed setups.
+	 */
 	private Item twohand;
+	/**
+	 * Offhand item used in the snapshot. Might be null for 2handed non-archer
+	 * setups
+	 */
 	private Item offhand;
+	/**
+	 * Helmet item used in the snapshot.
+	 */
 	private Item helmet;
+	/**
+	 * Pauldrons item used in the snapshot.
+	 */
 	private Item pauldrons;
+	/**
+	 * Torso item used in the snapshot.
+	 */
 	private Item torso;
+	/**
+	 * Gloves item used in the snapshot.
+	 */
 	private Item gloves;
+	/**
+	 * Boots item used in the snapshot.
+	 */
 	private Item boots;
+	/**
+	 * The map of ItemSets used in the selection, if any.
+	 */
 	private Map<String, Integer> sets = new HashMap<String, Integer>();
 
-	public Item getAmulet() {
+	public final Item getAmulet() {
 		return amulet;
 	}
 
-	public void setAmulet(final Item amulet) {
-		this.amulet = amulet;
+	public final void setAmulet(final Item vamulet) {
+		this.amulet = vamulet;
 	}
 
-	public Item getBelt() {
+	public final Item getBelt() {
 		return belt;
 	}
 
-	public void setBelt(final Item belt) {
-		this.belt = belt;
+	public final void setBelt(final Item vbelt) {
+		this.belt = vbelt;
 	}
 
-	public Item getCloak() {
+	public final Item getCloak() {
 		return cloak;
 	}
 
-	public void setCloak(Item cloak) {
-		this.cloak = cloak;
+	public final void setCloak(final Item vcloak) {
+		this.cloak = vcloak;
 	}
 
-	public Item getRing1() {
+	public final Item getRing1() {
 		return ring1;
 	}
 
-	public void setRing1(Item ring1) {
-		this.ring1 = ring1;
+	public final void setRing1(final Item vring1) {
+		this.ring1 = vring1;
 	}
 
-	public Item getRing2() {
+	public final Item getRing2() {
 		return ring2;
 	}
 
-	public void setRing2(Item ring2) {
-		this.ring2 = ring2;
+	public final void setRing2(final Item vring2) {
+		this.ring2 = vring2;
 	}
 
-	public Item getCrystal() {
+	public final Item getCrystal() {
 		return crystal;
 	}
 
@@ -101,83 +150,87 @@ public class CharacterSnapshot implements Serializable {
 		return mainhand;
 	}
 
-	public void setMainhand(Item mainhand) {
-		this.mainhand = mainhand;
+	public final void setMainhand(final Item vmainhand) {
+		this.mainhand = vmainhand;
 	}
 
-	public Item getTwohand() {
+	public final Item getTwohand() {
 		return twohand;
 	}
 
-	public void setTwohand(Item twohand) {
-		this.twohand = twohand;
+	public final void setTwohand(final Item vtwohand) {
+		this.twohand = vtwohand;
 	}
 
-	public Item getOffhand() {
+	public final Item getOffhand() {
 		return offhand;
 	}
 
-	public void setOffhand(Item offhand) {
-		this.offhand = offhand;
+	public final void setOffhand(final Item voffhand) {
+		this.offhand = voffhand;
 	}
 
-	public Item getHelmet() {
+	public final Item getHelmet() {
 		return helmet;
 	}
 
-	public void setHelmet(Item helmet) {
-		this.helmet = helmet;
+	public final void setHelmet(final Item vhelmet) {
+		this.helmet = vhelmet;
 	}
 
-	public Item getPauldrons() {
+	public final Item getPauldrons() {
 		return pauldrons;
 	}
 
-	public void setPauldrons(Item pauldrons) {
-		this.pauldrons = pauldrons;
+	public final void setPauldrons(final Item vpauldrons) {
+		this.pauldrons = vpauldrons;
 	}
 
-	public Item getTorso() {
+	public final Item getTorso() {
 		return torso;
 	}
 
-	public void setTorso(Item torso) {
-		this.torso = torso;
+	public final void setTorso(final Item vtorso) {
+		this.torso = vtorso;
 	}
 
-	public Item getGloves() {
+	public final Item getGloves() {
 		return gloves;
 	}
 
-	public void setGloves(Item gloves) {
-		this.gloves = gloves;
+	public final void setGloves(final Item vgloves) {
+		this.gloves = vgloves;
 	}
 
-	public Item getBoots() {
+	public final Item getBoots() {
 		return boots;
 	}
 
-	public void setBoots(Item boots) {
-		this.boots = boots;
+	public final void setBoots(final Item vboots) {
+		this.boots = vboots;
 	}
 
-	public Map<String, Integer> getSets() {
+	public final Map<String, Integer> getSets() {
 		return sets;
 	}
 
-	public void setSets(Map<String, Integer> sets) {
-		this.sets = sets;
+	public final void setSets(final Map<String, Integer> vsets) {
+		this.sets = vsets;
 	}
 
 	@Override
-	public String toString() {
+	public final String toString() {
 		return "CharacterSnapshot [\namulet=" + amulet + "\nbelt=" + belt + "\ncloak=" + cloak + "\nring1=" + ring1
 				+ "\nring2=" + ring2 + "\ncrystal=" + crystal + "\nmainhand=" + mainhand + "\ntwohand=" + twohand
 				+ "\noffhand=" + offhand + "\nhelmet=" + helmet + "\npauldrons=" + pauldrons + "\ntorso=" + torso
 				+ "\ngloves=" + gloves + "\nboots=" + boots + "\n]";
 	}
 
-	public CharacterSnapshot copy() {
+	/**
+	 * @return a Clone of the CharacterSnapshot besides the embedded
+	 *         CharacterPower
+	 */
+	public final CharacterSnapshot copy() {
 		CharacterSnapshot cs = new CharacterSnapshot();
 		cs.setAmulet(this.getAmulet());
 		cs.setBelt(this.getBelt());
@@ -198,10 +251,10 @@ public class CharacterSnapshot implements Serializable {
 	}
 
 	/**
-	 * @return
+	 * @return CharacterPower copy
 	 */
 	@Deprecated
-	public CharacterPower getCharacterPowerCopy() {
+	public final CharacterPower getCharacterPowerCopy() {
 		return new CharacterPower(this.getCp().getDmg(), this.getCp().getCrit(), this.getCp().getHp(),
 				this.getCp().getArmor(), this.getCp().getResist(), this.getCp().getCd(), this.getCp().getMindmg(),
 				this.getCp().getMaxdmg(), this.getCp().getPdmg(), this.getCp().getPcrit(), this.getCp().getPhp(),
@@ -211,7 +264,10 @@ public class CharacterSnapshot implements Serializable {
 				this.getCp().getWmaxdmg(), this.getCp().getWaspeed());
 	}
 
-	public List<Modifier> getModifiersAsList() {
+	/**
+	 * @return List of all modifiers of all items
+	 */
+	public final List<Modifier> getModifiersAsList() {
 		List<Modifier> list = new ArrayList<Modifier>();
 		list.addAll(this.getAmulet().getMods());
 		list.addAll(this.getBelt().getMods());
@@ -225,17 +281,23 @@ public class CharacterSnapshot implements Serializable {
 		list.addAll(this.getGloves().getMods());
 		list.addAll(this.getBoots().getMods());
 
-		if (null != this.getMainhand())
+		if (null != this.getMainhand()) {
 			list.addAll(this.getMainhand().getMods());
-		if (null != this.getTwohand())
+		}
+		if (null != this.getTwohand()) {
 			list.addAll(this.getTwohand().getMods());
-		if (null != this.getOffhand())
+		}
+		if (null != this.getOffhand()) {
 			list.addAll(this.getOffhand().getMods());
+		}
 
 		return list;
 	}
 
-	public List<Item> getItemsAsList() {
+	/**
+	 * @return Items as List<Item>
+	 */
+	public final List<Item> getItemsAsList() {
 		List<Item> list = new ArrayList<Item>();
 		list.add(this.getAmulet());
 		list.add(this.getBelt());
@@ -249,29 +311,38 @@ public class CharacterSnapshot implements Serializable {
 		list.add(this.getGloves());
 		list.add(this.getBoots());
 
-		if (null != this.getMainhand())
+		if (null != this.getMainhand()) {
 			list.add(this.getMainhand());
-		if (null != this.getTwohand())
+		}
+		if (null != this.getTwohand()) {
 			list.add(this.getTwohand());
-		if (null != this.getOffhand())
+		}
+		if (null != this.getOffhand()) {
 			list.add(this.getOffhand());
+		}
 
 		return list;
 	}
 
-	public CharacterPower getCp() {
+	public final CharacterPower getCp() {
 		return cp;
 	}
 
-	public void setCp(CharacterPower cp) {
-		this.cp = cp;
+	public final void setCp(final CharacterPower vcp) {
+		this.cp = vcp;
 	}
 
-	public void processModifiers() {
+	/**
+	 * Processes all modifiers of this.
+	 */
+	public final void processModifiers() {
 		processModifiers(this.getModifiersAsList());
 	}
 
-	public void clean() {
+	/**
+	 * Cleans the sets and the CharacterPower for the specified snapshot.
+	 */
+	public final void clean() {
 		this.cp = new CharacterPower();
 		this.sets.clear();
 	}
@@ -284,103 +355,91 @@ public class CharacterSnapshot implements Serializable {
 	 * the Snapshot Object.
 	 * 
 	 * @param mods
+	 *            list of modifiers to be processed
 	 */
-	public void processModifiers(List<Modifier> mods) {
+	public final void processModifiers(final List<Modifier> mods) {
 		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
 			Modifier modifier = (Modifier) iterator2.next();
 			Double ds = modifier.getValue();
 			switch (modifier.getType()) {
-			case DAMAGE: {
+			case DAMAGE:
 				cp.setDmg(cp.getDmg() + ds);
 				break;
-			}
-			case PDAMAGE: {
+			case PDAMAGE:
 				cp.setPdmg(cp.getPdmg() + ds);
 				break;
-			}
-			case MAXIMUM_DAMAGE: {
+			case MAXIMUM_DAMAGE:
 				cp.setMaxdmg(cp.getMaxdmg() + ds);
 				break;
-			}
-			case PMAXIMUM_DAMAGE: {
+			case PMAXIMUM_DAMAGE:
 				cp.setPmaxdmg(cp.getPmaxdmg() + ds);
 				break;
-			}
-			case PCRITICAL_DAMAGE: {
+			case PCRITICAL_DAMAGE:
 				cp.setCd(cp.getCd() + ds);
 				break;
-			}
-			case PATTACK_SPEED: {
+			case PATTACK_SPEED:
 				cp.setAspeed(cp.getAspeed() + ds);
 				break;
-			}
-			case PWEAPON_ATTACK_SPEED: {
+			case PWEAPON_ATTACK_SPEED:
 				cp.setWaspeed(cp.getWaspeed() + ds);
 				break;
-			}
-			case PTRAVEL_SPEED: {
+			case PTRAVEL_SPEED:
 				cp.setTspeed(cp.getTspeed() + ds);
 				break;
-			}
-			case ARMOR: {
+			case ARMOR:
 				cp.setArmor(cp.getArmor() + ds);
 				break;
-			}
-			case PARMOR: {
+			case PARMOR:
 				cp.setParmor(cp.getParmor() + ds);
 				break;
-			}
-			case HP: {
+			case HP:
 				cp.setHp(cp.getHp() + ds);
 				break;
-			}
-			case PHP: {
+			case PHP:
 				cp.setPhp(cp.getPhp() + ds);
 				break;
-			}
-			case RESIST: {
+			case RESIST:
 				cp.setResist(cp.getResist() + ds);
 				break;
-			}
-			case PRESIST: {
+			case PRESIST:
 				cp.setPresist(cp.getPresist() + ds);
 				break;
-			}
-			case CRITICAL_HIT: {
+			case CRITICAL_HIT:
 				cp.setCrit(cp.getCrit() + ds);
 				break;
-			}
-			case PCRITICAL_HIT: {
+			case PCRITICAL_HIT:
 				cp.setPcrit(cp.getPcrit() + ds);
 				break;
-			}
-			case WEAPON_DAMAGE: {
+			case WEAPON_DAMAGE:
 				cp.setWdmg(cp.getWdmg() + ds);
 				break;
-			}
-			case WEAPON_DAMAGE_MIN: {
+			case WEAPON_DAMAGE_MIN:
 				cp.setWmindmg(cp.getWmindmg() + ds);
 				break;
-			}
-			case WEAPON_DAMAGE_MAX: {
+			case WEAPON_DAMAGE_MAX:
 				cp.setWmaxdmg(cp.getWmaxdmg() + ds);
 				break;
-			}
-			case PWEAPON_DAMAGE: {
+			case PWEAPON_DAMAGE:
 				cp.setPwdmg(cp.getPwdmg() + ds);
 				break;
-			}
-			case PEXTRA_WEAPON_DMG: {
+			case PEXTRA_WEAPON_DMG:
 				cp.setPwde(cp.getPwde() + ds);
 				break;
-			}
+			default:
+				break;
 
 			}
 		}
 
 	}
 
-	public void processSets() throws Exception {
+	/**
+	 * Processes the set bonus modifiers if any for given item combination.
+	 * 
+	 * @throws Exception
+	 *             Might throw the Set is not configured exception
+	 */
+	public final void processSets() throws Exception {
 		List<Item> list = this.getItemsAsList();
 		List<Modifier> mods = new ArrayList<Modifier>();
 		SetConfig cs = SetConfig.getSetConfig();
@@ -398,86 +457,71 @@ public class CharacterSnapshot implements Serializable {
 					throw new Exception("Set: " + setName + " is not properly configured. Check the property file");
 				}
 				Modifier[] m = map.get(sets.get(setName));
-				if (null != m)
+				if (null != m) {
 					mods.addAll(Arrays.asList(m));
+				}
 			}
 		}
 		for (Iterator<Modifier> iterator = mods.iterator(); iterator.hasNext();) {
 			Modifier modifier = (Modifier) iterator.next();
 			Double ds = modifier.getValue();
 			switch (modifier.getType()) {
-			case DAMAGE: {
+			case DAMAGE:
 				cp.setDmg(cp.getDmg() + ds);
 				break;
-			}
-			case PDAMAGE: {
+			case PDAMAGE:
 				cp.setPdmg(cp.getPdmg() + ds);
 				break;
-			}
-			case MAXIMUM_DAMAGE: {
+			case MAXIMUM_DAMAGE:
 				cp.setMaxdmg(cp.getMaxdmg() + ds);
 				break;
-			}
-			case PMAXIMUM_DAMAGE: {
+			case PMAXIMUM_DAMAGE:
 				cp.setPmaxdmg(cp.getPmaxdmg() + ds);
 				break;
-			}
-			case PCRITICAL_DAMAGE: {
+			case PCRITICAL_DAMAGE:
 				cp.setCd(cp.getCd() + ds);
 				break;
-			}
-			case PATTACK_SPEED: {
+			case PATTACK_SPEED:
 				cp.setAspeed(cp.getAspeed() + ds);
 				break;
-			}
-			case PTRAVEL_SPEED: {
+			case PTRAVEL_SPEED:
 				cp.setTspeed(cp.getTspeed() + ds);
 				break;
-			}
-			case ARMOR: {
+			case ARMOR:
 				cp.setArmor(cp.getArmor() + ds);
 				break;
-			}
-			case PARMOR: {
+			case PARMOR:
 				cp.setParmor(cp.getParmor() + ds);
 				break;
-			}
-			case HP: {
+			case HP:
 				cp.setHp(cp.getHp() + ds);
 				break;
-			}
-			case PHP: {
+			case PHP:
 				cp.setPhp(cp.getPhp() + ds);
 				break;
-			}
-			case RESIST: {
+			case RESIST:
 				cp.setResist(cp.getResist() + ds);
 				break;
-			}
-			case PRESIST: {
+			case PRESIST:
 				cp.setPresist(cp.getPresist() + ds);
 				break;
-			}
-			case CRITICAL_HIT: {
+			case CRITICAL_HIT:
 				cp.setCrit(cp.getCrit() + ds);
 				break;
-			}
-			case PCRITICAL_HIT: {
+			case PCRITICAL_HIT:
 				cp.setPcrit(cp.getPcrit() + ds);
 				break;
-			}
-			case WEAPON_DAMAGE: {
+			case WEAPON_DAMAGE:
 				cp.setWdmg(cp.getWdmg() + ds);
 				break;
-			}
-			case PWEAPON_DAMAGE: {
+			case PWEAPON_DAMAGE:
 				cp.setPwdmg(cp.getPwdmg() + ds);
 				break;
-			}
-			case PEXTRA_WEAPON_DMG: {
+			case PEXTRA_WEAPON_DMG:
 				cp.setPwde(cp.getPwde() + ds);
 				break;
-			}
+			default:
+				break;
 			}
 		}
 	}

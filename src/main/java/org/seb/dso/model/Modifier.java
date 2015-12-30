@@ -2,6 +2,10 @@ package org.seb.dso.model;
 
 import java.io.Serializable;
 
+/**
+ * @author Sebastian
+ *
+ */
 public class Modifier implements Serializable {
 
 	private static final long serialVersionUID = 1L;

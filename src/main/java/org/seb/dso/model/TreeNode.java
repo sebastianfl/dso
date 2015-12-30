@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * @author Sebastian
+ *
+ * @param <T>
+ */
 public class TreeNode<T> implements Iterable<TreeNode<T>> {
 
 	T data;

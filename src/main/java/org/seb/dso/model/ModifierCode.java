@@ -1,5 +1,9 @@
 package org.seb.dso.model;
 
+/**
+ * @author Sebastian
+ *
+ */
 public enum ModifierCode {
 
 	DAMAGE("d"), CRITICAL_HIT("c"), HP("h"), ARMOR("a"), RESIST("r"), RESISTANCE_COLD("rc"), RESISTANCE_FIRE("rf"),

@@ -18,11 +18,20 @@ import org.seb.dso.model.Item;
 import org.seb.dso.model.Item.Type;
 import org.seb.dso.model.Modifier;
 
+/**
+ * @author Sebastian
+ *
+ */
 public class ItemUtils {
 
-	Collection<Item> itemList;
-
-	public static Collection<Item> getItems(File file) throws Exception {
+	/**
+	 * @param file
+	 *            File with items
+	 * @return Collection of parsed items
+	 * @throws Exception
+	 *             some casting exception wrapped into e.
+	 */
+	public static Collection<Item> getItems(final File file) throws Exception {
 		List<Item> items = new ArrayList<Item>();
 
 		Reader in;
@@ -33,8 +42,9 @@ public class ItemUtils {
 					.withAllowMissingColumnNames().parse(in);
 			for (CSVRecord record : records) {
 				Item item = recordToItemNew(record);
-				if (null != item)
+				if (null != item) {
 					items.add(item);
+				}
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -47,13 +57,23 @@ public class ItemUtils {
 		return items;
 	}
 
-	private static Item recordToItemNew(CSVRecord record) throws Exception {
+	/**
+	 * Parses the CSV record into an Item object.
+	 * 
+	 * @param record
+	 *            Record from the CSV file
+	 * @return Item parsed from the the record
+	 * @throws Exception
+	 *             some casting exception wrapped into e.
+	 */
+	private static Item recordToItemNew(final CSVRecord record) throws Exception {
 		Item item = new Item();
 
 		Iterator<String> iter = record.iterator();
 		String modText = iter.next();
-		if (null == modText || modText.equals(""))
+		if (null == modText || modText.equals("")) {
 			return null;
+		}
 		Item.Type t = null;
 		switch (modText.toLowerCase()) {
 		case "ring":
@@ -193,7 +213,7 @@ public class ItemUtils {
 	public static List<CharacterSnapshot> getAllSnapshots(Inventory inv, boolean isTwohand, boolean isRanger) {
 		List<CharacterSnapshot> snapshots = new ArrayList<CharacterSnapshot>();
 		if (isRanger) {
-			continueWithTwohandRanger(inv, snapshots);			
+			continueWithTwohandRanger(inv, snapshots);
 		} else if (isTwohand) {
 			continueWithTwohand(inv, snapshots);
 		} else {
@@ -374,9 +394,20 @@ public class ItemUtils {
 
 	}
 
-	public static Modifier[] parseModifiersFromString(String str) throws Exception {
-		if (str.equals("") || null == str)
+	/**
+	 * Parses the modifiers from the semicolon and comma-separated string.
+	 * 
+	 * @param str
+	 *            Input string
+	 * @return Modfier array
+	 * @throws Exception
+	 *             might throw some casting exception, that would be wrapped
+	 *             into simple e
+	 */
+	public static Modifier[] parseModifiersFromString(final String str) throws Exception {
+		if (str.equals("") || null == str) {
 			return null;
+		}
 		String[] modArr = str.split(",");
 		Modifier[] mods = new Modifier[modArr.length];
 		try {

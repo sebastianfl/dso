@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * @author Sebastian
+ *
+ */
 public class Item implements Serializable {
 	public enum Type {
 		AMULET, BELT, CLOAK, RING, CRYSTAL, MAINHAND, TWOHAND, OFFHAND, HELMET, PAULDRONS, TORSO, GLOVES, BOOTS;

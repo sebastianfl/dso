@@ -5,6 +5,10 @@ import java.io.Serializable;
 import org.seb.dso.util.Constants;
 import org.seb.dso.util.PropertyManager;
 
+/**
+ * @author Sebastian
+ *
+ */
 public class CharacterPower implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private double dmg = 0;
@@ -32,29 +36,29 @@ public class CharacterPower implements Serializable {
 	private double br = 0;
 	private double pwde = 0;
 
-	public double getPwde() {
+	public final double getPwde() {
 		return pwde;
 	}
 
-	public void setPwde(double wde) {
-		this.pwde = wde;
+	public final void setPwde(final double v) {
+		this.pwde = v;
 	}
 
 	public CharacterPower() {
 		super();
 	}
 
-	public CharacterPower(double dmg, double crit, double hp, double armor, double resist, double cd, double mindmg2,
-			double maxdmg2, double pdmg, double pcrit, double php, double parmor, double presist, double pmaxdmg,
-			double tspeed, double aspeed, double wdmg, double pwdmg, double bc, double br, double pwde, double wmindmg,
-			double wmaxdmg, double waspeed) {
+	public CharacterPower(double vdmg, double vcrit, double vhp, double varmor, double vresist, double vcriticaldamage,
+			double mindmg2, double maxdmg2, double pdmg, double pcrit, double php, double parmor, double presist,
+			double pmaxdmg, double tspeed, double aspeed, double wdmg, double pwdmg, double bc, double br, double pwde,
+			double wmindmg, double wmaxdmg, double waspeed) {
 		super();
-		this.dmg = dmg;
-		this.crit = crit;
-		this.hp = hp;
-		this.armor = armor;
-		this.resist = resist;
-		this.cd = cd;
+		this.dmg = vdmg;
+		this.crit = vcrit;
+		this.hp = vhp;
+		this.armor = varmor;
+		this.resist = vresist;
+		this.cd = vcriticaldamage;
 		this.mindmg = mindmg2;
 		this.maxdmg = maxdmg2;
 		this.pdmg = pdmg;
@@ -75,20 +79,20 @@ public class CharacterPower implements Serializable {
 		this.waspeed = waspeed;
 	}
 
-	public double getDmg() {
+	public final double getDmg() {
 		return dmg;
 	}
 
-	public void setDmg(double dmg) {
-		this.dmg = dmg;
+	public final void setDmg(final double v) {
+		this.dmg = v;
 	}
 
-	public double getWmindmg() {
+	public final double getWmindmg() {
 		return wmindmg;
 	}
 
-	public void setWmindmg(double wmindmg) {
-		this.wmindmg = wmindmg;
+	public final void setWmindmg(final double v) {
+		this.wmindmg = v;
 	}
 
 	public double getWmaxdmg() {
@@ -127,128 +131,152 @@ public class CharacterPower implements Serializable {
 		return resist;
 	}
 
-	public void setResist(double resist) {
-		this.resist = resist;
+	/**
+	 * Just a setter. Checkstyle, gtfo
+	 * 
+	 * @param vresist
+	 *            setter param
+	 */
+	public final void setResist(final double vresist) {
+		this.resist = vresist;
 	}
 
-	public double getCd() {
+	/**
+	 * Just a getter.
+	 * 
+	 * @return obvious
+	 */
+	public final double getCd() {
 		return cd;
 	}
 
-	public void setCd(double cd) {
-		this.cd = cd;
+	/**
+	 * Setter.
+	 * 
+	 * @param v
+	 *            double
+	 */
+	public final void setCd(final double v) {
+		this.cd = v;
 	}
 
-	public double getMindmg() {
+	/**
+	 * @return minimal damage
+	 */
+	public final double getMindmg() {
 		return mindmg;
 	}
 
-	public void setMindmg(double mindmg) {
-		this.mindmg = mindmg;
+	/**
+	 * @param v
+	 *            value to set
+	 */
+	public final void setMindmg(final double v) {
+		this.mindmg = v;
 	}
 
-	public double getMaxdmg() {
+	public final double getMaxdmg() {
 		return maxdmg;
 	}
 
-	public void setMaxdmg(double maxdmg) {
-		this.maxdmg = maxdmg;
+	public final void setMaxdmg(final double v) {
+		this.maxdmg = v;
 	}
 
 	public double getPdmg() {
 		return pdmg;
 	}
 
-	public void setPdmg(double pdmg) {
-		this.pdmg = pdmg;
+	public void setPdmg(double _pdmg) {
+		this.pdmg = _pdmg;
 	}
 
 	public double getPcrit() {
 		return pcrit;
 	}
 
-	public void setPcrit(double pcrit) {
-		this.pcrit = pcrit;
+	public void setPcrit(double _pcrit) {
+		this.pcrit = _pcrit;
 	}
 
 	public double getPhp() {
 		return php;
 	}
 
-	public void setPhp(double php) {
-		this.php = php;
+	public void setPhp(double _php) {
+		this.php = _php;
 	}
 
 	public double getParmor() {
 		return parmor;
 	}
 
-	public void setParmor(double parmor) {
-		this.parmor = parmor;
+	public void setParmor(double _parmor) {
+		this.parmor = _parmor;
 	}
 
 	public double getPresist() {
 		return presist;
 	}
 
-	public void setPresist(double presist) {
-		this.presist = presist;
+	public void setPresist(double _presist) {
+		this.presist = _presist;
 	}
 
 	public double getPmaxdmg() {
 		return pmaxdmg;
 	}
 
-	public void setPmaxdmg(double pmaxdmg) {
-		this.pmaxdmg = pmaxdmg;
+	public void setPmaxdmg(double _pmaxdmg) {
+		this.pmaxdmg = _pmaxdmg;
 	}
 
 	public double getTspeed() {
 		return tspeed;
 	}
 
-	public void setTspeed(double tspeed) {
-		this.tspeed = tspeed;
+	public void setTspeed(double _tspeed) {
+		this.tspeed = _tspeed;
 	}
 
 	public double getAspeed() {
 		return aspeed;
 	}
 
-	public void setAspeed(double aspeed) {
-		this.aspeed = aspeed;
+	public void setAspeed(double _aspeed) {
+		this.aspeed = _aspeed;
 	}
 
 	public double getWaspeed() {
 		return waspeed;
 	}
 
-	public void setWaspeed(double waspeed) {
-		this.waspeed = waspeed;
+	public void setWaspeed(double _waspeed) {
+		this.waspeed = _waspeed;
 	}
 
 	public double getPwdmg() {
 		return pwdmg;
 	}
 
-	public void setPwdmg(double pwdmg) {
-		this.pwdmg = pwdmg;
+	public void setPwdmg(double _pwdmg) {
+		this.pwdmg = _pwdmg;
 	}
 
 	public double getBc() {
 		return bc;
 	}
 
-	public void setBc(double bc) {
-		this.bc = bc;
+	public void setBc(double _bc) {
+		this.bc = _bc;
 	}
 
 	public double getBr() {
 		return br;
 	}
 
-	public void setBr(double br) {
-		this.br = br;
+	public void setBr(double _br) {
+		this.br = _br;
 	}
 
 	public double getWdmg() {
@@ -293,44 +321,29 @@ public class CharacterPower implements Serializable {
 		return wmax;
 	}
 
-	public double calculateCrit() {
+	public final double calculateCrit() {
 		double wmax = 0;
 		wmax += this.getCrit();
 		wmax += wmax * this.getPcrit() / 100;
 
 		wmax = (wmax * 100 / Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_CRITICAL)));
-		if (wmax > 80)
+		if (wmax > 80) {
 			return 80;
+		}
 		return wmax;
 	}
 
-	public double calculateHP() {
+	public final double calculateHP() {
 		double wmax = Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_HP));
 		wmax += this.getHp();
 		wmax += wmax * this.getPhp() / 100;
 		return wmax;
 	}
 
-	public double calculateArmor() {
+	public final double calculateArmor() {
 		double wmax = 0;
 		wmax += this.getArmor();
-		// wmax +=
-		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_BELT));
-		// wmax +=
-		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_CLOAK));
-		// wmax +=
-		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_HELMET));
-		// wmax +=
-		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_PAULDRONS));
-		// wmax +=
-		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_TORSO));
-		// wmax +=
-		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_GLOVES));
-		// wmax +=
-		// Double.valueOf(PropertyManager.getPropertyManager().getProperty(Constants.BASE_ARMOR_BOOTS));
-
 		wmax += wmax * this.getParmor() / 100;
-
 		return wmax;
 	}
 
@@ -351,7 +364,7 @@ public class CharacterPower implements Serializable {
 	}
 
 	@Override
-	public String toString() {
+	public final String toString() {
 		return "CharacterPower [dmg=" + dmg + ", crit=" + crit + ", hp=" + hp + ", armor=" + armor + ", resist="
 				+ resist + ", cd=" + cd + ", mindmg=" + mindmg + ", maxdmg=" + maxdmg + ", pdmg=" + pdmg + ", pcrit="
 				+ pcrit + ", php=" + php + ", parmor=" + parmor + ", presist=" + presist + ", pmaxdmg=" + pmaxdmg

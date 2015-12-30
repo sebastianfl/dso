@@ -15,8 +15,6 @@ import org.seb.dso.model.e.ModelChangeListener;
  */
 public class OptimizerModel {
 
-
-
 	public enum CharClass {
 		MAGE("Mage"), DRAGONKNIGHT("DragonKnight"), RANGER("Ranger"), DWARF("Dwarf");
 
@@ -55,10 +53,10 @@ public class OptimizerModel {
 	private Modifier[] defGems;
 	private Modifier[] petAndBuffs;
 
-	public OptimizerModel(){
+	public OptimizerModel() {
 		this.setState(EnumTypes.State.CLEAN);
 	}
-	
+
 	public synchronized EnumTypes.State getState() {
 		return state;
 	}
@@ -117,30 +115,30 @@ public class OptimizerModel {
 		}
 	}
 
-	public synchronized Modifier getAgility() {
+	public final Modifier getAgility() {
 		return agility;
 	}
 
-	public synchronized void setAgility(Modifier agility) {
-		if (this.agility != agility) {
-			this.agility = agility;
-			// this.setState(State.PREPROCESSED);
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.MODIFIER,
-			// "agility"));
+	/**
+	 * @param vagility
+	 *            value to set
+	 */
+	public final synchronized void setAgility(final Modifier vagility) {
+		if (this.agility != vagility) {
+			this.agility = vagility;
 		}
 	}
 
-	public synchronized Modifier getAttack() {
+	public final Modifier getAttack() {
 		return attack;
 	}
 
-	public synchronized void setAttack(Modifier attack) {
-		if (this.attack != attack) {
-			this.attack = attack;
-			// this.setState(State.PREPROCESSED);
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.MODIFIER, "attack"));
+	/**
+	 * @param vattack Value to set
+	 */
+	public final synchronized void setAttack(final Modifier vattack) {
+		if (this.attack != vattack) {
+			this.attack = vattack;
 		}
 	}
 

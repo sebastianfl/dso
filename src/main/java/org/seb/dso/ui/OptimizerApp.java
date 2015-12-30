@@ -388,7 +388,9 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private void initCenter() {
 		panelCenter = new JPanel();
 		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
-		panelCenter.setLayout(new MigLayout("", "[100px:100px:100px][100px:100px,grow,fill][100px:100px:100px][100px:100px]", "[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
+		panelCenter.setLayout(new MigLayout("",
+				"[100px:100px:100px][100px:100px,grow,fill][100px:100px:100px][100px:100px]",
+				"[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
 
 		labelAmulet = new JLabel("Amulet");
 		panelCenter.add(labelAmulet, "cell 0 0");
@@ -836,16 +838,21 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
 			CharacterSnapshot cs = iterator.next();
 			CharacterPower power = cs.getCharacterPowerCopy();
-			if (null != om.getOffGems())
+			if (null != om.getOffGems()) {
 				cs.processModifiers(Arrays.asList(om.getOffGems()));
-			if (null != om.getDefGems())
+			}
+			if (null != om.getDefGems()) {
 				cs.processModifiers(Arrays.asList(om.getDefGems()));
-			if (null != om.getWeaponDmg())
+			}
+			if (null != om.getWeaponDmg()) {
 				cs.processModifiers(Arrays.asList(om.getWeaponDmg()));
-			if (null != om.getRage())
+			}
+			if (null != om.getRage()) {
 				cs.processModifiers(Arrays.asList(om.getRage()));
-			if (null != om.getPetAndBuffs())
+			}
+			if (null != om.getPetAndBuffs()) {
 				cs.processModifiers(Arrays.asList(om.getPetAndBuffs()));
+			}
 
 			cs.processModifiers(Arrays.asList(additionalMods));
 			double cmd = cs.getCp().calculateEffectiveDamage();
@@ -867,6 +874,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 	/**
 	 * @throws Exception
+	 *             passes the exception through
 	 * 
 	 */
 	private void populateModel() throws Exception {
@@ -1050,8 +1058,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 						labelWeaponValue.setForeground(Color.red);
 					}
 					labelWeaponValue.setText(cs.getTwohand().toString());
-				}
-				else {
+				} else {
 					if (labelWeaponValue.getText().equals(cs.getMainhand().toString())) {
 						labelWeaponValue.setForeground(Color.DARK_GRAY);
 					} else {
@@ -1067,7 +1074,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 					}
 					labelOffhandValue.setText(cs.getOffhand().toString());
 				}
-				
+
 				if (labelHelmetValue.getText().equals(cs.getHelmet().toString())) {
 					labelHelmetValue.setForeground(Color.DARK_GRAY);
 				} else {
@@ -1117,15 +1124,9 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				labelResistance.setText(String.valueOf(Math.round(cp.calculateResist())));
 				labelCriticalDamage.setText(String.valueOf(Math.round((cp.getCd() + 200) * 100.0) / 100.0) + "%");
 				double attackSpeed = cp.getWaspeed() + cp.getAspeed() / 100.0 * cp.getWaspeed();
-				System.out.println(attackSpeed);
-				System.out.println(cp.getAspeed());
-				System.out.println(cp.getWaspeed());
-				labelAttackSpeed.setText(
-						String.valueOf(Math.round((0.83333333 + cp.getAspeed() / 100.0 * 0.83333333) * 100.0) / 100.0)
-								+ " ps");
+				labelAttackSpeed.setText(String.valueOf(Math.round(attackSpeed * 100.0) / 100.0) + " ps");
 				labelTravelSpeed.setText(String.valueOf(Math.round(cp.getTspeed() * 100.0) / 100.0) + "%");
 
-				// progressLabel.setText("Calculation completed.");
 				om.setState(EnumTypes.State.CALCULATED);
 
 			}
