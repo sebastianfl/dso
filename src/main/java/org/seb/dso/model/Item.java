@@ -16,6 +16,10 @@ public class Item implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private String itemSet;
+	private Type itemType;
+	private boolean selected;
+
 	public Item() {
 		super();
 		mods = new ArrayList<Modifier>();
@@ -63,6 +67,11 @@ public class Item implements Serializable {
 		return sb.toString();
 	}
 
-	private String itemSet;
-	private Type itemType;
+	public synchronized final boolean isSelected() {
+		return selected;
+	}
+
+	public synchronized final void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 }

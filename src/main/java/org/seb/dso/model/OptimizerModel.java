@@ -419,8 +419,8 @@ public class OptimizerModel {
 		}
 
 		this.setState(EnumTypes.State.GENERATING_SNAPSHOTS, String.valueOf(size));
-
-		this.snapshots = ItemUtils.getAllSnapshots(this.getInventory(), this.twoHanded,
+		
+		this.snapshots = ItemUtils.getAllSnapshots(this.inventory, this.twoHanded,
 				this.charClass.name.equalsIgnoreCase("ranger"));
 
 		// Go through extra state to populate the label with the snapshot list

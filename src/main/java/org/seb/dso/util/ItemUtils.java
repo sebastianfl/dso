@@ -155,6 +155,9 @@ public class ItemUtils {
 		Inventory inv = new Inventory();
 		for (Iterator<Item> iterator = items.iterator(); iterator.hasNext();) {
 			Item item = iterator.next();
+			if (!item.isSelected()) {
+				continue;
+			}
 			switch (item.getItemType()) {
 			case AMULET:
 				inv.getAmulets().add(item);

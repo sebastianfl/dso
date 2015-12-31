@@ -10,7 +10,10 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -161,6 +164,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private File itemsFile;
 	private JSplitPane splitPane;
 
+	private List<JCheckBox> itemCheckBoxes;
 	/**
 	 * Launch the application.
 	 * 
@@ -394,20 +398,28 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private void initCenter() {
 
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPane.setOneTouchExpandable(true);
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		panelCenter = new JPanel();
 		panelItems = new JPanel();
+
 		JScrollPane jsp = new JScrollPane(panelItems);
-		
+
 		Dimension minimumSize = new Dimension(0, 0);
+		jsp.setMinimumSize(minimumSize);
 		panelCenter.setMinimumSize(minimumSize);
 		panelItems.setMinimumSize(minimumSize);
-		
+
 		splitPane.setLeftComponent(jsp);
-		
-		panelItems.setLayout(new MigLayout("", "[40px:80px][100px:160px][16px:32px]", "[]"));
+
+		panelItems.setLayout(new MigLayout("", "[]", "[]")); //$NON-NLS-2$
+		panelItems.add(new JLabel("Include"), "cell 0 0");
+		panelItems.add(new JLabel("Item"), "cell 1 0");
+		panelItems.add(new JLabel("Set"), "cell 2 0");
+		panelItems.add(new JLabel("Modifiers"), "cell 3 0");
 		splitPane.setRightComponent(panelCenter);
-		
+		splitPane.setDividerLocation(400);
+
 		panelCenter.setLayout(new MigLayout("", "[100px:100px:100px][100px:n,grow,fill][100px:n,grow][100px:100px]",
 				"[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
 
@@ -726,9 +738,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 				try {
 					Collection<Item> items = ItemUtils.getItems(itemsFile);
 					om.setItems(items);
-					Inventory inv = ItemUtils.parseInventoryFromItems(items);
-					om.setInventory(inv);
-					OptimizerApp.this.displayItems();
+					OptimizerApp.this.generateItemListView();
 				} catch (Exception ex) {
 					om.setState(EnumTypes.State.ERROR, ex.getMessage());
 					// this.progressLabel.setText(ex.getMessage());
@@ -767,17 +777,32 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		}
 	}
 
-	private void displayItems() {
+	private void generateItemListView() {
 		// items panel. col specs. label, label, checkbox
 		Collection<Item> items = om.getItems();
-		int i = 0;
+		panelItems.removeAll();
+		panelItems.add(new JLabel("Include"), "cell 0 0");
+		panelItems.add(new JLabel("Item"), "cell 1 0");
+		panelItems.add(new JLabel("Set"), "cell 2 0");
+		panelItems.add(new JLabel("Modifiers"), "cell 3 0");
+
+		int i = 1;
+		itemCheckBoxes = new ArrayList<JCheckBox>();
 		for (Item item : items) {
-			panelItems.add(new JLabel(item.getItemType().name()), "cell 0 " + i);
-			panelItems.add(new JLabel(item.getItemSet()), "cell 1 " + i);
-			panelItems.add(new JCheckBox(), "cell 1 " + i);
+			JCheckBox cb = new JCheckBox("", true);
+			itemCheckBoxes.add(cb);
+			panelItems.add(cb, "cell 0 " + i + ", height 15:15:15");
+			panelItems.add(new JLabel(item.getItemType().name()), "cell 1 " + i + ", height 15:15:15");
+			panelItems.add(new JLabel(item.getItemSet()), "cell 2 " + i + ",height 15:15:15");
+			List<Modifier> mods = item.getMods();
+			int j = 0;
+			for (Modifier modifier : mods) {
+				panelItems.add(new JLabel(modifier.toString()), "cell " + j + 3 + " " + i + ",height 15:15:15");
+				++j;
+			}
 			++i;
 		}
-
+		splitPane.setDividerLocation(1.0);
 	}
 
 	/**
@@ -790,6 +815,17 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		OptimizerModel.CharClass currentCharClass = (OptimizerModel.CharClass) dropdownCharacterClass.getSelectedItem();
 		om.setCharClass(OptimizerModel.CharClass.valueOf(currentCharClass.name().toUpperCase()));
 		om.setTwoHanded(checkboxTwohanded.isSelected());
+
+		Collection<Item> itemList = om.getItems();
+		int i = 0;
+		for (Iterator<Item> iterator = itemList.iterator(); iterator.hasNext();) {
+			Item item = iterator.next();
+			item.setSelected(itemCheckBoxes.get(i).isSelected());
+			++i;
+		}
+
+		Inventory inv = ItemUtils.parseInventoryFromItems(om.getItems());
+		om.setInventory(inv);
 
 		startProgress(om.calculateSize());
 		om.setProgressListener(new ProgressChangeListener() {
@@ -1086,7 +1122,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 						String.valueOf(Math.round(attackSpeed) / 100.0) + Messages.getString("UI.MESSAGE.PER.SECOND"));
 				labelTravelSpeed.setText(String.valueOf(Math.round(cp.getTspeed() * 100.0) / 100.0) + "%");
 
-				om.setState(EnumTypes.State.CALCULATED);
+				// om.setState(EnumTypes.State.CALCULATED);
+				splitPane.setDividerLocation(0.0);
 
 			}
 
