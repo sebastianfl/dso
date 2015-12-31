@@ -35,6 +35,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -165,6 +167,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JSplitPane splitPane;
 
 	private List<JCheckBox> itemCheckBoxes;
+
 	/**
 	 * Launch the application.
 	 * 
@@ -196,13 +199,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	 */
 	private void initialize() {
 
-		// try {
-		// UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");
-		// } catch (ClassNotFoundException | InstantiationException |
-		// IllegalAccessException
-		// | UnsupportedLookAndFeelException e) {
-		// e.printStackTrace();
-		// }
+		try {
+			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1000, 540);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
