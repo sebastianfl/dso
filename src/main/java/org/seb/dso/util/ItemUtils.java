@@ -17,6 +17,7 @@ import org.seb.dso.Inventory;
 import org.seb.dso.model.Item;
 import org.seb.dso.model.Item.Type;
 import org.seb.dso.model.Modifier;
+import org.seb.dso.ui.Messages;
 
 /**
  * @author Sebastian
@@ -71,51 +72,51 @@ public class ItemUtils {
 
 		Iterator<String> iter = record.iterator();
 		String modText = iter.next();
-		if (null == modText || modText.equals("")) {
+		if (null == modText || modText.equals("")) { //$NON-NLS-1$
 			return null;
 		}
 		Item.Type t = null;
 		switch (modText.toLowerCase()) {
-		case "ring":
+		case "ring": //$NON-NLS-1$
 			t = Type.RING;
 			break;
-		case "amulet":
+		case "amulet": //$NON-NLS-1$
 			t = Type.AMULET;
 			break;
-		case "belt":
+		case "belt": //$NON-NLS-1$
 			t = Type.BELT;
 			break;
-		case "cloak":
+		case "cloak": //$NON-NLS-1$
 			t = Type.CLOAK;
 			break;
-		case "crystal":
+		case "crystal": //$NON-NLS-1$
 			t = Type.CRYSTAL;
 			break;
-		case "adornment":
+		case "adornment": //$NON-NLS-1$
 			t = Type.CRYSTAL;
 			break;
-		case "twohand":
+		case "twohand": //$NON-NLS-1$
 			t = Type.TWOHAND;
 			break;
-		case "mainhand":
+		case "mainhand": //$NON-NLS-1$
 			t = Type.MAINHAND;
 			break;
-		case "offhand":
+		case "offhand": //$NON-NLS-1$
 			t = Type.OFFHAND;
 			break;
-		case "helmet":
+		case "helmet": //$NON-NLS-1$
 			t = Type.HELMET;
 			break;
-		case "pauldrons":
+		case "pauldrons": //$NON-NLS-1$
 			t = Type.PAULDRONS;
 			break;
-		case "torso":
+		case "torso": //$NON-NLS-1$
 			t = Type.TORSO;
 			break;
-		case "gloves":
+		case "gloves": //$NON-NLS-1$
 			t = Type.GLOVES;
 			break;
-		case "boots":
+		case "boots": //$NON-NLS-1$
 			t = Type.BOOTS;
 			break;
 		}
@@ -126,16 +127,16 @@ public class ItemUtils {
 
 		while (iter.hasNext()) {
 			modText = iter.next();
-			if ("".equals(modText)) {
+			if ("".equals(modText)) { //$NON-NLS-1$
 				continue;
 			}
-			String[] vals = modText.split(":");
+			String[] vals = modText.split(":"); //$NON-NLS-1$
 			if (vals.length < 2) {
-				throw new Exception("Wrong Modifier");
+				throw new Exception(Messages.getString("UI.ERROR.INVALID.MODIFIER")); //$NON-NLS-1$
 			}
 			Modifier mod = new Modifier();
 
-			if (vals[1].contains("%")) {
+			if (vals[1].contains("%")) { //$NON-NLS-1$
 				mod.setTypeByCode(vals[0], false);
 				mod.setValue(Double.valueOf(vals[1].substring(0, vals[1].length() - 1)));
 				mod.setAbsolute(false);
@@ -405,18 +406,18 @@ public class ItemUtils {
 	 *             into simple e
 	 */
 	public static Modifier[] parseModifiersFromString(final String str) throws Exception {
-		if (str.equals("") || null == str) {
+		if (str.equals("") || null == str) { //$NON-NLS-1$
 			return null;
 		}
-		String[] modArr = str.split(",");
+		String[] modArr = str.split(","); //$NON-NLS-1$
 		Modifier[] mods = new Modifier[modArr.length];
 		try {
 			for (int j = 0; j < modArr.length; j++) {
 				String jstr = modArr[j];
-				String[] modstr = jstr.split(":");
+				String[] modstr = jstr.split(":"); //$NON-NLS-1$
 				mods[j] = new Modifier();
 
-				if (modstr[1].contains("%")) {
+				if (modstr[1].contains("%")) { //$NON-NLS-1$
 					mods[j].setTypeByCode(modstr[0], false);
 					mods[j].setValue(Double.valueOf(modstr[1].substring(0, modstr[1].length() - 1)));
 					mods[j].setAbsolute(false);
@@ -427,7 +428,7 @@ public class ItemUtils {
 
 			}
 		} catch (Exception e) {
-			throw new Exception("Invalid Modifier");
+			throw new Exception(Messages.getString("UI.ERROR.INVALID.MODIFIER")); //$NON-NLS-1$
 		}
 		return mods;
 

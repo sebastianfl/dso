@@ -26,12 +26,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -50,11 +50,12 @@ import org.seb.dso.model.e.ModelChangeEvent;
 import org.seb.dso.model.e.ModelChangeListener;
 import org.seb.dso.model.e.ProgressChangeListener;
 import org.seb.dso.util.ItemUtils;
-import org.seb.dso.util.PropertyManager;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
+ * The main application class.
+ * 
  * TODO Fix all 1000+ checkstyle warnings TODO Constants TODO L10N/I18N TODO Add
  * SpringFramework container part for the 'singletons'
  * 
@@ -64,16 +65,16 @@ import net.miginfocom.swing.MigLayout;
 public class OptimizerApp extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1238659605741906256L;
-	private static final Logger fLogger = Logger.getLogger(OptimizerApp.class.getPackage().getName());
+	private static final Logger FLOGGER = Logger.getLogger(OptimizerApp.class.getPackage().getName());
 
 	private OptimizerModel om = new OptimizerModel();
 
-	public synchronized OptimizerModel getOM() {
+	public final synchronized OptimizerModel getOM() {
 		return om;
 	}
 
-	public synchronized void setOM(OptimizerModel om) {
-		this.om = om;
+	public final synchronized void setOM(final OptimizerModel o) {
+		this.om = o;
 	}
 
 	private JFrame frame;
@@ -85,6 +86,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JLabel progressLabel;
 	private JPanel panelEast;
 	private JPanel panelCenter;
+	private JPanel panelItems;
 	private JLabel labelAmulet;
 	private JLabel labelBelt;
 	private JLabel labelCloak;
@@ -149,19 +151,23 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JTextField textFieldPetAndBuffs;
 	private JLabel lblFunctions;
 	private Component rigidArea;
-	private Component rigidArea_1;
-	private Component rigidArea_2;
-	private Component rigidArea_3;
+	private Component rigidArea1;
+	private Component rigidArea2;
+	private Component rigidArea3;
+	private Component rigidArea4;
 	private JLabel lblSnapshotsLoaded;
-	private Component rigidArea_4;
 	private JButton processButton;
 
 	private File itemsFile;
+	private JSplitPane splitPane;
 
 	/**
-	 * Launch the application.el
+	 * Launch the application.
+	 * 
+	 * @param args
+	 *            String[] arguments
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -186,12 +192,13 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	 */
 	private void initialize() {
 
-//		try {
-//			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");
-//		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-//				| UnsupportedLookAndFeelException e) {
-//			e.printStackTrace();
-//		}
+		// try {
+		// UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");
+		// } catch (ClassNotFoundException | InstantiationException |
+		// IllegalAccessException
+		// | UnsupportedLookAndFeelException e) {
+		// e.printStackTrace();
+		// }
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1000, 540);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -239,14 +246,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 						setComponentEnable(processButton, false);
 						break;
 					case GENERATED_SNAPSHOTS:
-						progressLabel.setText(
-								Messages.getString("UI.MESSAGE.GENERATED.SNAPSHOTS") + e.getMessage()); //$NON-NLS-2$
+						progressLabel.setText(Messages.getString("UI.MESSAGE.GENERATED.SNAPSHOTS") + e.getMessage()); // $NON-NLS-2$
 						lblSnapshotsLoaded.setText(Messages.getString("UI.MESSAGE.SNAPSHOTS.LOADED") + e.getMessage());
 						progressBar.setVisible(false);
 						break;
 					case GENERATING_SNAPSHOTS:
-						progressLabel.setText(
-								Messages.getString("UI.MESSAGE.GENERATING.SNAPSHOTS") + e.getMessage()); //$NON-NLS-2$
+						progressLabel.setText(Messages.getString("UI.MESSAGE.GENERATING.SNAPSHOTS") + e.getMessage()); // $NON-NLS-2$
 						progressBar.setVisible(false);
 						break;
 					case LOADED:
@@ -387,9 +392,24 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	}
 
 	private void initCenter() {
+
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		panelCenter = new JPanel();
-		frame.getContentPane().add(panelCenter, BorderLayout.CENTER);
-		panelCenter.setLayout(new MigLayout("", "[100px:100px:100px][100px:n,grow,fill][100px:n,grow][100px:100px]", "[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
+		panelItems = new JPanel();
+		JScrollPane jsp = new JScrollPane(panelItems);
+		
+		Dimension minimumSize = new Dimension(0, 0);
+		panelCenter.setMinimumSize(minimumSize);
+		panelItems.setMinimumSize(minimumSize);
+		
+		splitPane.setLeftComponent(jsp);
+		
+		panelItems.setLayout(new MigLayout("", "[40px:80px][100px:160px][16px:32px]", "[]"));
+		splitPane.setRightComponent(panelCenter);
+		
+		panelCenter.setLayout(new MigLayout("", "[100px:100px:100px][100px:n,grow,fill][100px:n,grow][100px:100px]",
+				"[15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline][15px,baseline]"));
 
 		labelAmulet = new JLabel(Messages.getString("UI.LABEL.AMULET"));
 		panelCenter.add(labelAmulet, "cell 0 0");
@@ -545,8 +565,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		openButton.addActionListener(this);
 		fileChooser = new JFileChooser(".");
 
-		rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
-		panelTopLevelMenu.add(rigidArea_1);
+		rigidArea1 = Box.createRigidArea(new Dimension(20, 20));
+		panelTopLevelMenu.add(rigidArea1);
 
 		JLabel lblSelectClass = new JLabel(Messages.getString("UI.SELECT.CLASS.LABEL"));
 		panelTopLevelMenu.add(lblSelectClass);
@@ -560,21 +580,21 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		dropdownCharacterClass.addItem(OptimizerModel.CharClass.DWARF);
 		dropdownCharacterClass.addActionListener(new FieldActionListener());
 
-//		dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.MAGE"));
-//		dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.DRAGONKNIGHT"));
-//		dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.RANGER"));
-//		dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.DWARF"));
-//		dropdownCharacterClass.addActionListener(new FieldActionListener());
+		// dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.MAGE"));
+		// dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.DRAGONKNIGHT"));
+		// dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.RANGER"));
+		// dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.DWARF"));
+		// dropdownCharacterClass.addActionListener(new FieldActionListener());
 
-		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
-		panelTopLevelMenu.add(rigidArea_2);
+		rigidArea2 = Box.createRigidArea(new Dimension(20, 20));
+		panelTopLevelMenu.add(rigidArea2);
 
 		checkboxTwohanded = new JCheckBox(Messages.getString("UI.CHECKBOX.TWOHANDED"));
 		panelTopLevelMenu.add(checkboxTwohanded);
 		checkboxTwohanded.addActionListener(new FieldActionListener());
 
-		rigidArea_3 = Box.createRigidArea(new Dimension(20, 20));
-		panelTopLevelMenu.add(rigidArea_3);
+		rigidArea3 = Box.createRigidArea(new Dimension(20, 20));
+		panelTopLevelMenu.add(rigidArea3);
 
 		buttonGenerateSnapshots = new JButton(Messages.getString("UI.BUTTON.GENERATE.SNAPSHOTS"));
 		panelTopLevelMenu.add(buttonGenerateSnapshots);
@@ -611,8 +631,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		lblSnapshotsLoaded = new JLabel(Messages.getString("UI.LABEL.SNAPSHOTS.LOADED"));
 		panelSecondLevelMenu.add(lblSnapshotsLoaded);
 
-		rigidArea_4 = Box.createRigidArea(new Dimension(20, 20));
-		panelSecondLevelMenu.add(rigidArea_4);
+		rigidArea4 = Box.createRigidArea(new Dimension(20, 20));
+		panelSecondLevelMenu.add(rigidArea4);
 
 		labelAttack = new JLabel(Messages.getString("UI.LABEL.ATTACK"));
 		panelSecondLevelMenu.add(labelAttack);
@@ -708,6 +728,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 					om.setItems(items);
 					Inventory inv = ItemUtils.parseInventoryFromItems(items);
 					om.setInventory(inv);
+					OptimizerApp.this.displayItems();
 				} catch (Exception ex) {
 					om.setState(EnumTypes.State.ERROR, ex.getMessage());
 					// this.progressLabel.setText(ex.getMessage());
@@ -746,6 +767,19 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		}
 	}
 
+	private void displayItems() {
+		// items panel. col specs. label, label, checkbox
+		Collection<Item> items = om.getItems();
+		int i = 0;
+		for (Item item : items) {
+			panelItems.add(new JLabel(item.getItemType().name()), "cell 0 " + i);
+			panelItems.add(new JLabel(item.getItemSet()), "cell 1 " + i);
+			panelItems.add(new JCheckBox(), "cell 1 " + i);
+			++i;
+		}
+
+	}
+
 	/**
 	 * Generates all possible snapshots given the list of the items
 	 * 
@@ -753,7 +787,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	 */
 	private void generateSnapshots() throws Exception {
 
-		OptimizerModel.CharClass currentCharClass =  (OptimizerModel.CharClass)dropdownCharacterClass.getSelectedItem();
+		OptimizerModel.CharClass currentCharClass = (OptimizerModel.CharClass) dropdownCharacterClass.getSelectedItem();
 		om.setCharClass(OptimizerModel.CharClass.valueOf(currentCharClass.name().toUpperCase()));
 		om.setTwoHanded(checkboxTwohanded.isSelected());
 
@@ -786,7 +820,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		om.processItems();
 
 		updateGUI(om.getBestSnapshot(), om.getBestPower());
-		fLogger.log(Level.INFO, "Best snapshot" + om.getBestSnapshot().toString());
+		FLOGGER.log(Level.INFO, "Best snapshot" + om.getBestSnapshot().toString());
 	}
 
 	/**
@@ -795,12 +829,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	 * 
 	 */
 	private void populateModel() throws Exception {
-//		String cc = (String) dropdownCharacterClass.getSelectedItem();
-//		PropertyManager.getPropertyManager().setCurrentClass(cc);
-//		om.setCharClass(OptimizerModel.CharClass.valueOf(cc.toUpperCase()));
+		// String cc = (String) dropdownCharacterClass.getSelectedItem();
+		// PropertyManager.getPropertyManager().setCurrentClass(cc);
+		// om.setCharClass(OptimizerModel.CharClass.valueOf(cc.toUpperCase()));
 
 		SetConfig.getSetConfig().reinitialize();
-		fLogger.log(Level.INFO, "Character Class" + dropdownCharacterClass.getSelectedItem());
+		FLOGGER.log(Level.INFO, "Character Class" + dropdownCharacterClass.getSelectedItem());
 
 		boolean b = checkboxTwohanded.isSelected();
 		om.setTwoHanded(b);
@@ -808,19 +842,19 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		String str = textFieldOffGems.getText();
 		Modifier[] offGemMods = ItemUtils.parseModifiersFromString(str);
 		om.setOffGems(offGemMods);
-		fLogger.log(Level.INFO, "OffGems" + str);
+		FLOGGER.log(Level.INFO, "OffGems" + str);
 
 		str = textFieldDefGems.getText();
 		Modifier[] defGemMods = ItemUtils.parseModifiersFromString(str);
 
 		om.setDefGems(defGemMods);
-		fLogger.log(Level.INFO, "DefGems" + str);
+		FLOGGER.log(Level.INFO, "DefGems" + str);
 
 		str = textFieldPetAndBuffs.getText();
 		Modifier[] petAndBuffs = ItemUtils.parseModifiersFromString(str);
 
 		om.setPetAndBuffs(petAndBuffs);
-		fLogger.log(Level.INFO, "PetAndBuffs" + str);
+		FLOGGER.log(Level.INFO, "PetAndBuffs" + str);
 
 		Modifier attack = new Modifier();
 		attack.setType(Modifier.Type.PDAMAGE);
@@ -836,7 +870,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		Modifier[] weaponDmg = null;
 		if (checkboxWeaponDamage.isSelected()) {
-			fLogger.log(Level.INFO, "CheckBox WeaponDmg selected.");
+			FLOGGER.log(Level.INFO, "CheckBox WeaponDmg selected.");
 			weaponDmg = new Modifier[2];
 			weaponDmg[0] = new Modifier();
 			weaponDmg[1] = new Modifier();
@@ -851,7 +885,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		Modifier[] rage = null;
 		if (checkboxRage.isSelected()) {
-			fLogger.log(Level.INFO, "CheckBox Rage selected.");
+			FLOGGER.log(Level.INFO, "CheckBox Rage selected.");
 			rage = new Modifier[2];
 			rage[0] = new Modifier();
 			rage[1] = new Modifier();
@@ -883,7 +917,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		essence.setValue(v);
 		om.setEssence(essence);
 
-		fLogger.log(Level.INFO, "Essence in use:" + v);
+		FLOGGER.log(Level.INFO, "Essence in use:" + v);
 
 	}
 

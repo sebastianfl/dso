@@ -12,6 +12,7 @@ import org.seb.dso.model.CharacterPower;
 import org.seb.dso.model.Item;
 import org.seb.dso.model.Modifier;
 import org.seb.dso.model.SetConfig;
+import org.seb.dso.ui.Messages;
 
 /**
  * @author Sebastian
@@ -220,10 +221,10 @@ public class CharacterSnapshot implements Serializable {
 
 	@Override
 	public final String toString() {
-		return "CharacterSnapshot [\namulet=" + amulet + "\nbelt=" + belt + "\ncloak=" + cloak + "\nring1=" + ring1
-				+ "\nring2=" + ring2 + "\ncrystal=" + crystal + "\nmainhand=" + mainhand + "\ntwohand=" + twohand
-				+ "\noffhand=" + offhand + "\nhelmet=" + helmet + "\npauldrons=" + pauldrons + "\ntorso=" + torso
-				+ "\ngloves=" + gloves + "\nboots=" + boots + "\n]";
+		return "CharacterSnapshot [\namulet=" + amulet + "\nbelt=" + belt + "\ncloak=" + cloak + "\nring1=" + ring1 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				+ "\nring2=" + ring2 + "\ncrystal=" + crystal + "\nmainhand=" + mainhand + "\ntwohand=" + twohand //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				+ "\noffhand=" + offhand + "\nhelmet=" + helmet + "\npauldrons=" + pauldrons + "\ntorso=" + torso //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				+ "\ngloves=" + gloves + "\nboots=" + boots + "\n]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	/**
@@ -368,7 +369,7 @@ public class CharacterSnapshot implements Serializable {
 				}
 				Map<Integer, Modifier[]> map = cs.getSetMap().get(setName);
 				if (null == map) {
-					throw new Exception("Set: " + setName + " is not properly configured. Check the property file");
+					throw new Exception("'" + setName + "' " + Messages.getString("UI.ERROR.SET.NOT.CONFIGURED")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 				Modifier[] m = map.get(sets.get(setName));
 				if (null != m) {

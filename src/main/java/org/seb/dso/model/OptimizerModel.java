@@ -22,11 +22,15 @@ import org.seb.dso.util.PropertyManager;
  *
  */
 public class OptimizerModel {
-	private static final Logger fLogger = Logger.getLogger(OptimizerModel.class.getPackage().getName());
+	private static final Logger FLOGGER = Logger.getLogger(OptimizerModel.class.getPackage().getName());
 
+	/**
+	 * @author Sebastian
+	 *
+	 */
 	public enum CharClass {
-		MAGE("Mage", "UI.CLASS.NAME.MAGE"), DRAGONKNIGHT("DragonKnight", "UI.CLASS.NAME.DRAGONKNIGHT"), RANGER("Ranger",
-				"UI.CLASS.NAME.RANGER"), DWARF("Dwarf", "UI.CLASS.NAME.DWARF");
+		MAGE("Mage", "UI.CLASS.NAME.MAGE"), DRAGONKNIGHT("DragonKnight", "UI.CLASS.NAME.DRAGONKNIGHT"),
+		RANGER("Ranger", "UI.CLASS.NAME.RANGER"), DWARF("Dwarf", "UI.CLASS.NAME.DWARF");
 
 		private String name;
 		private String key;
@@ -35,15 +39,23 @@ public class OptimizerModel {
 			return name;
 		}
 
-		public synchronized void setName(String charClassName) {
+		public synchronized void setName(final String charClassName) {
 			this.name = charClassName;
 		}
 
-		CharClass(String s, String k) {
+		/**
+		 * Default constructor.
+		 * 
+		 * @param s
+		 *            class name
+		 * @param k
+		 *            message property key
+		 */
+		CharClass(final String s, final String k) {
 			this.name = s;
 			this.key = k;
 		}
-		
+
 		public String getMessage() {
 			return Messages.getString(key);
 		}
@@ -81,49 +93,68 @@ public class OptimizerModel {
 
 	private ProgressChangeListener progressListener;
 
+	/**
+	 * Default constructor. Start with the clean State
+	 */
 	public OptimizerModel() {
 		this.setState(EnumTypes.State.CLEAN);
 	}
 
-	public synchronized EnumTypes.State getState() {
+	public final synchronized EnumTypes.State getState() {
 		return state;
 	}
 
-	public synchronized void setState(EnumTypes.State state, String message) {
-		if (this.state != state) {
-			this.state = state;
-			processModelChange(new ModelChangeEvent(ModelChangeEvent.EventType.STATE, state, message));
+	/**
+	 * @param s
+	 *            State
+	 * @param message
+	 *            Extra message that might be communicated to observers
+	 */
+	public final synchronized void setState(final EnumTypes.State s, final String message) {
+		if (this.state != s) {
+			this.state = s;
+			processModelChange(new ModelChangeEvent(ModelChangeEvent.EventType.STATE, s, message));
 		}
 	}
 
-	public void setState(EnumTypes.State state) {
-		this.setState(state, null);
+	/**
+	 * @param s
+	 *            State
+	 */
+	public final void setState(final EnumTypes.State s) {
+		this.setState(s, null);
 	}
 
-	public synchronized CharClass getCharClass() {
+	public final synchronized CharClass getCharClass() {
 		return charClass;
 	}
 
-	public synchronized void setCharClass(CharClass charClass) {
+	/**
+	 * @param charClazz
+	 *            CharacterClass
+	 */
+	public final synchronized void setCharClass(final CharClass charClazz) {
 
-		if (this.charClass != charClass) {
-			this.charClass = charClass;
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.CHARCLASS,
-			// charClass.charClassName));
+		if (this.charClass != charClazz) {
+			this.charClass = charClazz;
+
 			this.setState(EnumTypes.State.LOADED);
 		}
 	}
 
-	public synchronized Inventory getInventory() {
+	public final synchronized Inventory getInventory() {
 		return inventory;
 	}
 
-	public synchronized void setInventory(Inventory inventory) {
-		if (this.inventory != inventory) {
-			this.inventory = inventory;
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.INVETORY, ""));
+	/**
+	 * Juset a setter for Inventory object.
+	 * 
+	 * @param inv
+	 *            Inventory object
+	 */
+	public final synchronized void setInventory(final Inventory inv) {
+		if (this.inventory != inv) {
+			this.inventory = inv;
 			this.setState(EnumTypes.State.LOADED);
 
 		}
@@ -137,9 +168,6 @@ public class OptimizerModel {
 		if (this.twoHanded != twoHanded) {
 			this.twoHanded = twoHanded;
 			this.setState(EnumTypes.State.LOADED);
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.MODIFIER,
-			// "twoHanded"));
 		}
 	}
 
@@ -192,9 +220,7 @@ public class OptimizerModel {
 	public synchronized void setRage(Modifier[] rage) {
 		if (this.rage != rage) {
 			this.rage = rage;
-			// this.setState(State.PREPROCESSED);
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.MODIFIER, "rage"));
+
 		}
 	}
 
@@ -205,10 +231,7 @@ public class OptimizerModel {
 	public synchronized void setWeaponDmg(Modifier[] weaponDmg) {
 		if (this.weaponDmg != weaponDmg) {
 			this.weaponDmg = weaponDmg;
-			// this.setState(State.PREPROCESSED);
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.MODIFIER,
-			// "weaponDmg"));
+
 		}
 	}
 
@@ -219,10 +242,7 @@ public class OptimizerModel {
 	public synchronized void setOffGems(Modifier[] offGems) {
 		if (this.offGems != offGems) {
 			this.offGems = offGems;
-			// this.setState(State.PREPROCESSED);
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.MODIFIER,
-			// "offGems"));
+
 		}
 	}
 
@@ -233,10 +253,7 @@ public class OptimizerModel {
 	public synchronized void setDefGems(Modifier[] defGems) {
 		if (this.defGems != defGems) {
 			this.defGems = defGems;
-			// this.setState(State.PREPROCESSED);
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.MODIFIER,
-			// "defGems"));
+
 		}
 	}
 
@@ -247,10 +264,7 @@ public class OptimizerModel {
 	public synchronized void setPetAndBuffs(Modifier[] petAndBuffs) {
 		if (this.petAndBuffs != petAndBuffs) {
 			this.petAndBuffs = petAndBuffs;
-			// this.setState(State.PREPROCESSED);
-			// processModelChange(new
-			// ModelChangeEvent(ModelChangeEvent.EventType.MODIFIER,
-			// "petAndBuffs"));
+
 		}
 	}
 
@@ -381,14 +395,15 @@ public class OptimizerModel {
 		this.setState(EnumTypes.State.CALCULATED);
 		this.bestSnapshot = bestSnapshot;
 		this.bestPower = bestPower;
-		fLogger.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
+		FLOGGER.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
 
 	}
 
 	/**
-	 * Generates all possible snapshots given the list of the items
+	 * Generates all possible snapshots given the list of the items.
 	 * 
 	 * @throws Exception
+	 *             some Exception, perhaps casting or whatever
 	 */
 	public final void generateSnapshots() throws Exception {
 
@@ -400,12 +415,12 @@ public class OptimizerModel {
 		int size = calculateSize();
 
 		if (size == 0) {
-			throw new Exception("There should be at least one item of each kind.");
+			throw new Exception(Messages.getString("UI.MESSAGE.ITEM.OF.EACH.KIND.REQUIRED"));
 		}
 
 		this.setState(EnumTypes.State.GENERATING_SNAPSHOTS, String.valueOf(size));
 
-		List<CharacterSnapshot> snapshots = ItemUtils.getAllSnapshots(this.getInventory(), this.twoHanded,
+		this.snapshots = ItemUtils.getAllSnapshots(this.getInventory(), this.twoHanded,
 				this.charClass.name.equalsIgnoreCase("ranger"));
 
 		// Go through extra state to populate the label with the snapshot list
@@ -422,11 +437,10 @@ public class OptimizerModel {
 			// process sets if any
 			cs.processSets();
 			++i;
-			if (null != this.progressListener) {
+			if (null != this.progressListener && i%10 == 0) {
 				progressListener.progressChanged(i);
 			}
 		}
-		this.setSnapshots(snapshots);
 		this.setState(EnumTypes.State.PREPROCESSED);
 	}
 
