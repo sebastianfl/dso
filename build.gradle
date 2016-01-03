@@ -36,7 +36,7 @@ repositories {
     apply plugin: 'edu.sc.seis.launch4j'
 
     launch4j {
-      mainClassName = 'org.seb.dso.ui.OptimizerApp'
+      mainClassName = 'org.seb.dso.fx.OptimizerFX'
     }
 
 // In this section you declare the dependencies for your production and test code
