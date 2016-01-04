@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 /**
  * @author Sebastian
  *
@@ -18,11 +21,12 @@ public class Item implements Serializable {
 
 	private String itemSet;
 	private Type itemType;
-	private boolean selected;
+	private BooleanProperty selected;
 
 	public Item() {
 		super();
 		mods = new ArrayList<Modifier>();
+		selected = new SimpleBooleanProperty();
 	}
 
 	public boolean isSetItem() {
@@ -67,11 +71,15 @@ public class Item implements Serializable {
 		return sb.toString();
 	}
 
-	public synchronized final boolean isSelected() {
-		return selected;
+	public final BooleanProperty selected() {
+		return this.selected;
 	}
 
-	public synchronized final void setSelected(boolean selected) {
-		this.selected = selected;
+	public final boolean isSelected() {
+		return this.selected.get();
+	}
+
+	public final void setSelected(boolean s) {
+		this.selected.set(s);
 	}
 }

@@ -45,6 +45,7 @@ import javax.swing.event.DocumentListener;
 
 import org.seb.dso.CharacterSnapshot;
 import org.seb.dso.Inventory;
+import org.seb.dso.model.CharClass;
 import org.seb.dso.model.CharacterPower;
 import org.seb.dso.model.EnumTypes;
 import org.seb.dso.model.Item;
@@ -133,7 +134,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	private JLabel labelTravelSpeed;
 	private JButton buttonGenerateSnapshots;
 	private JLabel labelAttack;
-	private JComboBox<OptimizerModel.CharClass> dropdownCharacterClass;
+	private JComboBox<CharClass> dropdownCharacterClass;
 	private JCheckBox checkboxTwohanded;
 	private JCheckBox checkboxWeaponDamage;
 	private JRadioButton radioGreen;
@@ -586,12 +587,12 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		panelTopLevelMenu.add(lblSelectClass);
 
 		// Character class dropdown and the action listener to update the model
-		dropdownCharacterClass = new JComboBox<OptimizerModel.CharClass>();
+		dropdownCharacterClass = new JComboBox<CharClass>();
 		panelTopLevelMenu.add(dropdownCharacterClass);
-		dropdownCharacterClass.addItem(OptimizerModel.CharClass.MAGE);
-		dropdownCharacterClass.addItem(OptimizerModel.CharClass.DRAGONKNIGHT);
-		dropdownCharacterClass.addItem(OptimizerModel.CharClass.RANGER);
-		dropdownCharacterClass.addItem(OptimizerModel.CharClass.DWARF);
+		dropdownCharacterClass.addItem(CharClass.MAGE);
+		dropdownCharacterClass.addItem(CharClass.DRAGONKNIGHT);
+		dropdownCharacterClass.addItem(CharClass.RANGER);
+		dropdownCharacterClass.addItem(CharClass.DWARF);
 		dropdownCharacterClass.addActionListener(new FieldActionListener());
 
 		// dropdownCharacterClass.addItem(Messages.getString("UI.CLASS.NAME.MAGE"));
@@ -814,8 +815,8 @@ public class OptimizerApp extends JPanel implements ActionListener {
 	 */
 	private void generateSnapshots() throws Exception {
 
-		OptimizerModel.CharClass currentCharClass = (OptimizerModel.CharClass) dropdownCharacterClass.getSelectedItem();
-		om.setCharClass(OptimizerModel.CharClass.valueOf(currentCharClass.name().toUpperCase()));
+		CharClass currentCharClass = (CharClass) dropdownCharacterClass.getSelectedItem();
+		om.setCharClass(CharClass.valueOf(currentCharClass.name().toUpperCase()));
 		om.setTwoHanded(checkboxTwohanded.isSelected());
 
 		Collection<Item> itemList = om.getItems();

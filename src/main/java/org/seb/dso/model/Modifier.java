@@ -52,7 +52,6 @@ public class Modifier implements Serializable {
 	@Override
 	public String toString() {
 		return this.getFormattedString();
-		// return type + "=" + value + (isAbsolute ? "" : "%");
 	}
 
 	public void setType(Type t) {

@@ -403,6 +403,9 @@ public class CharacterPower implements Serializable {
 	 *            list of modifiers to be processed
 	 */
 	public final void processModifiers(final List<Modifier> mods) {
+		if (null == mods) {
+			return;
+		}
 		for (Iterator<Modifier> iterator2 = mods.iterator(); iterator2.hasNext();) {
 			Modifier modifier = (Modifier) iterator2.next();
 			Double ds = modifier.getValue();

@@ -32,7 +32,7 @@ public class ItemUtils {
 	 * @throws Exception
 	 *             some casting exception wrapped into e.
 	 */
-	public static Collection<Item> getItems(final File file) throws Exception {
+	public static List<Item> getItems(final File file) throws Exception {
 		List<Item> items = new ArrayList<Item>();
 
 		Reader in;
@@ -409,7 +409,7 @@ public class ItemUtils {
 	 *             into simple e
 	 */
 	public static Modifier[] parseModifiersFromString(final String str) throws Exception {
-		if (str.equals("") || null == str) { //$NON-NLS-1$
+		if (null == str || str.equals("")) { //$NON-NLS-1$
 			return null;
 		}
 		String[] modArr = str.split(","); //$NON-NLS-1$

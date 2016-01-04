@@ -49,6 +49,7 @@ dependencies {
     compile group: 'net.sf.squirrel-sql.thirdparty-non-maven', name: 'napkinlaf', version: '1.2'
     compile group: 'com.google.caliper', name: 'caliper', version: '0.5-rc1'
     compile group: 'org.controlsfx', name: 'controlsfx', version: '8.40.10'
+    compile group: 'org.jfxtras', name: 'jfxtras-controls', version: '8.0-r4'
 
     // Declare the dependency for your favorite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
