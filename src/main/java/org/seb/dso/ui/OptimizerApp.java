@@ -45,9 +45,7 @@ import javax.swing.event.DocumentListener;
 
 import org.seb.dso.CharacterSnapshot;
 import org.seb.dso.Inventory;
-import org.seb.dso.model.CharClass;
 import org.seb.dso.model.CharacterPower;
-import org.seb.dso.model.EnumTypes;
 import org.seb.dso.model.Item;
 import org.seb.dso.model.Modifier;
 import org.seb.dso.model.OptimizerModel;
@@ -55,6 +53,9 @@ import org.seb.dso.model.SetConfig;
 import org.seb.dso.model.e.ModelChangeEvent;
 import org.seb.dso.model.e.ModelChangeListener;
 import org.seb.dso.model.e.ProgressChangeListener;
+import org.seb.dso.model.enumeration.ApplicationState;
+import org.seb.dso.model.enumeration.CharClass;
+import org.seb.dso.model.enumeration.ModifierType;
 import org.seb.dso.util.ItemUtils;
 
 import net.miginfocom.swing.MigLayout;
@@ -736,20 +737,20 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		if (e.getSource() == openButton) {
 			int ret = fileChooser.showOpenDialog(OptimizerApp.this);
 			if (ret == JFileChooser.APPROVE_OPTION) {
-				om.setState(EnumTypes.State.LOADING);
+				om.setState(ApplicationState.LOADING);
 				itemsFile = fileChooser.getSelectedFile();
 				try {
 					Collection<Item> items = ItemUtils.getItems(itemsFile);
 					om.setItems(items);
 					OptimizerApp.this.generateItemListView();
 				} catch (Exception ex) {
-					om.setState(EnumTypes.State.ERROR, ex.getMessage());
+					om.setState(ApplicationState.ERROR, ex.getMessage());
 					// this.progressLabel.setText(ex.getMessage());
 					this.progressLabel.setVisible(true);
 					// TODO make it nice
 					return;
 				}
-				om.setState(EnumTypes.State.LOADED);
+				om.setState(ApplicationState.LOADED);
 
 				progressLabel.setVisible(true);
 			}
@@ -759,7 +760,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 					try {
 						generateSnapshots();
 					} catch (Exception e) {
-						om.setState(EnumTypes.State.ERROR, e.getMessage());
+						om.setState(ApplicationState.ERROR, e.getMessage());
 						e.printStackTrace();
 					}
 				}
@@ -771,7 +772,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 					try {
 						processItems();
 					} catch (Exception e) {
-						om.setState(EnumTypes.State.ERROR, e.getLocalizedMessage());
+						om.setState(ApplicationState.ERROR, e.getLocalizedMessage());
 						e.printStackTrace();
 					}
 				}
@@ -896,13 +897,13 @@ public class OptimizerApp extends JPanel implements ActionListener {
 		FLOGGER.log(Level.INFO, "PetAndBuffs" + str);
 
 		Modifier attack = new Modifier();
-		attack.setType(Modifier.Type.PDAMAGE);
+		attack.setType(ModifierType.PDAMAGE);
 		attack.setValue(sliderAttack.getValue() * 2.0);
 		attack.setAbsolute(false);
 		om.setAttack(attack);
 
 		Modifier agility = new Modifier();
-		agility.setType(Modifier.Type.PATTACK_SPEED);
+		agility.setType(ModifierType.PATTACK_SPEED);
 		agility.setValue(sliderAgility.getValue() * 1.6);
 		agility.setAbsolute(false);
 		om.setAgility(agility);
@@ -913,10 +914,10 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			weaponDmg = new Modifier[2];
 			weaponDmg[0] = new Modifier();
 			weaponDmg[1] = new Modifier();
-			weaponDmg[0].setType(Modifier.Type.PEXTRA_WEAPON_DMG);
+			weaponDmg[0].setType(ModifierType.PEXTRA_WEAPON_DMG);
 			weaponDmg[0].setValue(50.0);
 			weaponDmg[0].setAbsolute(false);
-			weaponDmg[1].setType(Modifier.Type.PATTACK_SPEED);
+			weaponDmg[1].setType(ModifierType.PATTACK_SPEED);
 			weaponDmg[1].setValue(-10.0);
 			weaponDmg[1].setAbsolute(false);
 		}
@@ -928,24 +929,24 @@ public class OptimizerApp extends JPanel implements ActionListener {
 			rage = new Modifier[2];
 			rage[0] = new Modifier();
 			rage[1] = new Modifier();
-			rage[0].setType(Modifier.Type.PMANA);
+			rage[0].setType(ModifierType.PMANA);
 			rage[0].setValue(25.0);
 			rage[0].setAbsolute(false);
 
-			rage[1].setType(Modifier.Type.PTRAVEL_SPEED);
+			rage[1].setType(ModifierType.PTRAVEL_SPEED);
 			rage[1].setValue(-5.0);
 			rage[1].setAbsolute(false);
 		}
 		om.setRage(rage);
 
 		Modifier essence = new Modifier();
-		essence.setType(Modifier.Type.PDAMAGE);
+		essence.setType(ModifierType.PDAMAGE);
 		essence.setAbsolute(false);
 		Double v = 0.0;
 		if (radioGreen.isSelected()) {
 			v = 50.0;
 			essence.setAbsolute(true);
-			essence.setType(Modifier.Type.DAMAGE);
+			essence.setType(ModifierType.DAMAGE);
 		} else if (radioBlue.isSelected()) {
 			v = 100.0;
 		} else if (radioPurple.isSelected()) {
@@ -1138,17 +1139,17 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		@Override
 		public void insertUpdate(DocumentEvent e) {
-			om.setState(EnumTypes.State.PREPROCESSED);
+			om.setState(ApplicationState.PREPROCESSED);
 		}
 
 		@Override
 		public void removeUpdate(DocumentEvent e) {
-			om.setState(EnumTypes.State.PREPROCESSED);
+			om.setState(ApplicationState.PREPROCESSED);
 		}
 
 		@Override
 		public void changedUpdate(DocumentEvent e) {
-			om.setState(EnumTypes.State.PREPROCESSED);
+			om.setState(ApplicationState.PREPROCESSED);
 		}
 	}
 
@@ -1156,7 +1157,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			om.setState(EnumTypes.State.LOADED);
+			om.setState(ApplicationState.LOADED);
 		}
 	}
 
@@ -1164,7 +1165,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			om.setState(EnumTypes.State.PREPROCESSED);
+			om.setState(ApplicationState.PREPROCESSED);
 		}
 	}
 
@@ -1172,7 +1173,7 @@ public class OptimizerApp extends JPanel implements ActionListener {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			om.setState(EnumTypes.State.PREPROCESSED);
+			om.setState(ApplicationState.PREPROCESSED);
 
 		}
 	}

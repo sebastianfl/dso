@@ -5,23 +5,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.seb.dso.model.enumeration.ItemType;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 /**
+ * TODO Replace by polymorphism. Item should encapsulate its own specific properties, e.g. Weapon should
+ * know what to do with gems, Torso should be aware of special gems, etc.
+ * 
  * @author Sebastian
  *
  */
 public class Item implements Serializable {
-	public enum Type {
-		AMULET, BELT, CLOAK, RING, CRYSTAL, MAINHAND, TWOHAND, OFFHAND, HELMET, PAULDRONS, TORSO, GLOVES, BOOTS;
-	}
-
 	private static final long serialVersionUID = 1L;
 
 	private String itemSet;
-	private Type itemType;
+	private ItemType itemType;
 	private BooleanProperty selected;
+	private List<Modifier> mods;
 
 	public Item() {
 		super();
@@ -41,15 +43,13 @@ public class Item implements Serializable {
 		this.itemSet = itemSet;
 	}
 
-	public Type getItemType() {
+	public ItemType getItemType() {
 		return itemType;
 	}
 
-	public void setItemType(Type t) {
+	public void setItemType(ItemType t) {
 		this.itemType = t;
 	}
-
-	private List<Modifier> mods;
 
 	public synchronized List<Modifier> getMods() {
 		return mods;

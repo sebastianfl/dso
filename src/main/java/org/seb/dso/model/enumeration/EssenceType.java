@@ -1,5 +1,6 @@
-package org.seb.dso.model;
+package org.seb.dso.model.enumeration;
 
+import org.seb.dso.model.Modifier;
 import org.seb.dso.ui.Messages;
 
 /**
@@ -7,21 +8,18 @@ import org.seb.dso.ui.Messages;
  *
  */
 public enum EssenceType {
-	NOESSENCES(Modifier.Type.DAMAGE, true, 0.0, "UI.ESSENCE.NOESSENCE"),
-	GREEN(Modifier.Type.DAMAGE, true, 50.0, "UI.ESSENCE.GREEN"),
-	BLUE(Modifier.Type.DAMAGE, false, 100.0, "UI.ESSENCE.BLUE"),
-	PURPLE(Modifier.Type.DAMAGE, false, 200.0, "UI.ESSENCE.PURPLE"),
-	RED(Modifier.Type.DAMAGE, false, 300.0, "UI.ESSENCE.RED");
+	// TODO Replace by NullModifier
+	NOESSENCES(ModifierType.DAMAGE, true, 0.0, "UI.ESSENCE.NOESSENCE"),
+	GREEN(ModifierType.DAMAGE, true, 50.0, "UI.ESSENCE.GREEN"),
+	BLUE(ModifierType.DAMAGE, false, 100.0, "UI.ESSENCE.BLUE"),
+	PURPLE(ModifierType.DAMAGE, false, 200.0, "UI.ESSENCE.PURPLE"),
+	RED(ModifierType.DAMAGE, false, 300.0, "UI.ESSENCE.RED");
 
 	private String key;
 	private Modifier modifier;
 
 	public Modifier getModifier() {
 		return modifier;
-	}
-
-	public void setModifier(Modifier modifier) {
-		this.modifier = modifier;
 	}
 
 	/**
@@ -32,7 +30,7 @@ public enum EssenceType {
 	 * @param k
 	 *            message property key
 	 */
-	EssenceType(final Modifier.Type t, final boolean abs, final double val, final String k) {
+	EssenceType(final ModifierType t, final boolean abs, final double val, final String k) {
 		this.modifier = new Modifier();
 		this.modifier.setAbsolute(abs);
 		this.modifier.setType(t);

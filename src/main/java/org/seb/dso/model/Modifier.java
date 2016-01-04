@@ -2,6 +2,9 @@ package org.seb.dso.model;
 
 import java.io.Serializable;
 
+import org.seb.dso.model.enumeration.ModifierCode;
+import org.seb.dso.model.enumeration.ModifierType;
+
 /**
  * @author Sebastian
  *
@@ -10,23 +13,9 @@ public class Modifier implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public enum Type {
-		DAMAGE, CRITICAL_HIT, HP, ARMOR, RESIST, RESISTANCE_COLD, RESISTANCE_FIRE, RESISTANCE_POISON,
-		RESISTANCE_ANDERMAGIC, RESISTANCE_LIGHT, BLOCK_REDUCTION, MAXIMUM_DAMAGE, WEAPON_DAMAGE, WEAPON_DAMAGE_MAX,
-		WEAPON_DAMAGE_MIN, MANA, PDAMAGE, PCRITICAL_HIT, PCRITICAL_DAMAGE, PHP, PARMOR, PRESIST, PTRAVEL_SPEED,
-		PATTACK_SPEED, PWEAPON_ATTACK_SPEED, PBLOCK_STRENGTH, PRESISTANCE_COLD, PRESISTANCE_FIRE, PRESISTANCE_POISON,
-		PRESISTANCE_ANDERMAGIC, PRESISTANCE_LIGHT, PMAXIMUM_DAMAGE, PWEAPON_DAMAGE, PEXTRA_WEAPON_DMG, PMANA,
-		MINIMUM_DAMAGE, PMINIMUM_DAMAGE
-
-	}
-
-	public Type getType() {
+	public ModifierType getType() {
 		return type;
 	}
-
-	// public void setType(Type type) {
-	// this.type = type;
-	// }
 
 	public Double getValue() {
 		return value;
@@ -44,7 +33,7 @@ public class Modifier implements Serializable {
 		this.isAbsolute = isAbsolute;
 	}
 
-	private Type type;
+	private ModifierType type;
 	private Double value;
 	// TODO Consider polymorphism
 	private boolean isAbsolute = true;
@@ -54,7 +43,7 @@ public class Modifier implements Serializable {
 		return this.getFormattedString();
 	}
 
-	public void setType(Type t) {
+	public void setType(ModifierType t) {
 		this.type = t;
 	}
 
@@ -63,149 +52,149 @@ public class Modifier implements Serializable {
 		switch (code) {
 		case ARMOR: {
 			if (isAbsolute) {
-				this.type = Type.ARMOR;
+				this.type = ModifierType.ARMOR;
 			} else {
-				this.type = Type.PARMOR;
+				this.type = ModifierType.PARMOR;
 			}
 			break;
 		}
 		case DAMAGE: {
 			if (isAbsolute) {
-				this.type = Type.DAMAGE;
+				this.type = ModifierType.DAMAGE;
 			} else {
-				this.type = Type.PDAMAGE;
+				this.type = ModifierType.PDAMAGE;
 			}
 			break;
 		}
 		case WEAPON_DAMAGE_MIN: {
-			this.type = Type.WEAPON_DAMAGE_MIN;
+			this.type = ModifierType.WEAPON_DAMAGE_MIN;
 			break;
 		}
 		case WEAPON_DAMAGE_MAX: {
-			this.type = Type.WEAPON_DAMAGE_MAX;
+			this.type = ModifierType.WEAPON_DAMAGE_MAX;
 			break;
 		}
 		case CRITICAL_DAMAGE: {
-			this.type = Type.PCRITICAL_DAMAGE;
+			this.type = ModifierType.PCRITICAL_DAMAGE;
 			break;
 		}
 		case CRITICAL_HIT: {
 			if (isAbsolute) {
-				this.type = Type.CRITICAL_HIT;
+				this.type = ModifierType.CRITICAL_HIT;
 			} else {
-				this.type = Type.PCRITICAL_HIT;
+				this.type = ModifierType.PCRITICAL_HIT;
 			}
 			break;
 		}
 		case WEAPON_DAMAGE: {
 			if (isAbsolute) {
-				this.type = Type.WEAPON_DAMAGE;
+				this.type = ModifierType.WEAPON_DAMAGE;
 			} else {
-				this.type = Type.PWEAPON_DAMAGE;
+				this.type = ModifierType.PWEAPON_DAMAGE;
 			}
 			break;
 		}
 		case EXTRA_WEAPON_DMG: {
-			this.type = Type.PEXTRA_WEAPON_DMG;
+			this.type = ModifierType.PEXTRA_WEAPON_DMG;
 			break;
 		}
 		case TRAVEL_SPEED: {
-			this.type = Type.PTRAVEL_SPEED;
+			this.type = ModifierType.PTRAVEL_SPEED;
 			break;
 		}
 		case ATTACK_SPEED: {
-			this.type = Type.PATTACK_SPEED;
+			this.type = ModifierType.PATTACK_SPEED;
 			break;
 		}
 		case WEAPON_ATTACK_SPEED: {
-			this.type = Type.PWEAPON_ATTACK_SPEED;
+			this.type = ModifierType.PWEAPON_ATTACK_SPEED;
 			break;
 		}
 		case HP: {
 			if (isAbsolute) {
-				this.type = Type.HP;
+				this.type = ModifierType.HP;
 			} else {
-				this.type = Type.PHP;
+				this.type = ModifierType.PHP;
 			}
 			break;
 		}
 		case RESIST: {
 			if (isAbsolute) {
-				this.type = Type.RESIST;
+				this.type = ModifierType.RESIST;
 			} else {
-				this.type = Type.PRESIST;
+				this.type = ModifierType.PRESIST;
 			}
 			break;
 		}
 		case RESISTANCE_ANDERMAGIC: {
 			if (isAbsolute) {
-				this.type = Type.RESISTANCE_ANDERMAGIC;
+				this.type = ModifierType.RESISTANCE_ANDERMAGIC;
 			} else {
-				this.type = Type.PRESISTANCE_ANDERMAGIC;
+				this.type = ModifierType.PRESISTANCE_ANDERMAGIC;
 			}
 			break;
 		}
 		case RESISTANCE_COLD: {
 			if (isAbsolute) {
-				this.type = Type.RESISTANCE_COLD;
+				this.type = ModifierType.RESISTANCE_COLD;
 			} else {
-				this.type = Type.PRESISTANCE_COLD;
+				this.type = ModifierType.PRESISTANCE_COLD;
 			}
 			break;
 		}
 		case RESISTANCE_FIRE: {
 			if (isAbsolute) {
-				this.type = Type.RESISTANCE_FIRE;
+				this.type = ModifierType.RESISTANCE_FIRE;
 			} else {
-				this.type = Type.PRESISTANCE_FIRE;
+				this.type = ModifierType.PRESISTANCE_FIRE;
 			}
 			break;
 		}
 		case RESISTANCE_LIGHT: {
 			if (isAbsolute) {
-				this.type = Type.RESISTANCE_LIGHT;
+				this.type = ModifierType.RESISTANCE_LIGHT;
 			} else {
-				this.type = Type.PRESISTANCE_LIGHT;
+				this.type = ModifierType.PRESISTANCE_LIGHT;
 			}
 			break;
 		}
 		case RESISTANCE_POISON: {
 			if (isAbsolute) {
-				this.type = Type.RESISTANCE_POISON;
+				this.type = ModifierType.RESISTANCE_POISON;
 			} else {
-				this.type = Type.PRESISTANCE_POISON;
+				this.type = ModifierType.PRESISTANCE_POISON;
 			}
 			break;
 		}
 		case BLOCK_REDUCTION: {
-			this.type = Type.BLOCK_REDUCTION;
+			this.type = ModifierType.BLOCK_REDUCTION;
 			break;
 		}
 		case BLOCK_STRENGTH: {
-			this.type = Type.PBLOCK_STRENGTH;
+			this.type = ModifierType.PBLOCK_STRENGTH;
 			break;
 		}
 		case MANA: {
 			if (isAbsolute) {
-				this.type = Type.MANA;
+				this.type = ModifierType.MANA;
 			} else {
-				this.type = Type.PMANA;
+				this.type = ModifierType.PMANA;
 			}
 			break;
 		}
 		case MAXIMUM_DAMAGE: {
 			if (isAbsolute) {
-				this.type = Type.MAXIMUM_DAMAGE;
+				this.type = ModifierType.MAXIMUM_DAMAGE;
 			} else {
-				this.type = Type.PMAXIMUM_DAMAGE;
+				this.type = ModifierType.PMAXIMUM_DAMAGE;
 			}
 			break;
 		}
 		case MINIMUM_DAMAGE: {
 			if (isAbsolute) {
-				this.type = Type.MINIMUM_DAMAGE;
+				this.type = ModifierType.MINIMUM_DAMAGE;
 			} else {
-				this.type = Type.PMINIMUM_DAMAGE;
+				this.type = ModifierType.PMINIMUM_DAMAGE;
 			}
 			break;
 		}

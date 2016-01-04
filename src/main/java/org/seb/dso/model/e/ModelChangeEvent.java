@@ -1,6 +1,6 @@
 package org.seb.dso.model.e;
 
-import org.seb.dso.model.EnumTypes;
+import org.seb.dso.model.enumeration.ApplicationState;
 
 /**
  * @author sebastian_fl
@@ -12,7 +12,7 @@ public class ModelChangeEvent {
 	}
 
 	private EventType eventType;
-	private EnumTypes.State command;
+	private ApplicationState command;
 	private String message;
 
 	public synchronized String getMessage() {
@@ -31,15 +31,15 @@ public class ModelChangeEvent {
 		this.eventType = eventType;
 	}
 
-	public synchronized EnumTypes.State getCommand() {
+	public synchronized ApplicationState getCommand() {
 		return command;
 	}
 
-	public synchronized void setCommand(EnumTypes.State command) {
+	public synchronized void setCommand(ApplicationState command) {
 		this.command = command;
 	}
 
-	public ModelChangeEvent(EventType type, EnumTypes.State command, String message) {
+	public ModelChangeEvent(EventType type, ApplicationState command, String message) {
 		this.eventType = type;
 		this.command = command;
 		this.message = message;

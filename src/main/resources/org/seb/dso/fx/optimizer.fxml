@@ -14,7 +14,7 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 
-<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.seb.dso.controller.OptimizerController">
+<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="925.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.seb.dso.fx.controller.OptimizerController">
 	<top>
 		<VBox spacing="6.0">
 			<children>
@@ -23,15 +23,11 @@
 						<Button fx:id="buttonLoadItems" onAction="#loadItems" text="%UI.BUTTON.LOAD.ITEMS" />
 						<Label fx:id="labelSelectClass" text="%UI.SELECT.CLASS.LABEL" />
 						<ComboBox fx:id="comboboxClass">
-							<!-- items> <FXCollections fx:factory="observableArrayList"> <String 
-								fx:value="Mage" /> <String fx:value="Dragonknight" /> <String fx:value="Ranger" 
-								/> <String fx:value="Dwarf" /> </FXCollections> </items> <value> <String 
-								fx:value="Mage" /> </value -->
 						</ComboBox>
 						<CheckBox fx:id="checkboxTwohanded" text="%UI.CHECKBOX.TWOHANDED" />
-						<Button fx:id="buttonGenerateSnapshots" text="%UI.BUTTON.GENERATE.SNAPSHOTS" />
+						<Button fx:id="buttonGenerateSnapshots" onAction="#generateSnapshots" text="%UI.BUTTON.GENERATE.SNAPSHOTS" />
 						<Label text="Functions" />
-						<Button fx:id="buttonProcess" text="Process" />
+						<Button fx:id="buttonProcess" onAction="#process" text="Process" />
 					</children>
 				</HBox>
 				<Separator prefWidth="200.0" />
@@ -39,9 +35,9 @@
 					<children>
 						<Label fx:id="labelSnapshotsNumber" text="0" />
 						<Label text="Snapshots Loaded" />
-						<Slider fx:id="sliderAttack" />
+						<Slider fx:id="sliderAttack" blockIncrement="1.0" majorTickUnit="5.0" max="25.0" minorTickCount="4" prefHeight="38.0" prefWidth="200.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
 						<Label text="Attack" />
-						<Slider fx:id="sliderAgility" />
+						<Slider fx:id="sliderAgility" blockIncrement="1.0" majorTickUnit="5.0" max="25.0" minorTickCount="4" prefWidth="200.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
 						<Label text="Agility" />
 						<CheckBox fx:id="checkboxWeaponDamage" mnemonicParsing="false" text="50% Weapon Damage" />
 						<CheckBox fx:id="checkboxRage" mnemonicParsing="false" text="25% Rage/Mana" />
@@ -86,16 +82,16 @@
 				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
 				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
 					<children>
-						<HBox prefHeight="100.0" prefWidth="200.0">
+						<HBox>
 							<children>
-								<TableView fx:id="tableBestItems" prefHeight="200.0" prefWidth="200.0">
+								<TableView fx:id="tableBestItems" prefHeight="200.0" prefWidth="314.0">
 									<columns>
 										<TableColumn prefWidth="75.0" text="Item Type" />
 										<TableColumn prefWidth="75.0" text="Modifiers" />
 									</columns>
 								</TableView>
-								<Separator orientation="VERTICAL" prefHeight="200.0" />
-								<TableView fx:id="tableBestPower" prefHeight="200.0" prefWidth="200.0">
+								<Separator orientation="VERTICAL" prefHeight="200.0" prefWidth="26.0" />
+								<TableView fx:id="tableBestPower" prefHeight="200.0" prefWidth="301.0">
 									<columns>
 										<TableColumn prefWidth="75.0" text="Attribute" />
 										<TableColumn prefWidth="75.0" text="Value" />

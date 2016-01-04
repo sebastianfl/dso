@@ -1,4 +1,4 @@
-package org.seb.dso.model;
+package org.seb.dso.model.enumeration;
 
 import org.seb.dso.ui.Messages;
 
@@ -7,18 +7,16 @@ import org.seb.dso.ui.Messages;
  *
  */
 public enum CharClass {
-	MAGE("Mage", "UI.CLASS.NAME.MAGE"), DRAGONKNIGHT("DragonKnight", "UI.CLASS.NAME.DRAGONKNIGHT"),
-	RANGER("Ranger", "UI.CLASS.NAME.RANGER"), DWARF("Dwarf", "UI.CLASS.NAME.DWARF");
+	MAGE("Mage", "UI.CLASS.NAME.MAGE"),
+	DRAGONKNIGHT("DragonKnight", "UI.CLASS.NAME.DRAGONKNIGHT"),
+	RANGER("Ranger", "UI.CLASS.NAME.RANGER"),
+	DWARF("Dwarf", "UI.CLASS.NAME.DWARF");
 
-	String name;
+	private String name;
 	private String key;
 
 	public synchronized String getName() {
 		return name;
-	}
-
-	public synchronized void setName(final String charClassName) {
-		this.name = charClassName;
 	}
 
 	/**

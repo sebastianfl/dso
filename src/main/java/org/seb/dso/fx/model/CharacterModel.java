@@ -7,11 +7,12 @@ import java.util.logging.Logger;
 
 import org.seb.dso.CharacterSnapshot;
 import org.seb.dso.Inventory;
-import org.seb.dso.model.CharClass;
 import org.seb.dso.model.CharacterPower;
-import org.seb.dso.model.EssenceType;
 import org.seb.dso.model.Item;
 import org.seb.dso.model.Modifier;
+import org.seb.dso.model.enumeration.CharClass;
+import org.seb.dso.model.enumeration.EssenceType;
+import org.seb.dso.model.enumeration.ModifierType;
 import org.seb.dso.util.ItemUtils;
 
 import javafx.beans.property.BooleanProperty;
@@ -212,7 +213,7 @@ public class CharacterModel {
 		synchronized (this) {
 			if (null == this.agilityModifier) {
 				Modifier a = new Modifier();
-				a.setType(Modifier.Type.PATTACK_SPEED);
+				a.setType(ModifierType.PATTACK_SPEED);
 				a.setValue(this.getAgility() * 1.6);
 				a.setAbsolute(false);
 				this.agilityModifier = a;
@@ -230,7 +231,7 @@ public class CharacterModel {
 		synchronized (this) {
 			if (null == this.attackModifier) {
 				Modifier a = new Modifier();
-				a.setType(Modifier.Type.PDAMAGE);
+				a.setType(ModifierType.PDAMAGE);
 				a.setValue(this.getAttack() * 2.0);
 				a.setAbsolute(false);
 				this.attackModifier = a;
@@ -257,11 +258,11 @@ public class CharacterModel {
 					rage = new Modifier[2];
 					rage[0] = new Modifier();
 					rage[1] = new Modifier();
-					rage[0].setType(Modifier.Type.PMANA);
+					rage[0].setType(ModifierType.PMANA);
 					rage[0].setValue(25.0);
 					rage[0].setAbsolute(false);
 
-					rage[1].setType(Modifier.Type.PTRAVEL_SPEED);
+					rage[1].setType(ModifierType.PTRAVEL_SPEED);
 					rage[1].setValue(-5.0);
 					rage[1].setAbsolute(false);
 				}
@@ -279,10 +280,10 @@ public class CharacterModel {
 					weaponDmg = new Modifier[2];
 					weaponDmg[0] = new Modifier();
 					weaponDmg[1] = new Modifier();
-					weaponDmg[0].setType(Modifier.Type.PEXTRA_WEAPON_DMG);
+					weaponDmg[0].setType(ModifierType.PEXTRA_WEAPON_DMG);
 					weaponDmg[0].setValue(50.0);
 					weaponDmg[0].setAbsolute(false);
-					weaponDmg[1].setType(Modifier.Type.PATTACK_SPEED);
+					weaponDmg[1].setType(ModifierType.PATTACK_SPEED);
 					weaponDmg[1].setValue(-10.0);
 					weaponDmg[1].setAbsolute(false);
 				}

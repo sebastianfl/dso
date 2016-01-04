@@ -13,6 +13,8 @@ import org.seb.dso.Inventory;
 import org.seb.dso.model.e.ModelChangeEvent;
 import org.seb.dso.model.e.ModelChangeListener;
 import org.seb.dso.model.e.ProgressChangeListener;
+import org.seb.dso.model.enumeration.ApplicationState;
+import org.seb.dso.model.enumeration.CharClass;
 import org.seb.dso.ui.Messages;
 import org.seb.dso.util.ItemUtils;
 import org.seb.dso.util.PropertyManager;
@@ -26,7 +28,7 @@ public class OptimizerModel {
 
 	private List<ModelChangeListener> listeners = new ArrayList<ModelChangeListener>();
 
-	private EnumTypes.State state;
+	private ApplicationState state;
 
 	private CharClass charClass;
 
@@ -55,10 +57,10 @@ public class OptimizerModel {
 	 * Default constructor. Start with the clean State
 	 */
 	public OptimizerModel() {
-		this.setState(EnumTypes.State.CLEAN);
+		this.setState(ApplicationState.CLEAN);
 	}
 
-	public final synchronized EnumTypes.State getState() {
+	public final synchronized ApplicationState getState() {
 		return state;
 	}
 
@@ -68,7 +70,7 @@ public class OptimizerModel {
 	 * @param message
 	 *            Extra message that might be communicated to observers
 	 */
-	public final synchronized void setState(final EnumTypes.State s, final String message) {
+	public final synchronized void setState(final ApplicationState s, final String message) {
 		if (this.state != s) {
 			this.state = s;
 			processModelChange(new ModelChangeEvent(ModelChangeEvent.EventType.STATE, s, message));
@@ -79,7 +81,7 @@ public class OptimizerModel {
 	 * @param s
 	 *            State
 	 */
-	public final void setState(final EnumTypes.State s) {
+	public final void setState(final ApplicationState s) {
 		this.setState(s, null);
 	}
 
@@ -96,7 +98,7 @@ public class OptimizerModel {
 		if (this.charClass != charClazz) {
 			this.charClass = charClazz;
 
-			this.setState(EnumTypes.State.LOADED);
+			this.setState(ApplicationState.LOADED);
 		}
 	}
 
@@ -113,7 +115,7 @@ public class OptimizerModel {
 	public final synchronized void setInventory(final Inventory inv) {
 		if (this.inventory != inv) {
 			this.inventory = inv;
-			this.setState(EnumTypes.State.LOADED);
+			this.setState(ApplicationState.LOADED);
 
 		}
 	}
@@ -125,7 +127,7 @@ public class OptimizerModel {
 	public synchronized void setTwoHanded(boolean twoHanded) {
 		if (this.twoHanded != twoHanded) {
 			this.twoHanded = twoHanded;
-			this.setState(EnumTypes.State.LOADED);
+			this.setState(ApplicationState.LOADED);
 		}
 	}
 
@@ -301,7 +303,7 @@ public class OptimizerModel {
 	}
 
 	public final void processItems() throws Exception {
-		this.setState(EnumTypes.State.CALCULATING);
+		this.setState(ApplicationState.CALCULATING);
 
 		// off gem mods, def gem mods, attack mods, agility mods, essence mods,
 		// wp mod, rage mod
@@ -350,7 +352,7 @@ public class OptimizerModel {
 				progressListener.progressChanged(i);
 			}
 		}
-		this.setState(EnumTypes.State.CALCULATED);
+		this.setState(ApplicationState.CALCULATED);
 		this.bestSnapshot = bestSnapshot;
 		this.bestPower = bestPower;
 		FLOGGER.log(Level.INFO, "Best snapshot: " + bestSnapshot.toString());
@@ -365,7 +367,7 @@ public class OptimizerModel {
 	 */
 	public final void generateSnapshots() throws Exception {
 
-		PropertyManager.getPropertyManager().setCurrentClass(this.charClass.name);
+		PropertyManager.getPropertyManager().setCurrentClass(this.charClass.getName());
 
 		SetConfig.getSetConfig().reinitialize();
 
@@ -376,15 +378,15 @@ public class OptimizerModel {
 			throw new Exception(Messages.getString("UI.MESSAGE.ITEM.OF.EACH.KIND.REQUIRED"));
 		}
 
-		this.setState(EnumTypes.State.GENERATING_SNAPSHOTS, String.valueOf(size));
+		this.setState(ApplicationState.GENERATING_SNAPSHOTS, String.valueOf(size));
 		
 		this.snapshots = ItemUtils.getAllSnapshots(this.inventory, this.twoHanded,
-				this.charClass.name.equalsIgnoreCase("ranger"));
+				this.charClass.getName().equalsIgnoreCase("ranger"));
 
 		// Go through extra state to populate the label with the snapshot list
 		// size
-		this.setState(EnumTypes.State.GENERATED_SNAPSHOTS, String.valueOf(size));
-		this.setState(EnumTypes.State.PREPROCESSING, this.charClass.getMessage());
+		this.setState(ApplicationState.GENERATED_SNAPSHOTS, String.valueOf(size));
+		this.setState(ApplicationState.PREPROCESSING, this.charClass.getMessage());
 
 		int i = 0;
 		for (Iterator<CharacterSnapshot> iterator = snapshots.iterator(); iterator.hasNext();) {
@@ -399,11 +401,11 @@ public class OptimizerModel {
 				progressListener.progressChanged(i);
 			}
 		}
-		this.setState(EnumTypes.State.PREPROCESSED);
+		this.setState(ApplicationState.PREPROCESSED);
 	}
 
 	public final int calculateSize() {
-		boolean isRanger = this.charClass.name.equalsIgnoreCase("ranger");
+		boolean isRanger = this.charClass.getName().equalsIgnoreCase("ranger");
 		int size;
 		if (isRanger && this.twoHanded) {
 			size = this.getInventory().getAmulets().size() * this.getInventory().getBelts().size()

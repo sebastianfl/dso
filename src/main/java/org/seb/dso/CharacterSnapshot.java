@@ -14,6 +14,9 @@ import org.seb.dso.model.Modifier;
 import org.seb.dso.model.SetConfig;
 import org.seb.dso.ui.Messages;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 /**
  * @author Sebastian
  *
@@ -323,6 +326,10 @@ public class CharacterSnapshot implements Serializable {
 		}
 
 		return list;
+	}
+	
+	public final ObservableList<Item> getItemsAsObservableList(){
+		return FXCollections.observableArrayList(this.getItemsAsList());
 	}
 
 	public final CharacterPower getCp() {

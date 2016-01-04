@@ -15,8 +15,8 @@ import org.apache.commons.csv.CSVRecord;
 import org.seb.dso.CharacterSnapshot;
 import org.seb.dso.Inventory;
 import org.seb.dso.model.Item;
-import org.seb.dso.model.Item.Type;
 import org.seb.dso.model.Modifier;
+import org.seb.dso.model.enumeration.ItemType;
 import org.seb.dso.ui.Messages;
 
 /**
@@ -75,49 +75,49 @@ public class ItemUtils {
 		if (null == modText || modText.equals("")) { //$NON-NLS-1$
 			return null;
 		}
-		Item.Type t = null;
+		ItemType t = null;
 		switch (modText.toLowerCase()) {
 		case "ring": //$NON-NLS-1$
-			t = Type.RING;
+			t = ItemType.RING;
 			break;
 		case "amulet": //$NON-NLS-1$
-			t = Type.AMULET;
+			t = ItemType.AMULET;
 			break;
 		case "belt": //$NON-NLS-1$
-			t = Type.BELT;
+			t = ItemType.BELT;
 			break;
 		case "cloak": //$NON-NLS-1$
-			t = Type.CLOAK;
+			t = ItemType.CLOAK;
 			break;
 		case "crystal": //$NON-NLS-1$
-			t = Type.CRYSTAL;
+			t = ItemType.CRYSTAL;
 			break;
 		case "adornment": //$NON-NLS-1$
-			t = Type.CRYSTAL;
+			t = ItemType.CRYSTAL;
 			break;
 		case "twohand": //$NON-NLS-1$
-			t = Type.TWOHAND;
+			t = ItemType.TWOHAND;
 			break;
 		case "mainhand": //$NON-NLS-1$
-			t = Type.MAINHAND;
+			t = ItemType.MAINHAND;
 			break;
 		case "offhand": //$NON-NLS-1$
-			t = Type.OFFHAND;
+			t = ItemType.OFFHAND;
 			break;
 		case "helmet": //$NON-NLS-1$
-			t = Type.HELMET;
+			t = ItemType.HELMET;
 			break;
 		case "pauldrons": //$NON-NLS-1$
-			t = Type.PAULDRONS;
+			t = ItemType.PAULDRONS;
 			break;
 		case "torso": //$NON-NLS-1$
-			t = Type.TORSO;
+			t = ItemType.TORSO;
 			break;
 		case "gloves": //$NON-NLS-1$
-			t = Type.GLOVES;
+			t = ItemType.GLOVES;
 			break;
 		case "boots": //$NON-NLS-1$
-			t = Type.BOOTS;
+			t = ItemType.BOOTS;
 			break;
 		}
 		item.setItemType(t);

@@ -1,6 +1,5 @@
 package org.seb.dso.fx;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
@@ -14,10 +13,11 @@ public class OptimizerFX extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		FXMLLoader fxmlLoader = new FXMLLoader();
-		fxmlLoader.setResources(ResourceBundle.getBundle("messages" /**, new Locale("ru_RU") **/ ));
+		fxmlLoader.setResources(ResourceBundle
+				.getBundle("messages" /** , new Locale("ru_RU") **/
+		));
 
 		Parent root = fxmlLoader.load(getClass().getResource("optimizer.fxml").openStream());
-
 
 		Scene scene = new Scene(root);
 
